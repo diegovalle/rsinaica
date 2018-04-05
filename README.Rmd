@@ -1,0 +1,49 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# rsinaica
+
+[![Travis-CI Build Status](https://travis-ci.org/diegovalle/rsinaica.svg?branch=master)](https://travis-ci.org/diegovalle/rsinaica) 
+[![AppVeyor build status](https://ci.appveyor.com/api/projects/status/p281myk561l2kxgt?svg=true
+)](https://ci.appveyor.com/project/diegovalle/rsinaica/branch/master) 
+[![Coverage Status](https://img.shields.io/codecov/c/github/diegovalle/rsinaica/master.svg)](https://codecov.io/github/diegovalle/rsinaica?branch=master) ![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version-ago/rsinaica?color=red) 
+
+The goal of rsinaica is to ...
+
+## Installation
+
+rsinaica is not currently available from CRAN, but you can install the development version from github with:
+
+```r
+if (!require(devtools)) {
+    install.packages("devtools")
+}
+devtools::install_github('diegovalle/rsinaica')
+```
+
+
+<!--ou can install the released version of rsinaica from [CRAN](https://CRAN.R-project.org) with:
+
+``` r
+install.packages("rsinaica")
+```-->
+
+## Example
+
+This is a basic example which shows you how to solve a common problem:
+
+```{r example}
+## basic example code
+```

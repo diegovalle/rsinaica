@@ -1,0 +1,31 @@
+Package: rsinaica
+Type: Package
+Title: Download Data from Mexico's National Air Quality Information System
+Version: 0.1.0
+Authors@R: c(person("Diego", "Valle-Jones", email = "diego@diegovalle.net", role = c("aut", "cre")))
+Description: Ready-made functions for downloading data from the Mexican 
+    National Air Quality Information System (SINAICA). See 
+    <http://http://sinaica.inecc.gob.mx> for more information.
+License: MIT + file LICENSE
+URL: https://github.com/diegovalle/rsinaica
+BugReports: https://github.com/diegovalle/rsinaica/issues
+Encoding: UTF-8
+LazyData: TRUE
+Depends:
+    R (>= 3.2)
+Suggests: 
+    aire.zmvm,
+    testthat,
+    covr,
+    knitr,
+    rmarkdown
+Imports:
+    jsonlite,
+    httr,
+    xml2,
+    stringr,
+    dplyr,
+    lubridate
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 6.0.1
+VignetteBuilder: knitr

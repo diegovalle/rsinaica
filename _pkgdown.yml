@@ -1,0 +1,23 @@
+title: Download Data from Mexico's National Air Quality Information System
+url: https://hoyodesmog.diegovalle.net/rsinaica
+template:
+  params:
+    ganalytics: UA-100264-10
+authors:
+  Diego Valle-Jones:
+    href: https://www.diegovalle.net
+reference:
+  - title: Get Air Quality Data
+    desc: Functions for downloading pollution, wind, temperature, rh in the original units
+    contents:
+      - '`sinaica_parameter`'
+      - '`sinaica_station`'
+  - title: Datasets
+    desc: Station location and air quality parameters
+    contents:
+      - '`stations_sinaica`'
+      - '`parameters`'
+  - title: Package
+    desc: aire.zmvm package
+    contents:
+      - '`rsinaica`'

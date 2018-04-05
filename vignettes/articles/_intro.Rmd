@@ -1,0 +1,58 @@
+---
+title: "2017 Most Polluted City Awards"
+author: "Diego Valle-Jones"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+
+
+Load the packages
+
+```{r}
+library("dplyr")
+library("gghighlight")
+library("ggplot2")
+```
+
+```{r downloadpm25, cache=TRUE}
+# Download all PM2.5 data for 2017, by month
+df <- sinaica_station()
+)
+```
+
+```{r plot}
+## df[which(df$valorOrig != df$valorAct),]
+df_filtered <-  df %>%
+  filter(!is.na(value)) %>%
+  add_count(network_name) %>%
+  # Only include stations that reported for more than 350 days
+  filter(n > 350*24)
+
+df_filtered %>%
+  group_by(network_name) %>%
+  summarise(count = n())
+
+
+df_mean <- df_filtered %>%
+  group_by(fecha, network_name) %>%
+  summarise(mean = mean(value, na.rm = TRUE)) %>%
+  arrange(network_name)
+
+
+gghighlight_line(df_mean, aes(as.Date(fecha), mean, 
+                              group = network_name, color = network_name),
+                 mean(mean,na.rm = TRUE), max_highlight = 3L) +
+  theme_bw()
+```
