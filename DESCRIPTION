@@ -18,7 +18,8 @@ Suggests:
     testthat,
     covr,
     knitr,
-    rmarkdown
+    rmarkdown,
+    ggplot2
 Imports:
     jsonlite,
     httr,
