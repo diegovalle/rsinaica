@@ -26,21 +26,24 @@
 }
 
 
-
-
-
-
-
-
 #' Get data from a SINAICA reporting station
 #'
 #' @param station_id See stations_sinaica
 #' @param parameter type of parameter to download
-#' @param type Crude, Validated or Manual data
-#' Datos que se generan en las redes de monitoreo de la calidad del aire y
-#' muestreo de contaminantes atmosféricos, que no han sido validados.
+#' @param type The type of data to download. One of the following:
+#' \itemize{
+#'  \item{"C"}{ - Crude data that has not been validated}
+#'  \item{"V"}{ - Validated data}
+#'  \item{"M"}{ - Manual data}
+#' }
 #' @param date day to download or start of range
-#' @param range day, weekly, month
+#' @param range how much data to download
+#' \itemize{
+#'  \item{"1"}{ - 1 day}
+#'  \item{"2"}{ - 1 week}
+#'  \item{"3"}{ - 2 weeks}
+#'  \item{"4"}{ - 1 month}
+#' }
 #'
 #' @return data.frame with air quality data
 #' @importFrom httr POST http_error http_type content status_code
@@ -59,7 +62,7 @@ sinaica_station <- function(station_id,
                                           "HR", "HRI", "IUV", "NO", "NO2",
                                           "NOx",
                                           "O3", "PB", "PM10",
-                                          "PM2.5", "PP", "PST", "RS", "SO2",
+                                          "PM2.5", "PM25", "PP", "PST", "RS", "SO2",
                                           "TMP", "TMPI", "UVA", "UVB",
                                           "VV", "XIL"),
                             type = c("C", "V", "M"),
@@ -70,9 +73,6 @@ sinaica_station <- function(station_id,
   type <- match.arg(type)
   parameter <- match.arg(parameter)
   range <- match.arg(range)
-  # Station 366 uses PM25 instead of PM2.5
-  if (station_id == 366 & parameter == "PM2.5")
-    parameter <-  "PM25"
   if ((type == "M") & range == "1")
     stop("for type 'M' data you can only request a range longer than a day",
          call. = FALSE)

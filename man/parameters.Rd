@@ -6,7 +6,8 @@
 \title{Valid air quality parameters}
 \format{A data frame with 30 rows and 1 variables:
 \describe{
-\item{parameter}{Abbreviation of the air quality parameter}
+\item{parameter_code}{Abbreviation of the air quality parameter}
+\item{parameter_name}{Name of the air quality parameter}
 }}
 \description{
 Valid air quality parameters
