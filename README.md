@@ -52,6 +52,7 @@ ggplot(stations_sinaica[order(stations_sinaica$color, decreasing = TRUE),], aes(
   geom_polygon(data = mx, aes(x= long, y = lat, group = group)) +
   geom_point(alpha = .9, size = 3, aes(fill = color), shape = 21) + 
   scale_fill_discrete("station") +
+  ggtitle("Air quality measuring stations in Mexico") +
   coord_map() + 
   theme_void()
 ```
