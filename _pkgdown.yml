@@ -12,6 +12,11 @@ reference:
     contents:
       - '`sinaica_parameter`'
       - '`sinaica_station`'
+  - title: Helper Functions
+    desc: Functions to query the dates and parameters for each station
+    contents:
+      - '`get_station_dates`'
+      - '`get_station_parameters`'
   - title: Datasets
     desc: Station location and air quality parameters
     contents:
@@ -21,3 +26,12 @@ reference:
     desc: aire.zmvm package
     contents:
       - '`rsinaica`'
+figures:
+  dev: grDevices::png
+  dpi: 96
+  dev.args: []
+  fig.ext: png
+  fig.width: 7.2916667
+  fig.height: ~
+  fig.retina: 2
+  fig.asp: 0.555

@@ -39,6 +39,7 @@
 #' \emph{Solicitud de Información} FOLIO 0112000033818
 #'
 #' @docType data
+#' @source \href{http://sinaica.inecc.gob.mx/}{SINAICA}
 #' @name stations_sinaica
 #' @usage data(stations_sinaica)
 #' @examples
@@ -49,13 +50,14 @@ NULL
 #'
 #'
 #'
-#' @format A data frame with 30 rows and 1 variables:
+#' @format A data frame with 55 rows and 2 variables:
 #' \describe{
 #'   \item{parameter_code}{Abbreviation of the air quality parameter}
 #'   \item{parameter_name}{Name of the air quality parameter}
 #' }
 #' @docType data
 #' @name parameters
+#' @source \href{http://sinaica.inecc.gob.mx/}{SINAICA}
 #' @examples
 #' head(parameters)
 NULL
