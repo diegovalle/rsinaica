@@ -3,6 +3,7 @@
 language: r
 cache: packages
 warnings_are_errors: true
+cran: https://cloud.r-project.org
 
 env:
   - NOT_CRAN=true
