@@ -42,7 +42,7 @@ knitr::kable(stations_sinaica[which(stations_sinaica$station_name == "Centro"), 
 | 42  |           54| Centro        | CEN           |           38| CHIH1          | CHIH1         |
 | 75  |          102| Centro        | CEN           |           63| Guadalajara    | GDL           |
 
-The station Centro located in Guadalajara has a numeric code of 102 (station\_id). The `stations_sinaica` data.frame also includes the locations of all the measuring stations in Mexico (including some that have never reported any data!).
+The station Centro located in Guadalajara has a numeric code of 102 (station\_id). The `stations_sinaica` data.frame also includes the latitude and longitude of all the measuring stations in Mexico (including some that have never reported any data!).
 
 ``` r
 mx <- map_data("world", "Mexico")
@@ -62,36 +62,39 @@ ggplot(stations_sinaica[order(stations_sinaica$color, decreasing = TRUE),], aes(
 Then we query the dates during which the station has been in operation:
 
 ``` r
-get_station_dates(102, "C")
-#> [1] "1997-01-01" "2018-04-05"
+get_station_dates(102)
+#> [1] "1997-01-01" "2018-04-07"
 ```
 
-It's currently reporting data. We can also query which type of parameters (pollution, wind, solar radiation, etc) the station has sensors for.
+It's currently reporting data, and has been doing so since 1997. We can also query which type of parameters (pollution, wind, solar radiation, etc) the station has sensors for. Note that the package also includes a `parameters` data.frame with all the supported parameters, but not all stations support all of them.
 
 ``` r
-get_station_parameters(102)
-#>    parameter_id                  parameter_name
-#> 1            CN                   Carbono negro
-#> 2           SO2               Dióxido de azufre
-#> 3           NO2            Dióxido de nitrógeno
-#> 4            DV            Dirección del viento
-#> 5            HR                Humedad relativa
-#> 6            CO             Monóxido de carbono
-#> 7            NO                   Óxido nítrico
-#> 8           NOx             Óxidos de nitrógeno
-#> 9            O3                           Ozono
-#> 10         PM10  Partículas menores a 10 micras
-#> 11        PM2.5 Partículas menores a 2.5 micras
-#> 12           PP           Precipitación pluvial
-#> 13         TMPI            Temperatura interior
-#> 14           VV            Velocidad del viento
+cen_params <- get_station_parameters(102)
+knitr::kable(cen_params)
 ```
+
+| parameter\_id | parameter\_name                 |
+|:--------------|:--------------------------------|
+| CN            | Carbono negro                   |
+| SO2           | Dióxido de azufre               |
+| NO2           | Dióxido de nitrógeno            |
+| DV            | Dirección del viento            |
+| HR            | Humedad relativa                |
+| CO            | Monóxido de carbono             |
+| NO            | Óxido nítrico                   |
+| NOx           | Óxidos de nitrógeno             |
+| O3            | Ozono                           |
+| PM10          | Partículas menores a 10 micras  |
+| PM2.5         | Partículas menores a 2.5 micras |
+| PP            | Precipitación pluvial           |
+| TMPI          | Temperatura interior            |
+| VV            | Velocidad del viento            |
 
 Finally, we can download and plot particulate matter data for the month of January
 
 ``` r
 # Download all PM10 data for January 2018
-df <-  sinaica_station(102, "PM10", "C", "2018-01-01", "4")
+df <-  sinaica_bystation(102, "PM10", "2018-01-01", "Crude", "1 month")
 
 ggplot(df, aes(hour, value, group = date)) +
   geom_line(alpha=.9) +

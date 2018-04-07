@@ -23,10 +23,15 @@ monitoring stations in the different Mexican states.
 
 Load the packages necessary for running the analysis
 
-```{r message=FALSE}
+```{r message=FALSE, warning}
 ## Auto-install required R packages
-if (!require("pacman")) install.packages("pacman")
-pacman::p_load(dplyr, ggplot2, lubridate)
+packs <- c("dplyr", "ggplot2", "lubridate")
+success <- suppressWarnings(sapply(packs, require, character.only = TRUE))
+if (length(names(success)[!success])) {
+  install.packages(names(success)[!success])
+  sapply(names(success)[!success], require, character.only = TRUE)
+}
+## Not yet on cran
 library("rsinaica")
 ```
 

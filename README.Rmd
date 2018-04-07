@@ -76,11 +76,12 @@ Then we query the dates during which the station has been in operation:
 get_station_dates(102)
 ```
 
-It's currently reporting data. We can also query which type of parameters (pollution, wind, solar radiation, etc) the station has sensors for. Note that the package also includes a ```parameters```
+It's currently reporting data, and has been doing so since 1997. We can also query which type of parameters (pollution, wind, solar radiation, etc) the station has sensors for. Note that the package also includes a ```parameters```
 data.frame with all the supported parameters, but not all stations support all of them.
 
 ```{r}
-get_station_parameters(102)
+cen_params <- get_station_parameters(102)
+knitr::kable(cen_params)
 ```
 
 Finally, we can download and plot particulate matter data for the month of January
