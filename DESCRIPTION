@@ -23,7 +23,6 @@ Suggests:
 Imports:
     jsonlite,
     httr,
-    xml2,
     stringr,
     dplyr,
     lubridate
