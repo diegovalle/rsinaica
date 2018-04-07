@@ -34,7 +34,8 @@
 #' }
 #' @param start_date start date
 #' @param end_date end date
-#' @param autoclean wether to clean the data
+#' @param autoclean wether to automatically remove invalid date and make sure
+#' extreme values are turned to NAs
 #'
 #' @return data.frame with air quality data
 #' @importFrom httr POST http_error content
@@ -71,7 +72,7 @@ sinaica_byparameter <- function(parameter,
                             "TMP", "TMPI", "UVA", "UVB",
                             "VV", "XIL"),
                   "parameter")
-  if( start_date > end_date)
+  if (start_date > end_date)
     stop("start_date should be less than or equal to end_date")
 
   d <- as.Date(start_date)
@@ -80,7 +81,7 @@ sinaica_byparameter <- function(parameter,
     stop("The maximum amount of data you can download is 1 month",
          call. = FALSE)
 
-  url = "http://sinaica.inecc.gob.mx/lib/j/php/getData.php"
+  url <-  "http://sinaica.inecc.gob.mx/lib/j/php/getData.php"
   fd <- list(
     tabla  = "Datos",
     fields = "",
@@ -102,9 +103,9 @@ sinaica_byparameter <- function(parameter,
   df <- fromJSON(html_text)
   df$estacionesId <- as.integer(df$estacionesId)
 
-  if(identical(autoclean, TRUE)) {
+  if (identical(autoclean, TRUE)) {
     ## Values above this are suppossed to be invalid
-    limPerm <- switch(parameter, PM10 = 600, PM2.5 = 175, NO2 = .21,
+    lim_perm <- switch(parameter, PM10 = 600, PM2.5 = 175, NO2 = .21,
                       SO2 = .2, CO = 15,
                       O3 = .2, 10000000000)
 
@@ -113,31 +114,32 @@ sinaica_byparameter <- function(parameter,
     df$value[which(!is.finite(df$value))] <- NA
     df$value[which(df$validoAct == 0)] <- NA
     df$value[which(df$value < 0)] <- NA
-    df$value[which(df$value > limPerm)] <- NA
+    df$value[which(df$value > lim_perm)] <- NA
 
     names(df) <- c("id", "station_id", "date", "hour",
                    "parameter", "value_original",
                    "flag_original", "valid_original", "value_actual",
                    "valid_actual", "date_validated",
                    "validation_level", "value")
-    return(left_join(df, stations_sinaica[,c("station_id",
+    df <- left_join(df, stations_sinaica[, c("station_id",
                                              "network_name",
                                              "network_code",
                                              "network_id")],
-                     by = c("station_id" = "station_id")))
-    df[, c("id", "station_id","network_name",
+                     by = c("station_id" = "station_id"))
+    df$units <- .recode_sinaica_units(parameter)
+    df <- df[, c("id", "station_id", "network_name",
            "network_code",
            "network_id", "date", "hour",
            "parameter", "value_original",
            "flag_original", "valid_original", "value_actual",
            "valid_actual", "date_validated",
-           "validation_level", "value")]
+           "validation_level", "units", "value")]
+    return(df)
 
   }
-  data("stations_sinaica", package="rsinaica", envir=environment())
-  left_join(df, stations_sinaica[,c("station_id",
+  data("stations_sinaica", package = "rsinaica", envir = environment())
+  left_join(df, stations_sinaica[, c("station_id",
                                     "network_name",
                                     "network_code")],
             by = c("estacionesId" = "station_id"))
 }
-

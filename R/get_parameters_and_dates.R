@@ -26,7 +26,7 @@ get_station_parameters <- function(station_id,
                 " `stations_sinaica` contains a list of all station ids",
                 " and names"), call. = FALSE)
   if (!is.integer2(station_id))
-    stop(paste0("argument station_id must be an integer The",
+    stop(paste0("argument station_id must be an integer. The",
                 " data.frame",
                 " `stations_sinaica` contains a list of all station ids",
                 " and names"), call. = FALSE)

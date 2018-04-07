@@ -65,8 +65,7 @@ sinaica_bystation <- function(station_id,
                             parameter,
                             start_date,
                             type = "Crude",
-                            range = "1 day")
-{
+                            range = "1 day") {
   if (missing(station_id))
     stop(paste0("argument station_id is missing, please provide it. The",
                 " data.frame",
@@ -102,7 +101,7 @@ sinaica_bystation <- function(station_id,
                   valid = c("1 day", "1 week", "2 weeks", "1 month"),
                   "range")
 
-  if ((type == "Manual") & range == "1 day")
+  if ( (type == "Manual") & range == "1 day")
     stop("for type 'M' data you can only request a range longer than a day",
          call. = FALSE)
 
@@ -148,7 +147,7 @@ sinaica_bystation <- function(station_id,
                       valid = integer(),
                       units =  character(),
                       value = character(),
-                      stringsAsFactors=FALSE)
+                      stringsAsFactors = FALSE)
            )
   df$bandO <- NULL
   names(df) <- c("id", "date", "hour", "value", "valid")
@@ -158,11 +157,10 @@ sinaica_bystation <- function(station_id,
   df$hour <- as.integer(df$hour)
   df$valid <- as.integer(df$valid)
 
-  data("stations_sinaica", package="rsinaica", envir=environment())
+  data("stations_sinaica", package = "rsinaica", envir = environment())
   df <- left_join(df, stations_sinaica[, c("station_id", "station_name")],
                   by = "station_id")
 
   df[, c("station_id",  "station_name", "date", "hour",
          "valid", "units", "value")]
 }
-

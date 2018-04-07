@@ -14,4 +14,21 @@ test_that("is.Date works", {
   expect_false(is.Date(NA))
 })
 
-
+test_that("is.integer2 works", {
+  expect_true(is.integer2(1986))
+  expect_true(is.integer2(1986.0))
+  expect_false(is.integer2(99.2))
+  expect_false(is.integer2(99.0000000001))
+  expect_false(is.integer2(character(0)))
+  expect_false(is.integer2(NULL))
+  expect_false(is.integer2(1.0000000000001))
+  expect_true(is.integer2(2018))
+  expect_true(is.integer2(c(1999:2010)[3]))
+  expect_true(is.integer2(as.numeric(11)))
+  expect_true(is.integer2(as.double(11)))
+  expect_true(is.integer2(as.integer(22)))
+  expect_true(is.integer2(as.single(12)))
+  expect_false(is.integer2(NA))
+  # Not an integer
+  expect_false(is.integer2(NA_real_))
+})

@@ -1,6 +1,6 @@
-context("test-sinaica_parameter.R")
+context("test-sinaica_byparameter.R")
 
-test_that("sinaica_parameter works", {
+test_that("sinaica_byparameter works", {
   skip_on_cran()
 
   # Errors
@@ -19,4 +19,15 @@ test_that("sinaica_parameter works", {
   expect_equal(df$value[1:10], c(0.0066721, 0.014782, 0.011957,
                                  0.0021908, 0.0027581, 0.0063391,
                                  0.0089907, 0.0051245, 0.0018884, 0.0029096))
+
+  df <- sinaica_byparameter("O3", "2015-10-14", "2015-10-14", autoclean = FALSE)
+  expect_equal(df$valorAct[1:10], c("0.0066721", "0.014782", "0.011957",
+                                    "0.0021908", "0.0027581", "0.0063391",
+                                    "0.0089907", "0.0051245", "0.0018884",
+                                    "0.0029096"))
+  expect_equal(names(df), c("id", "estacionesId", "fecha", "hora",
+                            "parametro", "valorOrig",
+               "banderasOrig", "validoOrig", "valorAct",
+               "validoAct", "fechaValidoAct",
+               "nivelValidacion", "network_name", "network_code"))
 })

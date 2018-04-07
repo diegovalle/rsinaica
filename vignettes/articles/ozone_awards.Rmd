@@ -45,7 +45,7 @@ o3_2017[which(!is.na(o3_2017$date_validated)),]
 df_filtered <-  o3_2017 %>%
   filter(!is.na(value)) %>%
   add_count(network_name) %>%
-  # Only include stations that reported for more than 350 days
+  # Only include stations that reported for more than 80% of days
   filter(n > 292*24)
 
 df_filtered %>%
