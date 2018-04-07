@@ -38,5 +38,5 @@ branches:
 after_success:
   # The most polluted cities articlest take a long time to run, so exclude 'em
   - mv vignettes/articles/ozone_awards.Rmd vignettes/articles/_ozone_awards.Rmd
-  - Rscript -e "install.packages('devtools');devtools::install_github('r-lib/pkgdown');pkgdown::build_site()"
+  - Rscript -e "install.packages('devtools');devtools::install_github('r-lib/pkgdown');devtools::install_github('diegovalle/rsinaica')pkgdown::build_site()"
   - Rscript -e 'covr::codecov()'
