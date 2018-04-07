@@ -35,4 +35,5 @@ branches:
     - develop
 
 after_success:
+#  - Rscript -e "install.packages('devtools');devtools::install_github('r-lib/pkgdown');pkgdown::build_site()"
   - Rscript -e 'covr::codecov()'

@@ -24,10 +24,10 @@ monitoring stations in the different Mexican states.
 Load the packages necessary for running the analysis
 
 ```{r message=FALSE}
+## Auto-install required R packages
+if (!require("pacman")) install.packages("pacman")
+pacman::p_load(dplyr, ggplot2, lubridate)
 library("rsinaica")
-library("dplyr")
-library("ggplot2")
-library("lubridate")
 ```
 
 Let's suppose you want to look up the ozone pollution values for the station of
@@ -42,7 +42,7 @@ The station has a station_id of 146 which we can use to look up data
 
 ```{r download}
 # Download all PM2.5 data for 2017, by month
-df <-  sinaica_station(146, "PM10", "C", "2018-03-04", "4")
+df <-  sinaica_bystation(146, "PM10", "2018-03-04", "Crude", "1 month")
 ```
 
 The data we just downloaded looks like:

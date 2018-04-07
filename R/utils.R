@@ -8,6 +8,35 @@ is.Date <- function(date, date.format = "%Y-%m-%d") {
            })
 }
 
+# test if int is an integer
+is.integer2 <- function(int) {
+  if (length(int) < 1)
+    return(FALSE)
+  if (any(is.na(int)))
+    return(FALSE)
+  tryCatch(identical(int, as.integer(floor(int))) |
+             identical(int, as.double(floor(int))) |
+             identical(int, as.single(floor(int))),
+           error = function(e) {
+             FALSE
+           })
+}
+
+check_arguments <- function(arg_val, valid, arg_name) {
+  if (missing(arg_val))
+    stop(sprintf("argument %s should not be missing", arg_name), call. = FALSE)
+  val <- any(
+    unlist(
+      lapply(valid, function(x) identical(arg_val, x))
+    )
+  )
+  if (!val)
+    stop(sprintf("%s should be one of: %s",
+                 arg_name,
+                 paste(valid, collapse = ", ")), call. = FALSE)
+}
+
+
 #' recode units from SINAICA
 #'
 #' @param pollutant

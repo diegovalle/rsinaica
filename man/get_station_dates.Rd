@@ -4,16 +4,17 @@
 \alias{get_station_dates}
 \title{Dates supported by a station}
 \usage{
-get_station_dates(station_id, type = c("C", "V", "M"))
+get_station_dates(station_id, type = "Crude")
 }
 \arguments{
-\item{station_id}{numeric code of the station}
+\item{station_id}{the numeric code correspongind to each station. See
+\code{\link{stations_sinaica}} for a list of stations and their ids.}
 
 \item{type}{The type of data to download. One of the following:
 \itemize{
-\item{"C"}{ - Crude data that has not been validated}
-\item{"V"}{ - Validated data}
-\item{"M"}{ - Manual data}
+\item{"Crude"}{ - Crude data that has not been validated}
+\item{"Validated"}{ - Validated data (may not be the most up-to-date)}
+\item{"Manual"}{ - Manual data}
 }}
 }
 \value{
@@ -24,6 +25,7 @@ and end reporting date
 Dates supported by a station
 }
 \examples{
-df <- get_station_dates(271, "M")
+## id 271 is Xalostoc. See `stations_sinaica`
+df <- get_station_dates(271, "Manual")
 head(df)
 }
