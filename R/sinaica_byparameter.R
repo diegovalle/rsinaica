@@ -32,10 +32,10 @@
 #'  \item{"VV"}{ - Radiación ultravioleta B}
 #'  \item{"XIL"}{ - Xileno}
 #' }
-#' @param start_date start date
-#' @param end_date end date
-#' @param autoclean wether to automatically remove invalid date and make sure
-#' extreme values are turned to NAs
+#' @param start_date start of period from which to download data
+#' @param end_date end of period from which to download data
+#' @param autoclean wether to automatically remove invalid data and make sure
+#' extreme values (as reported by SINAICa) are turned to NAs
 #'
 #' @return data.frame with air quality data
 #' @importFrom httr POST http_error content

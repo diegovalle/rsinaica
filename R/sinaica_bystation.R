@@ -58,14 +58,15 @@
 #' @export
 #' @examples
 #' stations_sinaica[which(stations_sinaica$station_name == "Xalostoc"), 1:5]
-#' df <- sinaica_bystation(271, "O3", "2015-09-11", "Crude", "1 day")
+#' df <- sinaica_bystation(271, "O3", "2015-09-11", "1 day", "Crude")
 #' head(df)
 #'
 sinaica_bystation <- function(station_id,
                             parameter,
                             start_date,
-                            type = "Crude",
-                            range = "1 day") {
+                            range = "1 day",
+                            type = "Crude"
+                            ) {
   if (missing(station_id))
     stop(paste0("argument station_id is missing, please provide it. The",
                 " data.frame",

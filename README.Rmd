@@ -66,7 +66,7 @@ It looks like there are three stations named Centro, the one we are looking for 
 ```{r warning=FALSE}
 mx <- map_data("world", "Mexico")
 stations_sinaica$color <- "Others"
-stations_sinaica$color[stations_sinaica$station_id == 102] <- "Centro"
+stations_sinaica$color[stations_sinaica$station_id == 102] <- "Centro (102)"
 ggplot(stations_sinaica[order(stations_sinaica$color, decreasing = TRUE),], aes(lon, lat)) + 
   geom_polygon(data = mx, aes(x= long, y = lat, group = group)) +
   geom_point(alpha = .9, size = 3, aes(fill = color), shape = 21) + 
@@ -83,7 +83,7 @@ get_station_dates(102)
 ```
 
 It's currently reporting data, and has been doing so since 1997. We can also query which type of parameters (pollution, wind, solar radiation, etc) the station has sensors for. Note that the package also includes a ```parameters```
-data.frame with all the supported parameters, but not all stations support all of them.
+data.frame with the complete set of supported parameters, but not all stations support all of them.
 
 ```{r}
 cen_params <- get_station_parameters(102)
@@ -94,7 +94,7 @@ Finally, we can download and plot particulate matter data for the month of Janua
 
 ```{r}
 # Download all PM10 data for January 2018
-df <-  sinaica_bystation(102, "PM10", "2018-01-01", "Crude", "1 month")
+df <-  sinaica_bystation(102, "PM10", "2018-01-01", "1 month", "Crude")
 
 ggplot(df, aes(hour, value, group = date)) +
   geom_line(alpha=.9) +

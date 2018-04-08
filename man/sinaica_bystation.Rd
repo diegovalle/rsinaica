@@ -4,8 +4,8 @@
 \alias{sinaica_bystation}
 \title{Get data from a measuring station that reports to SINAICA}
 \usage{
-sinaica_bystation(station_id, parameter, start_date, type = "Crude",
-  range = "1 day")
+sinaica_bystation(station_id, parameter, start_date, range = "1 day",
+  type = "Crude")
 }
 \arguments{
 \item{station_id}{the numeric code correspongind to each station. See
@@ -45,19 +45,19 @@ sinaica_bystation(station_id, parameter, start_date, type = "Crude",
 
 \item{start_date}{day to download or start of range}
 
-\item{type}{The type of data to download. One of the following:
-\itemize{
-\item{"Crude"}{ - Crude data that has not been validated}
-\item{"Validated"}{ - Validated data (may not be the most up-to-date)}
-\item{"Manual"}{ - Manual data}
-}}
-
 \item{range}{how much data to download
 \itemize{
 \item{"1 day"}{ - 1 day}
 \item{"1 week"}{ - 1 week}
 \item{"2 weeks"}{ - 2 weeks}
 \item{"1 month"}{ - 1 month}
+}}
+
+\item{type}{The type of data to download. One of the following:
+\itemize{
+\item{"Crude"}{ - Crude data that has not been validated}
+\item{"Validated"}{ - Validated data (may not be the most up-to-date)}
+\item{"Manual"}{ - Manual data}
 }}
 }
 \value{
@@ -68,7 +68,7 @@ Get data from a measuring station that reports to SINAICA
 }
 \examples{
 stations_sinaica[which(stations_sinaica$station_name == "Xalostoc"), 1:5]
-df <- sinaica_bystation(271, "O3", "2015-09-11", "Crude", "1 day")
+df <- sinaica_bystation(271, "O3", "2015-09-11", "1 day", "Crude")
 head(df)
 
 }

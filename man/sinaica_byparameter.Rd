@@ -39,12 +39,12 @@ sinaica_byparameter(parameter, start_date, end_date, autoclean = TRUE)
 \item{"XIL"}{ - Xileno}
 }}
 
-\item{start_date}{start date}
+\item{start_date}{start of period from which to download data}
 
-\item{end_date}{end date}
+\item{end_date}{end of period from which to download data}
 
-\item{autoclean}{wether to automatically remove invalid date and make sure
-extreme values are turned to NAs}
+\item{autoclean}{wether to automatically remove invalid data and make sure
+extreme values (as reported by SINAICa) are turned to NAs}
 }
 \value{
 data.frame with air quality data

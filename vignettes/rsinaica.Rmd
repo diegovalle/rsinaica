@@ -47,7 +47,7 @@ The station has a station_id of 146 which we can use to look up data
 
 ```{r download}
 # Download all PM2.5 data for 2017, by month
-df <-  sinaica_bystation(146, "PM10", "2018-03-04", "Crude", "1 month")
+df <-  sinaica_bystation(146, "PM10", "2018-03-04", "1 month", "Crude")
 ```
 
 The data we just downloaded looks like:
