@@ -27,11 +27,19 @@ install.packages("rsinaica")
 Example
 -------
 
-Suppose you wanted to download pollution data from the 'Centro' station in Guadalajara. First we load the package and look up the numeric code for the station in the `stations_sinaica` data.frame:
+Suppose you wanted to download pollution data from the *Centro* station in Guadalajara. First we load the package and look up the numeric code for the station in the `stations_sinaica` data.frame:
 
 ``` r
+## Auto-install required R packages
+packs <- c("ggplot2", "maps")
+success <- suppressWarnings(sapply(packs, require, character.only = TRUE))
+#> Loading required package: ggplot2
+#> Loading required package: maps
+if (length(names(success)[!success])) {
+  install.packages(names(success)[!success])
+  sapply(names(success)[!success], require, character.only = TRUE)
+}
 library("rsinaica")
-library("ggplot2")
 
 knitr::kable(stations_sinaica[which(stations_sinaica$station_name == "Centro"), 1:6])
 ```
@@ -42,7 +50,7 @@ knitr::kable(stations_sinaica[which(stations_sinaica$station_name == "Centro"), 
 | 42  |           54| Centro        | CEN           |           38| CHIH1          | CHIH1         |
 | 75  |          102| Centro        | CEN           |           63| Guadalajara    | GDL           |
 
-The station Centro located in Guadalajara has a numeric code of 102 (station\_id). The `stations_sinaica` data.frame also includes the latitude and longitude of all the measuring stations in Mexico (including some that have never reported any data!).
+It looks like there are three stations named Centro, the one we are looking for is the one in Guadalajara with a numeric code of 102 (station\_id). The `stations_sinaica` data.frame also includes the latitude and longitude of all the measuring stations in Mexico (including some that have never reported any data!).
 
 ``` r
 mx <- map_data("world", "Mexico")
