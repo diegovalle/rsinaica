@@ -1,0 +1,52 @@
+---
+title: "Errors in the SINAICA data"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Mexicali website with PM10
+
+Errors in validation
+
+
+```{r packages}
+## Auto-install required R packages
+packs <- c("dplyr", "ggplot2", "lubridate")
+success <- suppressWarnings(sapply(packs, require, character.only = TRUE))
+if (length(names(success)[!success])) {
+  install.packages(names(success)[!success])
+  sapply(names(success)[!success], require, character.only = TRUE)
+}
+## Not yet on cran
+library("rsinaica")
+```
+
+Estación CBTIS - Aguascalientes 
+
+```{r}
+## Download data for all Aguascalientes stations for a single month
+get_month <- function(date, net){
+  bind_rows(
+    lapply(stations_sinaica$station_id[stations_sinaica$network_name %in% net],
+           sinaica_bystation, "O3", date, "Crude", "1 month")
+  )
+}
+## Download data for 2017, by month
+df <- bind_rows(
+  lapply(seq(as.Date("2017-01-01"), as.Date("2017-12-01"), by = "month"), 
+         get_month, "Aguascalientes")
+  )
+
+df$datetime <-  with_tz(as.POSIXct(paste0(df$date, " ", df$hour, ":00"), 
+                                  tz = "Etc/GMT+6"),
+                       tz = "America/Mexico_City") 
+ggplot(df, aes(datetime, value, group = station_name, color = station_name)) +
+  geom_line(alpha = .9, size = .1) +
+  ggtitle("Errors in the data reported by the Aguascalientes stations") +
+  xlab("date") +
+  ylab("hourly ozone concentration in ppm") +
+  theme_bw()
+```
