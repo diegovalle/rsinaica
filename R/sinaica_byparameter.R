@@ -99,8 +99,42 @@ sinaica_byparameter <- function(parameter,
     ), call. = FALSE)
   if (http_type(result) != "text/html")
     stop(paste0(url, " did not return text/html", call. = FALSE))
-  html_text <- content(result, "text", encoding = "UTF-8")
-  df <- fromJSON(html_text)
+  json_text <- content(result, "text", encoding = "UTF-8")
+  df <- fromJSON(json_text)
+
+  if (!length(df) & identical(autoclean, TRUE)) {
+    return(data.frame(id = character(0), station_id = integer(0),
+                      station_name = character(0), station_code = character(0),
+                       network_name = character(0),
+                       network_code = character(0),
+                       network_id = integer(0), date = character(0),
+                       hour = integer(0), parameter = character(0),
+                       value_original = character(0),
+                       flag_original = character(0),
+                       valid_original = character(0),
+                       value_actual = character(0),
+                       valid_actual = character(0),
+                       date_validated = character(0),
+                       validation_level = character(0),
+                       units = character(0),
+                       value = numeric(0),
+                      stringsAsFactors = FALSE)
+    )
+  } else if (!length(df)) {
+    return(data.frame(id = character(0), estacionesId = integer(0),
+                      fecha = character(0), hora = character(0),
+                      parametro = character(0),
+                      valorOrig = character(0), banderasOrig = character(0),
+                      validoOrig = character(0),
+                      valorAct = character(0), validoAct = character(0),
+                      fechaValidoAct = logical(0),
+                      nivelValidacion = character(0),
+                      network_name = character(0),
+                      network_code = character(0),
+                      stringsAsFactors = FALSE)
+           )
+  }
+
   df$estacionesId <- as.integer(df$estacionesId)
 
   if (identical(autoclean, TRUE)) {
@@ -108,7 +142,6 @@ sinaica_byparameter <- function(parameter,
     lim_perm <- switch(parameter, PM10 = 600, PM2.5 = 175, NO2 = .21,
                       SO2 = .2, CO = 15,
                       O3 = .2, 10000000000)
-
     df$value <- df$valorAct
     df$value <- as.numeric(df$value)
     df$value[which(!is.finite(df$value))] <- NA
@@ -116,24 +149,31 @@ sinaica_byparameter <- function(parameter,
     df$value[which(df$value < 0)] <- NA
     df$value[which(df$value > lim_perm)] <- NA
 
+
     names(df) <- c("id", "station_id", "date", "hour",
                    "parameter", "value_original",
                    "flag_original", "valid_original", "value_actual",
                    "valid_actual", "date_validated",
                    "validation_level", "value")
+
+    df$hour <- as.integer(df$hour)
+    df$date_validated <- as.character(df$date_validated)
     df <- left_join(df, stations_sinaica[, c("station_id",
+                                             "station_name",
+                                             "station_code",
                                              "network_name",
                                              "network_code",
                                              "network_id")],
                      by = c("station_id" = "station_id"))
     df$units <- .recode_sinaica_units(parameter)
-    df <- df[, c("id", "station_id", "network_name",
-           "network_code",
-           "network_id", "date", "hour",
-           "parameter", "value_original",
-           "flag_original", "valid_original", "value_actual",
-           "valid_actual", "date_validated",
-           "validation_level", "units", "value")]
+    df <- df[, c("id", "station_id", "station_name",  "station_code",
+                 "network_name",
+                 "network_code",
+                 "network_id", "date", "hour",
+                 "parameter", "value_original",
+                 "flag_original", "valid_original", "value_actual",
+                 "valid_actual", "date_validated",
+                 "validation_level", "units", "value")]
     return(df)
 
   }

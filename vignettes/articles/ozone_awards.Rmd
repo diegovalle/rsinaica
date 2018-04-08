@@ -23,7 +23,7 @@ Load the packages
 ```{r packages,warning=FALSE,message=FALSE}
 ## Auto-install required R packages
 if (!require("pacman")) install.packages("pacman")
-pacman::p_load(dplyr, gghighlight, ggplot2)
+pacman::p_load(dplyr, gghighlight, ggplot2, anomalize)
 library("rsinaica")
 ```
 
@@ -39,50 +39,89 @@ o3_2017 <- bind_rows(
        
 ```
 
+```{r}
+knitr::kable(head(o3_2017))
+```
+
+
 ```{r plot}
-o3_2017[which(o3_2017$value_actual != o3_2017$value_original),]
-o3_2017[which(!is.na(o3_2017$date_validated)),]
+# o3_2017[which(o3_2017$value_actual != o3_2017$value_original),]
+# o3_2017[which(!is.na(o3_2017$date_validated)),]
+
+# Only include stations that reported for more than 80% of days (292)
 df_filtered <-  o3_2017 %>%
   filter(!is.na(value)) %>%
   add_count(network_name) %>%
-  # Only include stations that reported for more than 80% of days
-  filter(n > 292*24)
+  filter(n > 292*24) %>%
+  ## these stations are mostly error values
+  filter(!station_id %in% c(173, #"Facultad Psicología" SLP
+                                              72, #"Bomberos" Irapuato
+                                              31, #CBTIS ags 
+                                              303, #Instituto Educativo ags
+                                              56 )) #Conalep torreon
 
 df_filtered %>%
   group_by(network_name) %>%
-  summarise(count = n())
+  summarise(count = n()) %>%
+  arrange(count) %>%
+  head(10) %>%
+  knitr::kable()
 
 
-df_mean <- df_filtered %>%
+df_max <- df_filtered %>%
   group_by(date, network_name) %>%
   summarise(max = max(value, na.rm = TRUE)) %>%
   arrange(network_name)
+```
 
+```{r, fig.widht = 8, fig.height = 18}
+ggplot(df_max, aes(as.Date(date), max)) +
+  geom_line(size = .3, color = "black") +
+  facet_wrap(~ network_name, ncol = 4) +
+  ggtitle("Maximum daily ozone concentration by network") +
+  xlab("date") +
+  ylab("daily maximum hourly ozone concentration (ppm)") +
+  theme_bw()
 
-gghighlight_line(df_mean, aes(as.Date(date), max, 
+df_max %>%
+  ungroup() %>%
+  group_by(network_name) %>%
+  mutate(date = as.Date(date)) %>%
+  time_decompose(max, method = "stl") %>%
+  anomalize(remainder, method = "gesd", alpha = 0.01) %>%
+  time_recompose() %>%
+  # Anomaly Visualization
+  plot_anomalies(time_recomposed = TRUE, ncol = 3, alpha_dots = 0.25) +
+  labs(title = "Tidyverse Anomalies", subtitle = "STL + IQR Methods") 
+
+```
+
+```{r}
+
+gghighlight_line(df_max, aes(as.Date(date), max, 
                               group = network_name, color = network_name),
                  mean(max, na.rm = TRUE), max_highlight = 1) +
   theme_bw() +
   ggtitle("Pollution measuring network with highest average maximum ozone pollution values in 2017") +
   xlab("date") +
-  ylab("maximum ozone concentration (ppm)")
+  ylab("daily maximum hourly ozone concentration (ppm)")
 ```
 
 
-```{r}
+```{r plotly, warning=FALSE, message=FALSE, fig.width = 8, fig.height = 6}
 library("plotly")
 library("tidyr")
 library("zoo")
 
-df_cdmx <- filter(df_mean, network_name %in% c("Valle de México",
-                                               "Guadalajara",
-                                               "Monterrey"))
+top3 <- filter(df_max, network_name %in% c("Valle de México",
+                                           "Guadalajara",
+                                           "Monterrey"))
 
-df_cdmx <- spread(df_cdmx, network_name, max)
-df_cdmx$date <- as.Date(as.Date(df_cdmx$date))
-df_cdmx$`Valle de México` <- na.spline(df_cdmx$`Valle de México`)
-df_cdmx$Guadalajara <- na.spline(df_cdmx$Guadalajara)
-df_cdmx$Monterrey <- na.spline(df_cdmx$Monterrey)
+top3 <- spread(top3, network_name, max)
+top3$date <- as.Date(as.Date(top3$date))
+top3$`Valle de México` <- na.spline(top3$`Valle de México`)
+top3$Guadalajara <- na.spline(top3$Guadalajara)
+top3$Monterrey <- na.spline(top3$Monterrey)
 x <- list(
   title = "date"
 )
@@ -90,9 +129,25 @@ y <- list(
   title = "maximum ozone concentration (ppm)"
 )
 
-plot_ly(as.data.frame(df_cdmx), x = ~date, y = ~`Valle de México`, name = "Valle de México" ,
+plot_ly(as.data.frame(top3), x = ~date, y = ~`Valle de México`, name = "Valle de México" ,
         type = 'scatter', mode = 'lines') %>%
   add_trace(y = ~Guadalajara, name = 'Guadalajara', mode = 'lines') %>%
   add_trace(y = ~Monterrey, name = 'Monterrey', mode = 'lines') %>%
   layout(xaxis = x, yaxis = y)
+```
+```{r}
+df_max %>%
+  group_by(network_name) %>%
+  filter(max > 95.5/1000 ) %>%
+  summarise(count = n()) %>%
+  arrange(-count) %>%
+  knitr::kable()
+
+df_max %>%
+  group_by(network_name) %>%
+  filter(max > 154.4/1000) %>%
+  summarise(count = n()) %>%
+  arrange(-count) %>%
+  knitr::kable()
+
 ```

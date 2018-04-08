@@ -6,7 +6,7 @@ test_that("sinaica_bystation returns correct data", {
 
   # Test errors in parameters
   expect_error(sinaica_bystation(271, "PM10", "2015-09-11", "Manual", "1 day"),
-                "for type 'M' data you can only request")
+                "for type 'Manual' data you can only request")
   expect_error(sinaica_bystation(271, "ERROR", "2015-09-11",
                                  "Manual", "1 week"),
                 "parameter should be one of: BEN, CH4")
@@ -41,4 +41,9 @@ test_that("sinaica_bystation returns correct data", {
   # Datos manuales
   df <- sinaica_bystation(271, "PM10", "2015-12-26", "Manual", "1 week")
   expect_equal(df$value, 75)
+
+  df <- sinaica_bystation(31, "PM10", "2017-06-26", "Crude", "1 day")
+  expect_equal(unname(unlist(lapply(df, typeof))),
+         c("integer", "character", "character", "integer", "integer",
+           "character", "double"))
 })

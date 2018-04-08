@@ -102,7 +102,8 @@ sinaica_bystation <- function(station_id,
                   "range")
 
   if ( (type == "Manual") & range == "1 day")
-    stop("for type 'M' data you can only request a range longer than a day",
+    stop(paste0("for type 'Manual' data you can only request",
+                " a range longer than a day"),
          call. = FALSE)
 
   type <- switch(type,
@@ -146,7 +147,7 @@ sinaica_bystation <- function(station_id,
                       hour = integer(),
                       valid = integer(),
                       units =  character(),
-                      value = character(),
+                      value = numeric(),
                       stringsAsFactors = FALSE)
            )
   df$bandO <- NULL
@@ -156,6 +157,12 @@ sinaica_bystation <- function(station_id,
   df$station_id <- as.integer(station_id)
   df$hour <- as.integer(df$hour)
   df$valid <- as.integer(df$valid)
+
+  lim_perm <- switch(parameter, PM10 = 600, PM2.5 = 175, NO2 = .21,
+                     SO2 = .2, CO = 15,
+                     O3 = .2, 10000000000)
+  df$value[which(df$value > lim_perm)] <- NA_real_
+  df$value[which(df$value < 0)] <- NA_real_
 
   data("stations_sinaica", package = "rsinaica", envir = environment())
   df <- left_join(df, stations_sinaica[, c("station_id", "station_name")],

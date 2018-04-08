@@ -30,4 +30,12 @@ test_that("sinaica_byparameter works", {
                "banderasOrig", "validoOrig", "valorAct",
                "validoAct", "fechaValidoAct",
                "nivelValidacion", "network_name", "network_code"))
+
+  df <- sinaica_byparameter("CN", "1997-01-01", "1997-01-01")
+  expect_equal(unname(unlist(lapply(df, typeof))),
+               c("character", "integer", "character", "character", "character",
+                 "character", "integer", "character", "integer", "character",
+                 "character", "character", "character",
+                 "character", "character",
+                 "character", "character", "character", "double"))
 })
