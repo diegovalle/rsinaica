@@ -59,6 +59,11 @@ get_station_parameters <- function(station_id,
     stop(paste0(url, " did not return text/html", call. = FALSE))
   json_text <- content(result, "text", encoding = "UTF-8")
   df <- fromJSON(json_text)
+  if(!length(df))
+    return(data.frame(parameter_code = character(0),
+                      parameter_name = character(0),
+                      stringsAsFactors = FALSE)
+           )
   names(df) <- c("parameter_code", "parameter_name")
   df
 }
