@@ -27,14 +27,12 @@ install.packages("rsinaica")
 Example
 -------
 
-Suppose you wanted to download pollution data from the *Centro* station in Guadalajara. First we load the package and look up the numeric code for the station in the `stations_sinaica` data.frame:
+Suppose you wanted to download pollution data from the *Centro* station in Guadalajara. First we load the necessary packages and look up the numeric code for the station in the `stations_sinaica` data.frame:
 
 ``` r
 ## Auto-install required R packages
 packs <- c("ggplot2", "maps")
 success <- suppressWarnings(sapply(packs, require, character.only = TRUE))
-#> Loading required package: ggplot2
-#> Loading required package: maps
 if (length(names(success)[!success])) {
   install.packages(names(success)[!success])
   sapply(names(success)[!success], require, character.only = TRUE)
@@ -55,7 +53,7 @@ It looks like there are three stations named Centro, the one we are looking for 
 ``` r
 mx <- map_data("world", "Mexico")
 stations_sinaica$color <- "Others"
-stations_sinaica$color[stations_sinaica$station_id == 102] <- "Centro"
+stations_sinaica$color[stations_sinaica$station_id == 102] <- "Centro (102)"
 ggplot(stations_sinaica[order(stations_sinaica$color, decreasing = TRUE),], aes(lon, lat)) + 
   geom_polygon(data = mx, aes(x= long, y = lat, group = group)) +
   geom_point(alpha = .9, size = 3, aes(fill = color), shape = 21) + 
@@ -71,38 +69,38 @@ Then we query the dates during which the station has been in operation:
 
 ``` r
 get_station_dates(102)
-#> [1] "1997-01-01" "2018-04-07"
+#> [1] "1997-01-01" "2018-04-08"
 ```
 
-It's currently reporting data, and has been doing so since 1997. We can also query which type of parameters (pollution, wind, solar radiation, etc) the station has sensors for. Note that the package also includes a `parameters` data.frame with all the supported parameters, but not all stations support all of them.
+It's currently reporting data, and has been doing so since 1997. We can also query which type of parameters (pollution, wind, solar radiation, etc) the station has sensors for. Note that the package also includes a `parameters` data.frame with the complete set of supported parameters, but not all stations support all of them.
 
 ``` r
 cen_params <- get_station_parameters(102)
 knitr::kable(cen_params)
 ```
 
-| parameter\_id | parameter\_name                 |
-|:--------------|:--------------------------------|
-| CN            | Carbono negro                   |
-| SO2           | Dióxido de azufre               |
-| NO2           | Dióxido de nitrógeno            |
-| DV            | Dirección del viento            |
-| HR            | Humedad relativa                |
-| CO            | Monóxido de carbono             |
-| NO            | Óxido nítrico                   |
-| NOx           | Óxidos de nitrógeno             |
-| O3            | Ozono                           |
-| PM10          | Partículas menores a 10 micras  |
-| PM2.5         | Partículas menores a 2.5 micras |
-| PP            | Precipitación pluvial           |
-| TMPI          | Temperatura interior            |
-| VV            | Velocidad del viento            |
+| parameter\_code | parameter\_name                 |
+|:----------------|:--------------------------------|
+| CN              | Carbono negro                   |
+| SO2             | Dióxido de azufre               |
+| NO2             | Dióxido de nitrógeno            |
+| DV              | Dirección del viento            |
+| HR              | Humedad relativa                |
+| CO              | Monóxido de carbono             |
+| NO              | Óxido nítrico                   |
+| NOx             | Óxidos de nitrógeno             |
+| O3              | Ozono                           |
+| PM10            | Partículas menores a 10 micras  |
+| PM2.5           | Partículas menores a 2.5 micras |
+| PP              | Precipitación pluvial           |
+| TMPI            | Temperatura interior            |
+| VV              | Velocidad del viento            |
 
-Finally, we can download and plot particulate matter data for the month of January
+Finally, we can download and plot particulate matter with a diameter between 2.5 and 10 micrometers (μm) (PM<sub>10</sub>) data for the month of January
 
 ``` r
 # Download all PM10 data for January 2018
-df <-  sinaica_bystation(102, "PM10", "2018-01-01", "Crude", "1 month")
+df <-  sinaica_bystation(102, "PM10", "2018-01-01", "1 month", "Crude")
 
 ggplot(df, aes(hour, value, group = date)) +
   geom_line(alpha=.9) +

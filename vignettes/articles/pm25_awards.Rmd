@@ -1,5 +1,5 @@
 ---
-title: "Most Ozone-Polluted City in Mexico"
+title: "Most PM2.5 Polluted City in Mexico"
 author: "Diego Valle-Jones"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
@@ -32,11 +32,11 @@ if (length(names(success)[!success])) {
 library("rsinaica")
 ```
 
-```{r download_o3, cache=TRUE}
-# Download all O3 pollution data in 2017
-o3_2017 <- bind_rows(
+```{r download_pm25, cache=TRUE}
+# Download all PM25 pollution data in 2017
+pm25_2017 <- bind_rows(
   mapply(sinaica_byparameter,
-         "O3",
+         "PM2.5",
          seq(as.Date("2017-01-01"), as.Date("2017-12-01"), by = "month"),
          seq(as.Date("2017-02-01"), as.Date("2018-01-01"), by = "month") - 1,
          SIMPLIFY = FALSE)
@@ -45,30 +45,17 @@ o3_2017 <- bind_rows(
 ```
 
 ```{r}
-knitr::kable(head(o3_2017))
+knitr::kable(head(pm25_2017))
 ```
 
 
 ```{r plot}
-# o3_2017[which(o3_2017$value_actual != o3_2017$value_original),]
-# o3_2017[which(!is.na(o3_2017$date_validated)),]
+# pm25_2017[which(pm25_2017$value_actual != pm25_2017$value_original),]
+# pm25_2017[which(!is.na(pm25_2017$date_validated)),]
 
 # Only include stations that reported for more than 80% of days (292)
-df_filtered <- o3_2017 %>%
-  filter(!is.na(value)) %>%
-  add_count(station_id, network_name) %>%
-  ## these stations are mostly error values
-  filter(!station_id %in% c(173, #"Facultad Psicología" SLP
-                            72, #"Bomberos" Irapuato
-                            31, #CBTIS ags 
-                            303, #Instituto Educativo ags
-                            39, #COCABH Mexicali
-                            56 #Conalep torreon
-                            )) %>%
-  # filter values above .155 (phase I pollution contingency)
-  # that occurred during the night, since ozone is a photosensitive
-  # pollutant
-  filter(!(value > .155 & hour %in% c(0:11, 20:23))) 
+df_filtered <- pm25_2017 %>%
+  filter(!is.na(value)) 
 
 df_filtered %>%
   group_by(network_name) %>%
@@ -79,13 +66,15 @@ df_filtered %>%
 
 
 df_max <- df_filtered %>%
+  group_by(date, station_id, network_name) %>%
+  summarise(mean = mean(value, na.rm = TRUE)) %>%
   group_by(date, network_name) %>%
-  summarise(max = max(value, na.rm = TRUE)) %>%
+  summarise(max = max(mean, na.rm = TRUE)) %>%
   ungroup() %>%
   add_count(network_name) %>%
   filter(n > (365*.8))  %>%
   select(-n) %>%
-  arrange(network_name)
+  arrange(date)
 ```
 
 ```{r, fig.widht = 8, fig.height = 18}
@@ -111,7 +100,9 @@ df_max <- df_max %>%
 df_max %>% plot_anomalies(time_recomposed = TRUE, ncol = 3, alpha_dots = 0.25) +
   labs(title = "Tidyverse Anomalies", subtitle = "STL + GESD Methods") 
 
-df_max <- filter(df_max, anomaly != "Yes")
+#df_max <- filter(df_max, anomaly != "Yes")
+df_max <- filter(df_max, !network_name %in% c("Aguascalientes", "Irapuato",
+                                             "Torreón"))
 ```
 
 ```{r}
@@ -120,43 +111,45 @@ gghighlight_line(df_max, aes(as.Date(date), observed,
                               group = network_name, color = network_name),
                  mean(observed, na.rm = TRUE), max_highlight = 1) +
   theme_bw() +
-  ggtitle("Pollution measuring network with highest average maximum ozone pollution values in 2017") +
+  ggtitle(expression(paste("Pollution measuring network with highest average maximum ", 
+                           PM[2.5], " pollution values in 2017"))) +
   xlab("date") +
-  ylab("daily maximum hourly ozone concentration (ppm)")
+  ylab(expression(paste("daily maximum 24 average of ", PM[2.5], 
+                        " (", mu,"g/", m^3, ")")))
 ```
 
 
-```{r plotly, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 4,out.width = '100%'}
+```{r plotly, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 4}
 library("plotly")
 library("tidyr")
 library("zoo")
 
-top3 <- filter(df_max, network_name %in% c("Valle de México",
-                                           "Guadalajara",
-                                           "Monterrey"))[, 1:3]
+top3 <- filter(df_max, network_name %in% c("Toluca",
+                                           "Pachuca",
+                                           "Guadalajara"))[, 1:3]
 
 top3 <- spread(top3, network_name, observed)
 top3$date <- as.Date(as.Date(top3$date))
-top3$`Valle de México` <- na.spline(top3$`Valle de México`)
+top3$Toluca <- na.spline(top3$Toluca)
 top3$Guadalajara <- na.spline(top3$Guadalajara)
-top3$Monterrey <- na.spline(top3$Monterrey)
+top3$Pachuca <- na.spline(top3$Pachuca)
 x <- list(
   title = "date"
 )
 y <- list(
-  title = "daily maximum ozone concentration (ppm)"
+  title = "daily maximum 24 average of PM2.5"
 )
 
-plot_ly(as.data.frame(top3), x = ~date, y = ~`Valle de México`, name = "Valle de México" ,
+plot_ly(as.data.frame(top3), x = ~date, y = ~`Toluca`, name = "Toluca" ,
         type = 'scatter', mode = 'lines', line = list(color = '#e41a1c'), width = .5) %>%
-  add_trace(y = ~Guadalajara, name = 'Guadalajara', mode = 'lines', line = list(color = '#377eb8'), width = .5) %>%
-  add_trace(y = ~Monterrey, name = 'Monterrey', mode = 'lines', line = list(color = '#4daf4a'), width = .5) %>%
-  layout(title = "Top 3 most ozone-polluted cities in Mexico", xaxis = x, yaxis = y)
+  add_trace(y = ~Pachuca, name = 'Pachuca', mode = 'lines', line = list(color = '#377eb8'), width = .5) %>%
+  add_trace(y = ~Guadalajara, name = 'Guadalajara', mode = 'lines', line = list(color = '#4daf4a'), width = .5) %>%
+  layout(title = "Top 3 most PM2.5-polluted cities in Mexico", xaxis = x, yaxis = y)
 ```
 ```{r}
 df_max %>%
   group_by(network_name) %>%
-  filter(observed > 95.5/1000 ) %>%
+  filter(observed > 45.05) %>%
   summarise(count = n()) %>%
   arrange(-count) %>%
   head() %>%
@@ -164,7 +157,7 @@ df_max %>%
 
 df_max %>%
   group_by(network_name) %>%
-  filter(observed > 154.4/1000) %>%
+  filter(observed > 97.45) %>%
   summarise(count = n()) %>%
   arrange(-count) %>%
   head() %>%

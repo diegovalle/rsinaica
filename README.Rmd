@@ -45,10 +45,10 @@ install.packages("rsinaica")
 ## Example
 
 Suppose you wanted to download pollution data from the _Centro_ station in
-Guadalajara. First we load the package and look up the numeric code
+Guadalajara. First we load the necessary packages and look up the numeric code
 for the station in the `stations_sinaica` data.frame:
 
-```{r example, warning=FALSE}
+```{r example, warning=FALSE,message=FALSE}
 ## Auto-install required R packages
 packs <- c("ggplot2", "maps")
 success <- suppressWarnings(sapply(packs, require, character.only = TRUE))
@@ -90,7 +90,7 @@ cen_params <- get_station_parameters(102)
 knitr::kable(cen_params)
 ```
 
-Finally, we can download and plot particulate matter data for the month of January
+Finally, we can download and plot particulate matter with a diameter between 2.5 and 10 micrometers (μm) (PM<sub>10</sub>) for the month of January
 
 ```{r}
 # Download all PM10 data for January 2018

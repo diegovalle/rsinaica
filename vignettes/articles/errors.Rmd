@@ -7,12 +7,9 @@ output: github_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-Mexicali website with PM10
+First, we load the packages necessary for the analysis.
 
-Errors in validation
-
-
-```{r packages}
+```{r packages, warning=FALSE,message=FALSE}
 ## Auto-install required R packages
 packs <- c("dplyr", "ggplot2", "lubridate")
 success <- suppressWarnings(sapply(packs, require, character.only = TRUE))
@@ -24,6 +21,32 @@ if (length(names(success)[!success])) {
 library("rsinaica")
 ```
 
+Sadly, there are some errors in the data that the measuring stations report to SINAICA, internally
+the stations and SINAICA are supposed to flag data that is mistaken, but this is not always the case.
+
+There data is also incomplete in the sense that some networks don't report all the pollutants they measure. For example, if you go to the [Mexicali air quality website](http://www.mexicali.gob.mx/22/calidaddelaire.php) you'll see that they have a section reporting PM<sub>10</sub> pollution, but when you query SINAICA for the parameters supported by all
+the Mexicali stations, none support downloading PM<sub>10</sub> data.
+
+```{r}
+mxcali <- stations_sinaica[stations_sinaica$network_name %in% "Mexicali", 1:5]
+bind_rows(
+  lapply(mxcali$station_id, function(x) subset(get_station_parameters(x), 
+                                               parameter_name == "PM10"))
+)
+```
+
+```{r}
+bind_rows(
+  lapply(mxcali$station_id, function(x) subset(get_station_parameters(x, "Manual"), 
+                                               parameter_code == "PM10"))
+)
+sinaica_bystation(371, "PM10", "2014-03-14", "1 month", "Manual")
+```
+
+
+Errors in validation
+A value higher than 0.155 ppm would be a phase I contingency in Mexico City, and given that ozone production depends on chemical reactions between oxides of nitrogen (NOx) and volatile organic compounds (VOC) in the presence of sunlight, it's extremely unlikely to be present in large quantities at night or in the early mornging.
+
 Estación CBTIS - Aguascalientes 
 
 ```{r}
@@ -31,7 +54,7 @@ Estación CBTIS - Aguascalientes
 get_month <- function(date, net){
   bind_rows(
     lapply(stations_sinaica$station_id[stations_sinaica$network_name %in% net],
-           sinaica_bystation, "O3", date, "Crude", "1 month")
+           sinaica_bystation, "O3", date, "1 month", "Crude")
   )
 }
 ## Download data for 2017, by month
@@ -44,8 +67,8 @@ df$datetime <-  with_tz(as.POSIXct(paste0(df$date, " ", df$hour, ":00"),
                                   tz = "Etc/GMT+6"),
                        tz = "America/Mexico_City") 
 ggplot(df, aes(datetime, value, group = station_name, color = station_name)) +
-  geom_line(alpha = .9, size = .1) +
-  ggtitle("Errors in the data reported by the Aguascalientes stations") +
+  geom_line(alpha = .9, size = .3) +
+  ggtitle("Data reported by the Aguascalientes stations") +
   xlab("date") +
   ylab("hourly ozone concentration in ppm") +
   theme_bw()
