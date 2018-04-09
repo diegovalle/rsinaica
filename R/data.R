@@ -34,10 +34,6 @@
 #'   \item{street_view}{link to Google Street View}
 #'   \item{video_interior}{link to video of the interior of the station}
 #' }
-#' @source \href{http://www.aire.cdmx.gob.mx/descargas/ultima-hora/calidad-aire/pcaa/Gaceta_Oficial_CDMX.pdf}{ Gaceta Oficial de la Ciudad de México}
-#' No. 230, 27 de Diciembre de 2016, and
-#' \emph{Solicitud de Información} FOLIO 0112000033818
-#'
 #' @docType data
 #' @source \href{http://sinaica.inecc.gob.mx/}{SINAICA}
 #' @name stations_sinaica
