@@ -29,7 +29,7 @@ test_that("sinaica_byparameter works", {
                             "parametro", "valorOrig",
                "banderasOrig", "validoOrig", "valorAct",
                "validoAct", "fechaValidoAct",
-               "nivelValidacion", "network_name", "network_code"))
+               "nivelValidacion"))
 
   df <- sinaica_byparameter("CN", "1997-01-01", "1997-01-01")
   expect_equal(unname(unlist(lapply(df, typeof))),
@@ -38,4 +38,21 @@ test_that("sinaica_byparameter works", {
                  "character", "character", "character",
                  "character", "character",
                  "character", "character", "character", "double"))
+
+  df <- sinaica_byparameter("PM10", "2014-01-01", "2014-01-05",
+                      "Manual")
+  expect_equal(df$value[1:10], c(81, 54, 29, 58, 29, 32, 86, 15, 21, 55))
+
+  df <- sinaica_byparameter("PM10", "2014-01-01", "2014-01-05",
+                            "Manual", autoclean = FALSE)
+  expect_equal(unname(unlist(lapply(df, typeof))),
+               c("character", "integer", "character", "character", "character",
+                 "character", "character", "character", "character"))
+
+  ## should be an empty data.frame
+  df <- sinaica_byparameter("PM10", "2014-01-01", "2014-01-01",
+                            "Manual", autoclean = FALSE)
+  expect_equal(unname(unlist(lapply(df, typeof))),
+               c("character", "integer", "character", "character", "character",
+                 "character", "character", "character", "character"))
 })

@@ -130,5 +130,7 @@ get_station_dates <- function(station_id,
     stop(paste0(url, " did not return text/html", call. = FALSE))
   json_text <- content(result, "text", encoding = "UTF-8")
   df <- fromJSON(json_text)
+  if (is.na(df[[1]]))
+    df <- c(NA, NA)
   df
 }

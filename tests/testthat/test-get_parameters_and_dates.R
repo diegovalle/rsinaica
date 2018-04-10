@@ -25,4 +25,5 @@ test_that("get-parameters_and_dates", {
 test_that("get_station_dates", {
   skip_on_cran()
   expect_equal(get_station_dates(271, "Manual"), c("1997-01-02", "2015-12-26"))
+  expect_equal(get_station_dates(42, "Manual"), c(NA, NA))
 })

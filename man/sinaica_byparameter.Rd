@@ -4,7 +4,8 @@
 \alias{sinaica_byparameter}
 \title{Get data for all stations by parameter}
 \usage{
-sinaica_byparameter(parameter, start_date, end_date, autoclean = TRUE)
+sinaica_byparameter(parameter, start_date, end_date, type = "Crude",
+  autoclean = TRUE)
 }
 \arguments{
 \item{parameter}{type of parameter to download
@@ -42,6 +43,12 @@ sinaica_byparameter(parameter, start_date, end_date, autoclean = TRUE)
 \item{start_date}{start of period from which to download data}
 
 \item{end_date}{end of period from which to download data}
+
+\item{type}{The type of data to download. One of the following:
+\itemize{
+\item{"Crude"}{ - Crude data that has not been validated}
+\item{"Manual"}{ - Manually collected data that is sent to an external for lab analysis (may no be collected daily)}
+}}
 
 \item{autoclean}{wether to automatically remove invalid data and make sure
 extreme values (as reported by SINAICa) are turned to NAs}

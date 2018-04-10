@@ -20,7 +20,8 @@ Suggests:
     knitr,
     rmarkdown,
     ggplot2,
-    maps
+    maps,
+    mapproj
 Imports:
     jsonlite,
     httr,

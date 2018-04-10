@@ -39,7 +39,7 @@
 #' \itemize{
 #'  \item{"Crude"}{ - Crude data that has not been validated}
 #'  \item{"Validated"}{ - Validated data (may not be the most up-to-date)}
-#'  \item{"Manual"}{ - Manual data}
+#'  \item{"Manual"}{ - Manually collected data that is sent to an external for lab analysis (may no be collected daily)}
 #' }
 #' @param start_date day to download or start of range
 #' @param range how much data to download
@@ -91,7 +91,7 @@ sinaica_bystation <- function(station_id,
                            "HR", "HRI", "IUV", "NO", "NO2",
                            "NOx",
                            "O3", "PB", "PM10",
-                           "PM2.5", "PM25", "PP", "PST", "RS", "SO2",
+                           "PM2.5", "PP", "PST", "RS", "SO2",
                            "TMP", "TMPI", "UVA", "UVB",
                            "VV", "XIL"),
                   "parameter")
@@ -147,14 +147,14 @@ sinaica_bystation <- function(station_id,
                       date =  character(),
                       hour = integer(),
                       valid = integer(),
-                      units =  character(),
+                      unit =  character(),
                       value = numeric(),
                       stringsAsFactors = FALSE)
            )
   df$bandO <- NULL
   names(df) <- c("id", "date", "hour", "value", "valid")
   df$value <- as.numeric(df$value)
-  df$units <- .recode_sinaica_units(parameter)
+  df$unit <- .recode_sinaica_units(parameter)
   df$station_id <- as.integer(station_id)
   df$hour <- as.integer(df$hour)
   df$valid <- as.integer(df$valid)
@@ -170,5 +170,5 @@ sinaica_bystation <- function(station_id,
                   by = "station_id")
 
   df[, c("station_id",  "station_name", "date", "hour",
-         "valid", "units", "value")]
+         "valid", "unit", "value")]
 }

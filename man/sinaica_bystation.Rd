@@ -57,7 +57,7 @@ sinaica_bystation(station_id, parameter, start_date, range = "1 day",
 \itemize{
 \item{"Crude"}{ - Crude data that has not been validated}
 \item{"Validated"}{ - Validated data (may not be the most up-to-date)}
-\item{"Manual"}{ - Manual data}
+\item{"Manual"}{ - Manually collected data that is sent to an external for lab analysis (may no be collected daily)}
 }}
 }
 \value{
