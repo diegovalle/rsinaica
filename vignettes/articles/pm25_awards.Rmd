@@ -45,6 +45,17 @@ pm25_2017 <- bind_rows(
 ```
 
 ```{r}
+bind_rows(
+  mapply(sinaica_byparameter,
+         "PM2.5",
+         seq(as.Date("2017-01-01"), as.Date("2017-12-01"), by = "month"),
+         seq(as.Date("2017-02-01"), as.Date("2018-01-01"), by = "month") - 1,
+         "Manual",
+         SIMPLIFY = FALSE)
+)
+```
+
+```{r}
 knitr::kable(head(pm25_2017))
 ```
 
