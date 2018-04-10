@@ -32,3 +32,20 @@ test_that("is.integer2 works", {
   # Not an integer
   expect_false(is.integer2(NA_real_))
 })
+
+test_that(".increase_month", {
+  expect_equal(.increase_month("2000-12-01"), as.Date("2001-01-01"))
+  expect_equal(.increase_month("1999-12-01"), as.Date("2000-01-01"))
+  expect_equal(.increase_month("1999-09-01"), as.Date("1999-10-01"))
+  expect_equal(.increase_month("2011-02-28"), as.Date("2011-03-28"))
+  expect_equal(.increase_month("2011-01-31"), as.Date("2011-02-28"))
+})
+
+test_that("ndays_to_range", {
+  expect_equal(ndays_to_range("2005-01-01", "2005-01-01"), 1)
+  expect_equal(ndays_to_range("2018-04-03", "2018-04-09"), 2)
+  expect_equal(ndays_to_range("2018-04-03", "2018-04-10"), 3)
+  expect_equal(ndays_to_range("2005-01-01", "2005-02-10"), 4)
+  expect_equal(ndays_to_range("2018-03-03", "2018-03-16"), 3)
+  expect_equal(ndays_to_range("2018-03-03", "2018-03-17"), 4)
+})

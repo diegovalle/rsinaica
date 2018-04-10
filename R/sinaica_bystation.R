@@ -42,15 +42,10 @@
 #'  \item{"Manual"}{ - Manually collected data that is sent to an external for lab analysis (may no be collected daily)}
 #' }
 #' @param start_date day to download or start of range
-#' @param range how much data to download
-#' \itemize{
-#'  \item{"1 day"}{ - 1 day}
-#'  \item{"1 week"}{ - 1 week}
-#'  \item{"2 weeks"}{ - 2 weeks}
-#'  \item{"1 month"}{ - 1 month}
-#' }
+#' @param end_date end of period from which to download data
 #'
 #' @return data.frame with air quality data
+#' @importFrom dplyr filter
 #' @importFrom httr POST http_error http_type content status_code
 #' @importFrom jsonlite fromJSON
 #' @importFrom stringr str_replace_all str_extract
@@ -58,13 +53,13 @@
 #' @export
 #' @examples
 #' stations_sinaica[which(stations_sinaica$station_name == "Xalostoc"), 1:5]
-#' df <- sinaica_bystation(271, "O3", "2015-09-11", "1 day", "Crude")
+#' df <- sinaica_bystation(271, "O3", "2015-09-11", "2015-09-11", "Crude")
 #' head(df)
 #'
 sinaica_bystation <- function(station_id,
                             parameter,
                             start_date,
-                            range = "1 day",
+                            end_date,
                             type = "Crude"
                             ) {
   if (missing(station_id))
@@ -85,6 +80,13 @@ sinaica_bystation <- function(station_id,
   if (!is.Date(start_date))
     stop("start_date should be in YYYY-MM-DD format", call. = FALSE)
 
+  if (missing(end_date))
+    stop("You need to specify a date YYYY-MM-DD", call. = FALSE)
+  if (length(end_date) != 1)
+    stop("end_date should be a date in YYYY-MM-DD format", call. = FALSE)
+  if (!is.Date(end_date))
+    stop("end_date should be in YYYY-MM-DD format", call. = FALSE)
+
   check_arguments(parameter,
                   valid = c("BEN", "CH4", "CN", "CO", "CO2", "DV",
                            "H2S", "HCNM", "HCT",
@@ -98,32 +100,30 @@ sinaica_bystation <- function(station_id,
   check_arguments(type,
                   valid = c("Crude", "Validated", "Manual"),
                   "type")
-  check_arguments(range,
-                  valid = c("1 day", "1 week", "2 weeks", "1 month"),
-                  "range")
 
-  if ( (type == "Manual") & range == "1 day")
+
+  if (as.Date(end_date) > .increase_month(start_date))
+    stop("The maximum amount of data you can download is 1 month",
+         call. = FALSE)
+
+  if (start_date > end_date)
+    stop("start_date should be less than or equal to end_date")
+  if ( type == "Manual" & end_date == start_date)
     stop(paste0("for type 'Manual' data you can only request",
                 " a range longer than a day"),
          call. = FALSE)
-
   type <- switch(type,
                  "Crude"     = "",
                  "Validated" = "V",
                  "Manual"    = "M"
   )
-  range_num <- switch(range, # 1 = day, 2 = 1 week, 3 = 2 weeks, 4 = 1 month
-                      "1 day"   = 1,
-                      "1 week"  = 2,
-                      "2 weeks" = 3,
-                      "1 month" = 4
-  )
+
   url <- "http://sinaica.inecc.gob.mx/pags/datGrafs.php"
   fd <- list(
     estacionId  = station_id,
     param       = parameter,
     fechaIni    = start_date,
-    rango       = range_num,
+    rango       = ndays_to_range(start_date, end_date),
     tipoDatos   = type
   )
   result <- POST(url,
@@ -168,7 +168,7 @@ sinaica_bystation <- function(station_id,
   data("stations_sinaica", package = "rsinaica", envir = environment())
   df <- left_join(df, stations_sinaica[, c("station_id", "station_name")],
                   by = "station_id")
-
+  df <- filter(df, date <= end_date)
   df[, c("station_id",  "station_name", "date", "hour",
          "valid", "unit", "value")]
 }

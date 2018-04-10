@@ -5,25 +5,34 @@ test_that("sinaica_bystation returns correct data", {
   skip_on_cran()
 
   # Test errors in parameters
-  expect_error(sinaica_bystation(271, "PM10", "2015-09-11", "1 day", "Manual"),
+  expect_error(sinaica_bystation(271, "PM10", "2015-09-11", "2015-09-11",
+                                 "Manual"),
                 "for type 'Manual' data you can only request")
-  expect_error(sinaica_bystation(271, "ERROR", "2015-09-11", "1 week",
+  expect_error(sinaica_bystation(271, "ERROR", "2015-09-11", "2015-09-11",
                                  "Manual"),
                 "parameter should be one of: BEN, CH4")
-  expect_error(sinaica_bystation(271, "PM10", "2015-09-11", "2 weeks", "ERROR"),
+  expect_error(sinaica_bystation(271, "PM10", "2015-09-11", "2015-09-11",
+                                 "ERROR"),
                 "type should be one of: Crude, Validated, Manual")
-  expect_error(sinaica_bystation(271, "PM10", "ERROR", "1 week", "Manual"),
+  expect_error(sinaica_bystation(271, "PM10", "ERROR", "2015-09-11", "Manual"),
                 "date should be in YYYY-MM-DD format")
   expect_error(sinaica_bystation(271, "PM10", "2015-09-11", "ERROR", "Manual"),
-                "range should be one of: 1 day, 1 week, 2 weeks, 1 month")
+                "end_date")
   expect_error(sinaica_bystation(),
                "argument station_id is missing")
-  expect_error(sinaica_bystation(271, start_date = "2000-01-01"),
+  expect_error(sinaica_bystation(271, start_date = "2000-01-01",
+                                 end_date = "2000-01-01"),
                "argument parameter should not be missing")
+  expect_error(sinaica_bystation(271, "PM10", start_date = "2000-01-01",
+                    end_date = "2000-02-02"),
+               "The maximum amount of data you can download is 1 month")
+  expect_error(sinaica_bystation(271, "PM10", start_date = "2000-01-01",
+                                 end_date = "199-12-02"),
+               "start_date should be less than or equal to end_date")
 
 
   # Datos Crudos
-  df <- sinaica_bystation(271, "O3", "2015-09-11", "1 day", "Crude")
+  df <- sinaica_bystation(271, "O3", "2015-09-11", "2015-09-11", "Crude")
   expect_equal(df$value, c(0.013, 0.015, 0.006, 0.014,
                           0.01, 0.003, 0.002, 0.004, 0.014,
                           0.026, 0.038, 0.05, 0.063, 0.045,
@@ -31,19 +40,24 @@ test_that("sinaica_bystation returns correct data", {
                           0.016, 0.007, 0.01, 0.01, 0.01, 0.008))
 
   # Datos validados
-  df <- sinaica_bystation(271, "O3", "2015-10-14", "1 day", "Validated")
-  expect_equal(df$value, c(0.022, 0.024, 0.023, 0.021, 0.014,
-                           0.004, 0.002, 0.003, 0.012,
-                           0.023, 0.029, 0.028, 0.034, 0.028,
-                           0.026, 0.024, 0.024, 0.019,
-                           0.015, 0.016, 0.014, 0.016, 0.017, 0.016))
+  df <- sinaica_bystation(271, "O3", "2015-10-14", "2015-11-14", "Validated")
+  expect_equal(df$value[743:748], c(0.013, 0.009, 0.019, 0.017, 0.018, 0.02))
+  expect_equal(df$date[1], "2015-10-14")
+  expect_equal(df$date[748], "2015-11-14")
 
   # Datos manuales
-  df <- sinaica_bystation(271, "PM10", "2015-12-26", "1 week", "Manual")
-  expect_equal(df$value, 75)
+  df <- sinaica_bystation(271, "PM10", "2015-12-26", "2016-01-21", "Manual")
+  expect_equal(df$value[1], 75)
 
-  df <- sinaica_bystation(31, "PM10", "2017-06-26", "1 day", "Crude")
+  # Empty data
+  df <- sinaica_bystation(31, "PM10", "2017-06-26", "2017-06-26", "Crude")
   expect_equal(unname(unlist(lapply(df, typeof))),
          c("integer", "character", "character", "integer", "integer",
            "character", "double"))
+
+  # dates
+  # Datos Crudos
+  df <- sinaica_bystation(271, "O3", "2015-09-11", "2015-10-03", "Crude")
+  expect_equal(df$date[533], "2015-10-03")
+  expect_equal(df$date[1], "2015-09-11")
 })

@@ -36,6 +36,24 @@ check_arguments <- function(arg_val, valid, arg_name) {
                  paste(valid, collapse = ", ")), call. = FALSE)
 }
 
+#' Increase a date by 1 month
+#'
+#' @param d a date
+#'
+#' @return month + 1
+#' @importFrom lubridate period %m+%
+.increase_month <- function(d) {
+  as.Date(d) %m+% period("m")
+}
+
+ndays_to_range <- function(start_date, end_date) {
+  num_days = as.numeric(as.Date(end_date) - as.Date(start_date) + 1)
+  ## 1 = days, 2 = 1 week, 3 = 2 weeks, 4 = 1 month
+  ranges <- c(1, 2, 3, 4)
+  ## day number to assign to each range value
+  cuts <- c(1, 2, 8, 15)
+  ranges[findInterval(num_days, cuts)]
+}
 
 #' recode units from SINAICA
 #'

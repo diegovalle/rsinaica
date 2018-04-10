@@ -44,16 +44,18 @@ The data reported to SINAICA is supposed to be checked for extreme values and er
 
 ```{r warning=FALSE}
 ## Download data for all Aguascalientes stations for a single month
-get_month <- function(date, net){
+get_month <- function(start_date, end_date, net){
   bind_rows(
     lapply(stations_sinaica$station_id[stations_sinaica$network_name %in% net],
-           sinaica_bystation, "O3", date, "1 month", "Crude")
+           sinaica_bystation, "O3", start_date, end_date, "Crude")
   )
 }
 ## Download data for 2017, by month
 df <- bind_rows(
-  lapply(seq(as.Date("2017-01-01"), as.Date("2017-12-01"), by = "month"), 
-         get_month, "Aguascalientes")
+  mapply(get_month,
+         seq(as.Date("2017-01-01"), as.Date("2017-12-01"), by = "month"),
+         seq(as.Date("2017-02-01"), as.Date("2018-01-01"), by = "month") - 1,
+         "Aguascalientes", SIMPLIFY = FALSE)
   )
 
 df$datetime <-  with_tz(as.POSIXct(paste0(df$date, " ", df$hour, ":00"), 

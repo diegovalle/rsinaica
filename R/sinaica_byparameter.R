@@ -46,7 +46,6 @@
 #' @importFrom httr POST http_error content
 #' @importFrom jsonlite fromJSON
 #' @importFrom dplyr left_join
-#' @importFrom lubridate day<- days_in_month
 #' @importFrom utils data
 #' @export
 #' @examples
@@ -86,9 +85,7 @@ sinaica_byparameter <- function(parameter,
                   valid = c("Crude", "Manual"),
                   "type")
 
-  d <- as.Date(start_date)
-  day(d) <- days_in_month(d)
-  if (as.Date(end_date) > d)
+  if (as.Date(end_date) > .increase_month(start_date))
     stop("The maximum amount of data you can download is 1 month",
          call. = FALSE)
 

@@ -94,7 +94,7 @@ Finally, we can download and plot particulate matter with a diameter between 2.5
 
 ```{r}
 # Download all PM10 data for January 2018
-df <-  sinaica_bystation(102, "PM10", "2018-01-01", "1 month", "Crude")
+df <-  sinaica_bystation(102, "PM10", "2018-01-01", "2018-01-31", "Crude")
 
 ggplot(df, aes(hour, value, group = date)) +
   geom_line(alpha=.9) +

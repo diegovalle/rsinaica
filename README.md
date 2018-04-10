@@ -31,7 +31,7 @@ Suppose you wanted to download pollution data from the *Centro* station in Guada
 
 ``` r
 ## Auto-install required R packages
-packs <- c("ggplot2", "maps")
+packs <- c("ggplot2", "maps", "mapproj")
 success <- suppressWarnings(sapply(packs, require, character.only = TRUE))
 if (length(names(success)[!success])) {
   install.packages(names(success)[!success])
@@ -69,7 +69,7 @@ Then we query the dates during which the station has been in operation:
 
 ``` r
 get_station_dates(102)
-#> [1] "1997-01-01" "2018-04-08"
+#> [1] "1997-01-01" "2018-04-10"
 ```
 
 It's currently reporting data, and has been doing so since 1997. We can also query which type of parameters (pollution, wind, solar radiation, etc) the station has sensors for. Note that the package also includes a `parameters` data.frame with the complete set of supported parameters, but not all stations support all of them.
@@ -96,11 +96,11 @@ knitr::kable(cen_params)
 | TMPI            | Temperatura interior            |
 | VV              | Velocidad del viento            |
 
-Finally, we can download and plot particulate matter with a diameter between 2.5 and 10 micrometers (μm) (PM<sub>10</sub>) data for the month of January
+Finally, we can download and plot particulate matter with a diameter between 2.5 and 10 micrometers (μm) (PM<sub>10</sub>) for the month of January
 
 ``` r
 # Download all PM10 data for January 2018
-df <-  sinaica_bystation(102, "PM10", "2018-01-01", "1 month", "Crude")
+df <-  sinaica_bystation(102, "PM10", "2018-01-01", "2018-01-31", "Crude")
 
 ggplot(df, aes(hour, value, group = date)) +
   geom_line(alpha=.9) +
