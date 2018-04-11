@@ -40,5 +40,5 @@ after_success:
   - mv vignettes/articles/ozone_awards.Rmd vignettes/articles/_ozone_awards.Rmd
   - mv vignettes/articles/pm10_awards.Rmd vignettes/articles/_pm10_awards.Rmd
   - mv vignettes/articles/pm25_awards.Rmd vignettes/articles/_pm25_awards.Rmd
-  - Rscript -e "install.packages('remotes');remotes::install_github('r-lib/pkgdown');remotes::install_github('diegovalle/rsinaica');pkgdown::build_site()"
+  - Rscript -e "tryCatch({install.packages('remotes');remotes::install_github('r-lib/pkgdown');remotes::install_github('diegovalle/rsinaica');pkgdown::build_site()}, error = function(e) {quit(1)})"
   - Rscript -e 'covr::codecov()'
