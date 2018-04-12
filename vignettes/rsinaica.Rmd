@@ -1,5 +1,5 @@
 ---
-title: "Introduction to the rsinaica Package"
+title: "Map of pollution levels"
 author: "Diego Valle-Jones"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
@@ -25,7 +25,7 @@ Load the packages necessary for running the analysis
 
 ```{r message=FALSE, warning}
 ## Auto-install required R packages
-packs <- c("dplyr", "ggplot2", "lubridate")
+packs <- c("dplyr", "ggplot2", "lubridate", "sp", "ggmap", "gstat")
 success <- suppressWarnings(sapply(packs, require, character.only = TRUE))
 if (length(names(success)[!success])) {
   install.packages(names(success)[!success])
@@ -35,46 +35,119 @@ if (length(names(success)[!success])) {
 library("rsinaica")
 ```
 
+## Core Functions
+
+The basic set of functions provided by the package:
+
+* `sinaica_bystation`: Get data from a measuring station that reports to SINAICA
+
+* `sinaica_byparameter`: Get data for all stations by parameter
+
+
+## Download data
+
 Let's suppose you want to look up the ozone pollution values for the station of
 Apodaca in Monterrey.
 
 
 ```{r}
-knitr::kable(stations_sinaica[which(stations_sinaica$station_name == "Apodaca"),])
+# Download hourly data for all pollutants during February 20, 2018 
+# The maximum Ozone level was reached at 18:00 PM local time,
+# 17:00 with no daylight savings time
+## Download data for all Aguascalientes stations for a single month
+get_month <- function(start_date, end_date, net){
+  bind_rows(
+    lapply(stations_sinaica$station_id[stations_sinaica$network_name %in% net],
+           sinaica_bystation, "PM10", start_date, end_date, "Crude")
+  )
+}
+## Download data for 2017, by month
+df <- bind_rows(
+  mapply(get_month,
+         seq(as.Date("2017-01-01"), as.Date("2017-12-01"), by = "month"),
+         seq(as.Date("2017-02-01"), as.Date("2018-01-01"), by = "month") - 1,
+         "Monterrey", SIMPLIFY = FALSE)
+  )
 ```
 
-The station has a station_id of 146 which we can use to look up data
+Here’s what the data we just downloaded looks like:
 
-```{r download}
-# Download all PM2.5 data for 2017, by month
-df <-  sinaica_bystation(146, "PM10", "2018-03-04", "2018-04-04", "Crude")
-```
-
-The data we just downloaded looks like:
-
-```{r table}
+```{r}
 knitr::kable(head(df))
 ```
 
-The hour column comes in a format with no daylight savings time
-(the `sinaica_station` data.frame has a 
-column named timezone which may prove helpful when you want to know the
-timezone of each station)
+## Grid of Monterrey
 
-```{r plot,fig.height=5,fig.width=7}
-df$datetime <-  with_tz(as.POSIXct(paste0(df$date, " ", df$hour, ":00"), 
-                                  tz = "Etc/GMT+6"),
-                       tz = "America/Monterrey")
-
-ggplot(df, aes(datetime, value)) +
-  geom_line() +
-  theme_bw()
-```
-
-From the chart it's obvious there was some sort of equipment failure right around the time
-the daylight savings time changed
+We will use this data to create a grid covering Monterrey and extrapolate the pollution values to each cell in the grid by inverse distance weighting from the locations of the measuring stations.
 
 ```{r}
-# Time changed at 2:00 AM 2018-04-01
-knitr::kable(head(df[df$date %in% c("2018-04-01"),]))
+create_grid <- function(station_vec, pixels = 20) {
+  df <- stations_sinaica[stations_sinaica$station_id %in% station_vec,]
+  geog <- df[,c("lat", "lon")]
+  coordinates(geog) <- ~lon+lat
+  
+  geog.grd <- expand.grid(x = seq((min(coordinates(geog)[ ,1]) - .05),
+                                (max(coordinates(geog)[ ,1]) + .05),
+                                length.out=pixels),
+                          y = seq((min(coordinates(geog)[ ,2]) - .05),
+                                (max(coordinates(geog)[ ,2]) + .05),
+                                length.out = pixels))
+  
+  grd.pts <- SpatialPixels(SpatialPoints(geog.grd))
+  as(grd.pts, "SpatialGrid")
+}
+
+reporting_stations <- unique(df$station_id)
+# 50x50 grid covering Mexico City
+grid <- create_grid(reporting_stations, 100)
+
+plot(grid, main = "Grid covering Monterrey and Locations of\nPollution Measuring Stations (red)")
+# Plot the locations of the stations
+geog <- stations_sinaica[stations_sinaica$station_id %in% reporting_stations, 
+                         c("lat", "lon")]
+coordinates(geog) <- ~lon+lat
+points(geog, pch = 22, col = "lightgray", bg = "red", cex = 1.2)
+```
+```{r}
+heatmap <- function(df, grid){
+  if(nrow(df) == 0){
+    return(data.frame(var1.pred = NA, var1.var = NA, lon = NA, lat = NA))
+  }
+  
+  df <- left_join(df, stations_sinaica, by = "station_id")
+  df <- df[!is.na(df$value),]
+  df <- df[,c("lat", "lon", "value")]
+  coordinates(df) <- ~lon+lat
+  # For radiation pollution the exponent should be 2
+  # See http://www.sciencedirect.com/science/article/pii/S009830041200372X
+  df.idw <- idw(value ~ 1, df, grid, idp = 2, debug.level = 0)
+  
+  idw = as.data.frame(df.idw)
+  names(idw) <- c("var1.pred", "var1.var", "lon", "lat")
+
+  idw
+}
+
+df <- df %>%
+  group_by(station_id) %>%
+  summarise(value = mean(value, na.rm = TRUE))
+idw_tiles <- heatmap(df, grid)
+```
+## Plot
+
+Now we will use the package ggmap to plot the locations of the stations and the pollution grid on top of a map.
+
+```{r}
+qmplot(x, y, data = data.frame(grid), geom = "blank", 
+       maptype = "toner-lite", source = "stamen", zoom = 10)  +
+  geom_tile(data = idw_tiles, aes(x = lon, y = lat, fill = var1.pred), 
+            alpha = .8) + 
+  scale_fill_distiller(expression(paste(mu,"g/", m^3)), 
+                       limits = c(0, max(idw_tiles$var1.pred)), 
+                       palette = "RdYlBu",
+                       direction = -1) +
+  geom_point(data = stations_sinaica[stations_sinaica$station_id %in% reporting_stations, ],
+             aes(lon, lat), shape = 22, size = 1.6) +
+  ggtitle(expression(paste("Average ", PM[10], 
+                           " pollution in Monterrey during 2017")))
 ```

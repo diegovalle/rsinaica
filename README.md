@@ -5,7 +5,9 @@ rsinaica
 
 [![Travis-CI Build Status](https://travis-ci.org/diegovalle/rsinaica.svg?branch=master)](https://travis-ci.org/diegovalle/rsinaica) [![AppVeyor build status](https://ci.appveyor.com/api/projects/status/p281myk561l2kxgt?svg=true)](https://ci.appveyor.com/project/diegovalle/rsinaica/branch/master) [![Coverage Status](https://img.shields.io/codecov/c/github/diegovalle/rsinaica/master.svg)](https://codecov.io/github/diegovalle/rsinaica?branch=master) [![lifecycle](https://img.shields.io/badge/lifecycle-experimental-red.svg)](https://www.tidyverse.org/lifecycle/#experitmental) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version-ago/rsinaica?color=red)]()
 
-Ready-made functions for downloading air quality data from the Mexican National Air Quality Information System (SINAICA).
+<img src="vignettes/header.png" width="100%" />
+
+Ready-made functions for downloading air quality data from the Mexican National Air Quality Information System (SINAICA). With this R package you can download pollution and meteorological parametrs from the more than a 150 monitoring stations reporting to SINAICA. The package allows you to query for the 'crude' real-time air quality data, or older validated or manually collected data.
 
 Installation
 ------------
@@ -27,7 +29,7 @@ install.packages("rsinaica")
 Example
 -------
 
-Suppose you wanted to download pollution data from the *Centro* station in Guadalajara. First we load the necessary packages and look up the numeric code for the station in the `stations_sinaica` data.frame:
+Suppose you wanted to download pollution data from the *Centro* station in Guadalajara. First, we load the necessary packages and look up the numeric code for the station in the `stations_sinaica` data.frame:
 
 ``` r
 ## Auto-install required R packages
@@ -63,13 +65,13 @@ ggplot(stations_sinaica[order(stations_sinaica$color, decreasing = TRUE),], aes(
   theme_void()
 ```
 
-<img src="man/figures/README-unnamed-chunk-2-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-3-1.png" width="100%" />
 
 Then we query the dates during which the station has been in operation:
 
 ``` r
 get_station_dates(102)
-#> [1] "1997-01-01" "2018-04-10"
+#> [1] "1997-01-01" "2018-04-11"
 ```
 
 It's currently reporting data, and has been doing so since 1997. We can also query which type of parameters (pollution, wind, solar radiation, etc) the station has sensors for. Note that the package also includes a `parameters` data.frame with the complete set of supported parameters, but not all stations support all of them.
@@ -96,7 +98,7 @@ knitr::kable(cen_params)
 | TMPI            | Temperatura interior            |
 | VV              | Velocidad del viento            |
 
-Finally, we can download and plot particulate matter with a diameter between 2.5 and 10 micrometers (μm) (PM<sub>10</sub>) for the month of January
+Finally, we can download and plot particulate matter with a diameter smaller than 10 micrometers (μm) (PM<sub>10</sub>) for the month of January
 
 ``` r
 # Download all PM10 data for January 2018
@@ -111,4 +113,4 @@ ggplot(df, aes(hour, value, group = date)) +
   theme_bw()
 ```
 
-<img src="man/figures/README-unnamed-chunk-5-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-6-1.png" width="100%" />

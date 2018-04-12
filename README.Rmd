@@ -21,8 +21,13 @@ knitr::opts_chunk$set(
 [![lifecycle](https://img.shields.io/badge/lifecycle-experimental-red.svg)](https://www.tidyverse.org/lifecycle/#experitmental) 
 [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version-ago/rsinaica?color=red)]()
 
+```{r echo=FALSE, out.width='100%'}
+knitr::include_graphics('vignettes/header.png')
+```
+
 Ready-made functions for downloading air quality data from the Mexican National 
-Air Quality Information System (SINAICA).
+Air Quality Information System (SINAICA). With this R package you can download pollution 
+and meteorological parametrs from the more than a 150 monitoring stations reporting to SINAICA. The package allows you to query for the 'crude' real-time air quality data, or older validated or manually collected data.
 
 ## Installation
 
@@ -45,7 +50,7 @@ install.packages("rsinaica")
 ## Example
 
 Suppose you wanted to download pollution data from the _Centro_ station in
-Guadalajara. First we load the necessary packages and look up the numeric code
+Guadalajara. First, we load the necessary packages and look up the numeric code
 for the station in the `stations_sinaica` data.frame:
 
 ```{r example, warning=FALSE,message=FALSE}
@@ -90,7 +95,7 @@ cen_params <- get_station_parameters(102)
 knitr::kable(cen_params)
 ```
 
-Finally, we can download and plot particulate matter with a diameter between 2.5 and 10 micrometers (μm) (PM<sub>10</sub>) for the month of January
+Finally, we can download and plot particulate matter with a diameter smaller than 10 micrometers (μm) (PM<sub>10</sub>) for the month of January
 
 ```{r}
 # Download all PM10 data for January 2018

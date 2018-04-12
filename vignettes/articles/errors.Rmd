@@ -21,12 +21,12 @@ if (length(names(success)[!success])) {
 library("rsinaica")
 ```
 
-Sadly, there are some errors in the data that the measuring stations report to SINAICA, internally,
-the stations and SINAICA are supposed to flag data that is mistaken, but this is not always the case. In addition, not all stations send their data to SINAICA in a reliable way.
+Sadly, there are some errors in the data that the measuring stations report to SINAICA. Internally,
+the stations and SINAICA are supposed to flag data that is mistaken, but this is not always the case; in addition, not all stations send their data to SINAICA in a reliable way.
 
 ## Incomplete data
 
-The data is incomplete in the sense that some networks don't report in a timely maner all the pollutants they measure. For example, if you go to the [Mexicali air quality website](http://www.mexicali.gob.mx/webpub/consultaweb/EmmcaHistorial.aspx) you'll see that they have a section reporting *recent* PM<sub>10</sub> pollution values, but when you query SINAICA for the dates supported by all
+The data is incomplete in the sense that some networks don't report in a timely maner the values of all the pollutants they measure. For example, if you go to the [Mexicali air quality website](http://www.mexicali.gob.mx/webpub/consultaweb/EmmcaHistorial.aspx) you'll see that they have a section reporting *recent* PM<sub>10</sub> pollution values, but when you query SINAICA for the dates supported by all
 the Mexicali stations, none support downloading *recent* PM<sub>10</sub> data.
 
 ```{r}
