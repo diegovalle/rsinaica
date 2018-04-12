@@ -32,8 +32,8 @@
 #'  \item{"VV"}{ - Radiación ultravioleta B}
 #'  \item{"XIL"}{ - Xileno}
 #' }
-#' @param start_date start of period from which to download data
-#' @param end_date end of period from which to download data
+#' @param start_date start of range in YYYY-MM-DD format
+#' @param end_date end of range from which to download data in YYYY-MM-DD format
 #' @param autoclean wether to automatically remove invalid data and make sure
 #' extreme values (as reported by SINAICa) are turned to NAs
 #' @param type The type of data to download. One of the following:
@@ -43,10 +43,11 @@
 #' }
 #'
 #' @return data.frame with air quality data
-#' @importFrom httr POST http_error content
+#' @importFrom httr POST http_error content add_headers
 #' @importFrom jsonlite fromJSON
 #' @importFrom dplyr left_join
 #' @importFrom utils data
+#' @importFrom stats runif
 #' @export
 #' @examples
 #' \dontrun{
@@ -99,6 +100,8 @@ sinaica_byparameter <- function(parameter,
   )
 
   result <- POST(url,
+                 add_headers("user-agent" =
+                               "https://github.com/diegovalle/rsinaica"),
                  body = fd,
                  encode = "form")
   if (http_error(result))
@@ -110,6 +113,9 @@ sinaica_byparameter <- function(parameter,
     stop(paste0(url, " did not return text/html", call. = FALSE))
   json_text <- content(result, "text", encoding = "UTF-8")
   df <- fromJSON(json_text)
+
+  ## As not to overload the server wait a random value before the next call
+  Sys.sleep(runif(1, max = .5))
 
   ## Clean the data
   if(type == "Crude")

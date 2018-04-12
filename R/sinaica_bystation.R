@@ -41,15 +41,16 @@
 #'  \item{"Validated"}{ - Validated data (may not be the most up-to-date)}
 #'  \item{"Manual"}{ - Manually collected data that is sent to an external for lab analysis (may no be collected daily)}
 #' }
-#' @param start_date day to download or start of range
-#' @param end_date end of period from which to download data
+#' @param start_date start of range in YYYY-MM-DD format
+#' @param end_date end of range from which to download data in YYYY-MM-DD format
 #'
 #' @return data.frame with air quality data
 #' @importFrom dplyr filter
-#' @importFrom httr POST http_error http_type content status_code
+#' @importFrom httr POST http_error http_type content status_code add_headers
 #' @importFrom jsonlite fromJSON
 #' @importFrom stringr str_replace_all str_extract
 #' @importFrom utils data
+#' @importFrom stats runif
 #' @export
 #' @examples
 #' stations_sinaica[which(stations_sinaica$station_name == "Xalostoc"), 1:5]
@@ -127,6 +128,8 @@ sinaica_bystation <- function(station_id,
     tipoDatos   = type
   )
   result <- POST(url,
+                 add_headers("user-agent" =
+                               "https://github.com/diegovalle/rsinaica"),
                  body = fd,
                  encode = "form")
   if (http_error(result))
@@ -169,6 +172,8 @@ sinaica_bystation <- function(station_id,
   df <- left_join(df, stations_sinaica[, c("station_id", "station_name")],
                   by = "station_id")
   df <- filter(df, date <= end_date)
+  ## As not to overload the server wait a random value before the next call
+  Sys.sleep(runif(1, max = .5))
   df[, c("station_id",  "station_name", "date", "hour",
          "valid", "unit", "value")]
 }

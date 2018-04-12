@@ -4,8 +4,10 @@ Title: Download Data from Mexico's National Air Quality Information System
 Version: 0.1.0
 Authors@R: c(person("Diego", "Valle-Jones", email = "diego@diegovalle.net", role = c("aut", "cre")))
 Description: Ready-made functions for downloading air quality data from the 
-    Mexican National Air Quality Information System (SINAICA). See 
-    <http://http://sinaica.inecc.gob.mx> for more information.
+    Mexican National Air Quality Information System (SINAICA).  Allows you to 
+    query pollution and meteorological parameters from the more than a 150 
+    monitoring stations reporting to SINAICA. See <http://sinaica.inecc.gob.mx> 
+    for more information.
 License: MIT + file LICENSE
 URL: https://github.com/diegovalle/rsinaica
 BugReports: https://github.com/diegovalle/rsinaica/issues

@@ -60,4 +60,12 @@ test_that("sinaica_bystation returns correct data", {
   df <- sinaica_bystation(271, "O3", "2015-09-11", "2015-10-03", "Crude")
   expect_equal(df$date[533], "2015-10-03")
   expect_equal(df$date[1], "2015-09-11")
+
+  ## dates are corretly filtered
+  days <- seq(as.Date("2018-02-01"), as.Date("2018-03-01"), by = "day")
+  for (i in seq_along(days)) {
+    df <- sinaica_bystation(271, "O3", "2018-02-01", days[i])
+    expect_equal(unique(df$date), as.character(days[1:i]))
+    Sys.sleep(1)
+  }
 })

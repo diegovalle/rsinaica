@@ -42,9 +42,9 @@ sinaica_bystation(station_id, parameter, start_date, end_date, type = "Crude")
 \item{"XIL"}{ - Xileno}
 }}
 
-\item{start_date}{day to download or start of range}
+\item{start_date}{start of range in YYYY-MM-DD format}
 
-\item{end_date}{end of period from which to download data}
+\item{end_date}{end of range from which to download data in YYYY-MM-DD format}
 
 \item{type}{The type of data to download. One of the following:
 \itemize{
