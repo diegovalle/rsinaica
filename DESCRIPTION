@@ -23,7 +23,12 @@ Suggests:
     rmarkdown,
     ggplot2,
     maps,
-    mapproj
+    mapproj,
+    sp, 
+    ggmap, 
+    gstat,
+    zoo,
+    tidyr
 Imports:
     jsonlite,
     httr,

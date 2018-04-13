@@ -37,6 +37,7 @@ branches:
 
 after_success:
   # The most polluted cities articles take a long time to run, so exclude 'em
+  # - echo 'options(repos = c(CRAN = "https://cloud.r-project.org"))' > ~/.Rprofile
   - mv vignettes/articles/ozone_awards.Rmd vignettes/articles/_ozone_awards.Rmd
   - mv vignettes/articles/pm10_awards.Rmd vignettes/articles/_pm10_awards.Rmd
   - mv vignettes/articles/pm25_awards.Rmd vignettes/articles/_pm25_awards.Rmd

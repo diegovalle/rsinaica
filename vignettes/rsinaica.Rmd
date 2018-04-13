@@ -25,7 +25,8 @@ Load the packages necessary for running the analysis
 
 ```{r message=FALSE, warning}
 ## Auto-install required R packages
-packs <- c("dplyr", "ggplot2", "lubridate", "sp", "ggmap", "gstat")
+packs <- c("dplyr", "ggplot2", "lubridate", "sp", "ggmap", "gstat", "zoo", 
+           "tidyr")
 success <- suppressWarnings(sapply(packs, require, character.only = TRUE))
 if (length(names(success)[!success])) {
   install.packages(names(success)[!success])
@@ -46,15 +47,11 @@ The basic set of functions provided by the package:
 
 ## Download data
 
-Let's suppose you want to look up the ozone pollution values for the station of
-Apodaca in Monterrey.
+We'll use the `sinaica_bystation` function to download pollution data for all the stations located in Monterrey.
 
 
 ```{r}
-# Download hourly data for all pollutants during February 20, 2018 
-# The maximum Ozone level was reached at 18:00 PM local time,
-# 17:00 with no daylight savings time
-## Download data for all Aguascalientes stations for a single month
+## Download data for all Monterrey stations in a single month
 get_month <- function(start_date, end_date, net){
   bind_rows(
     lapply(stations_sinaica$station_id[stations_sinaica$network_name %in% net],
@@ -70,28 +67,55 @@ df <- bind_rows(
   )
 ```
 
+
 Here’s what the data we just downloaded looks like:
 
 ```{r}
 knitr::kable(head(df))
 ```
 
-## Grid of Monterrey
-
-We will use this data to create a grid covering Monterrey and extrapolate the pollution values to each cell in the grid by inverse distance weighting from the locations of the measuring stations.
+Usually, for PM<sub>10</sub> particles, a 24 hour average is taken as the pollution value.
 
 ```{r}
-create_grid <- function(station_vec, pixels = 20) {
+df <- df  %>% 
+  ungroup() %>%
+  complete(station_id,
+           hour = 0:23,
+           date = as.character(seq(as.Date("2017-01-01"), as.Date("2017-12-31"), by = "day"))) %>%
+  arrange(station_id, date, hour) %>%
+  ungroup() %>%
+  group_by(station_id) %>%
+  mutate(roll24 = rollapply(value, 24, mean, na.rm = TRUE, partial = 12, 
+                            fill = NA, align = "right")) %>%
+  select(-station_name) %>%
+  left_join(stations_sinaica[,c("station_id", "station_name")], by = "station_id") %>%
+  mutate(datetime = with_tz(as.POSIXct(paste0(date, " ", hour, ":00"), 
+                                  tz = "Etc/GMT+6"),
+                       tz = "America/Mexico_City"))
+
+ggplot(df, aes(datetime, roll24, group = station_name)) +
+  geom_line(alpha = .8, size = .3) +
+  ggtitle(expression(paste("24 hour average of ", PM[10], " data reported by the Monterrey stations"))) +
+  xlab("date") +
+  ylab(expression(paste("24 hr. average ", PM[10]," concentration in ppm"))) +
+  facet_wrap(~ station_name) +
+  theme_bw() +
+  theme(axis.text.x=element_text(angle=60,hjust=1))
+```
+
+## Grid of Monterrey
+
+We will use the longitude and latitude data in the `stations_sinaica` data.frame to create a grid covering Monterrey and extrapolate the pollution values to each cell in the grid by inverse distance weighting from the locations of the measuring stations.
+
+```{r}
+create_grid <- function(station_vec, pixels = 1000) {
   df <- stations_sinaica[stations_sinaica$station_id %in% station_vec,]
   geog <- df[,c("lat", "lon")]
   coordinates(geog) <- ~lon+lat
-  
-  geog.grd <- expand.grid(x = seq((min(coordinates(geog)[ ,1]) - .05),
-                                (max(coordinates(geog)[ ,1]) + .05),
-                                length.out=pixels),
-                          y = seq((min(coordinates(geog)[ ,2]) - .05),
-                                (max(coordinates(geog)[ ,2]) + .05),
-                                length.out = pixels))
+  proj4string(geog) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
+  ## Add a margin surrounding the stations
+  geog@bbox <- bbox(geog) + c(-0.05, -.05, .05, .05)
+  geog.grd <- makegrid(geog, n = pixels)
   
   grd.pts <- SpatialPixels(SpatialPoints(geog.grd))
   as(grd.pts, "SpatialGrid")
@@ -99,7 +123,7 @@ create_grid <- function(station_vec, pixels = 20) {
 
 reporting_stations <- unique(df$station_id)
 # 50x50 grid covering Mexico City
-grid <- create_grid(reporting_stations, 100)
+grid <- create_grid(reporting_stations, 10000)
 
 plot(grid, main = "Grid covering Monterrey and Locations of\nPollution Measuring Stations (red)")
 # Plot the locations of the stations
@@ -108,6 +132,8 @@ geog <- stations_sinaica[stations_sinaica$station_id %in% reporting_stations,
 coordinates(geog) <- ~lon+lat
 points(geog, pch = 22, col = "lightgray", bg = "red", cex = 1.2)
 ```
+Now that the grid is ready we can use inverse distance to calculate the values in each grid cell.
+
 ```{r}
 heatmap <- function(df, grid){
   if(nrow(df) == 0){
@@ -127,27 +153,37 @@ heatmap <- function(df, grid){
 
   idw
 }
+```
 
+We'll show the average of the daily maximum of the PM<sub>10M</sub> values on a given date
+
+```{r}
 df <- df %>%
+  group_by(station_id, date) %>%
+  summarise(maxroll24 = max(roll24, na.rm = TRUE)) %>% 
+  mutate(maxroll24 = if_else(!is.finite(maxroll24), NA_real_, maxroll24)) %>%
   group_by(station_id) %>%
-  summarise(value = mean(value, na.rm = TRUE))
+  summarise(value = mean(maxroll24, na.rm = TRUE))
 idw_tiles <- heatmap(df, grid)
 ```
 ## Plot
 
 Now we will use the package ggmap to plot the locations of the stations and the pollution grid on top of a map.
 
-```{r}
-qmplot(x, y, data = data.frame(grid), geom = "blank", 
+```{r plot, warning=FALSE, message=FALSE}
+qmplot(x1, x2, data = data.frame(grid), geom = "blank", 
        maptype = "toner-lite", source = "stamen", zoom = 10)  +
   geom_tile(data = idw_tiles, aes(x = lon, y = lat, fill = var1.pred), 
             alpha = .8) + 
-  scale_fill_distiller(expression(paste(mu,"g/", m^3)), 
-                       limits = c(0, max(idw_tiles$var1.pred)), 
-                       palette = "RdYlBu",
-                       direction = -1) +
+  ## set midpoint at 76 cause that's bad air quality according to
+  ## http://www.aire.cdmx.gob.mx/default.php?opc=%27ZaBhnmI=&dc=%27aQ==
+  scale_fill_gradient2(expression(paste(mu,"g/", m^3)), 
+                       low = "#abd9e9",
+                       mid = "#ffffbf",
+                       high = "#f46d43",
+                       midpoint = 61) + # midpoint of regular air quality in IMECAs
   geom_point(data = stations_sinaica[stations_sinaica$station_id %in% reporting_stations, ],
              aes(lon, lat), shape = 22, size = 1.6) +
-  ggtitle(expression(paste("Average ", PM[10], 
-                           " pollution in Monterrey during 2017")))
+  ggtitle(expression(paste("Average of ", PM[10], 
+                           " daily maximums in Monterrey during 2017")))
 ```
