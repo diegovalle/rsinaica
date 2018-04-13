@@ -216,7 +216,7 @@ parameter_clean_crude <- function(df, autoclean, parameter) {
                       valorOrig = character(0), banderasOrig = character(0),
                       validoOrig = character(0),
                       valorAct = character(0), validoAct = character(0),
-                      fechaValidoAct = logical(0),
+                      fechaValidoAct = character(0),
                       nivelValidacion = character(0),
                       stringsAsFactors = FALSE)
     )
