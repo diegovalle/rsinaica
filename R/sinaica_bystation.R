@@ -1,6 +1,6 @@
-#' Get data from a measuring station that reports to SINAICA
+#' Get air quaility data from a measuring station
 #'
-#'
+#' Download data from a single station by specifying a parameter and a date range
 #'
 #' @param station_id the numeric code correspongind to each station. See
 #' \code{\link{stations_sinaica}} for a list of stations and their ids.
@@ -51,6 +51,9 @@
 #' @importFrom stringr str_replace_all str_extract
 #' @importFrom utils data
 #' @importFrom stats runif
+#' @seealso Crude data comes from \href{http://sinaica.inecc.gob.mx/data.php},
+#' validated data from \href{http://sinaica.inecc.gob.mx/data.php?tipo=V}, and
+#' manual data from \href{http://sinaica.inecc.gob.mx/data.php?tipo=M}
 #' @export
 #' @examples
 #' stations_sinaica[which(stations_sinaica$station_name == "Xalostoc"), 1:5]

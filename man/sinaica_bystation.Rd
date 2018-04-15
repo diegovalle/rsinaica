@@ -2,7 +2,7 @@
 % Please edit documentation in R/sinaica_bystation.R
 \name{sinaica_bystation}
 \alias{sinaica_bystation}
-\title{Get data from a measuring station that reports to SINAICA}
+\title{Get air quaility data from a measuring station}
 \usage{
 sinaica_bystation(station_id, parameter, start_date, end_date, type = "Crude")
 }
@@ -57,11 +57,16 @@ sinaica_bystation(station_id, parameter, start_date, end_date, type = "Crude")
 data.frame with air quality data
 }
 \description{
-Get data from a measuring station that reports to SINAICA
+Download data from a single station by specifying a parameter and a date range
 }
 \examples{
 stations_sinaica[which(stations_sinaica$station_name == "Xalostoc"), 1:5]
 df <- sinaica_bystation(271, "O3", "2015-09-11", "2015-09-11", "Crude")
 head(df)
 
+}
+\seealso{
+Crude data comes from \href{http://sinaica.inecc.gob.mx/data.php},
+validated data from \href{http://sinaica.inecc.gob.mx/data.php?tipo=V}, and
+manual data from \href{http://sinaica.inecc.gob.mx/data.php?tipo=M}
 }

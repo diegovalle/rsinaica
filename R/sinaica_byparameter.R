@@ -1,5 +1,7 @@
 
-#' Get data for all stations by parameter
+#' Get air quality data from all stations by parameter
+#'
+#' Download data from all stations for a single parameter by specifying a date range
 #'
 #' @param parameter type of parameter to download
 #' \itemize{
@@ -223,6 +225,7 @@ parameter_clean_crude <- function(df, autoclean, parameter) {
   }
 
   df$estacionesId <- as.integer(df$estacionesId)
+  df$fechaValidoAct <- as.character(df$fechaValidoAct)
 
   if (identical(autoclean, TRUE)) {
     ## Values above this are suppossed to be invalid

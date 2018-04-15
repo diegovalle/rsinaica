@@ -2,7 +2,7 @@
 % Please edit documentation in R/sinaica_byparameter.R
 \name{sinaica_byparameter}
 \alias{sinaica_byparameter}
-\title{Get data for all stations by parameter}
+\title{Get air quality data from all stations by parameter}
 \usage{
 sinaica_byparameter(parameter, start_date, end_date, type = "Crude",
   autoclean = TRUE)
@@ -57,7 +57,7 @@ extreme values (as reported by SINAICa) are turned to NAs}
 data.frame with air quality data
 }
 \description{
-Get data for all stations by parameter
+Download data from all stations for a single parameter by specifying a date range
 }
 \examples{
 \dontrun{
