@@ -117,7 +117,7 @@ sinaica_byparameter <- function(parameter,
   df <- fromJSON(json_text)
 
   ## As not to overload the server wait a random value before the next call
-  Sys.sleep(runif(1, max = .5))
+  Sys.sleep(runif(1, max = 1.5))
 
   ## Clean the data
   if(type == "Crude")
