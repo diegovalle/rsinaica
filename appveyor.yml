@@ -18,6 +18,7 @@ environment:
     - R_VERSION: release
       R_ARCH: x64
     - R_VERSION: oldrel
+    - R_VERSION: patched
 
 # Adapt as necessary starting from here
 
