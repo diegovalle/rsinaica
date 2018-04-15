@@ -51,9 +51,9 @@
 #' @importFrom stringr str_replace_all str_extract
 #' @importFrom utils data
 #' @importFrom stats runif
-#' @seealso Crude data comes from \href{http://sinaica.inecc.gob.mx/data.php},
-#' validated data from \href{http://sinaica.inecc.gob.mx/data.php?tipo=V}, and
-#' manual data from \href{http://sinaica.inecc.gob.mx/data.php?tipo=M}
+#' @seealso Crude data comes from \url{http://sinaica.inecc.gob.mx/data.php},
+#' validated data from \url{http://sinaica.inecc.gob.mx/data.php?tipo=V}, and
+#' manual data from \url{http://sinaica.inecc.gob.mx/data.php?tipo=M}
 #' @export
 #' @examples
 #' stations_sinaica[which(stations_sinaica$station_name == "Xalostoc"), 1:5]
