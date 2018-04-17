@@ -22,7 +22,7 @@ a vector containing the date the station started reporting
 and end reporting date
 }
 \description{
-Dates supported by a station
+Start date and end date of the range for which SINAICA has data for an air quality station
 }
 \examples{
 ## id 271 is Xalostoc. See `stations_sinaica`

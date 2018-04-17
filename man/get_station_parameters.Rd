@@ -21,7 +21,7 @@ get_station_parameters(station_id, type = "Crude")
 a data.frame with the parameters supported by the station
 }
 \description{
-Parameters supported by a station
+List of air quality parameters of a measuring station for which SINAICA has data
 }
 \examples{
 ## id 271 is Xalostoc. See `stations_sinaica`

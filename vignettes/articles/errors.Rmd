@@ -7,6 +7,9 @@ output: github_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+Sadly, there are some errors in the data that the measuring stations report to SINAICA. Internally,
+the stations and SINAICA are supposed to flag data that is mistaken, but this is not always the case; in addition, not all stations send their data to SINAICA in a reliable way.
+
 First, let's load the packages necessary for the analysis.
 
 ```{r packages, warning=FALSE,message=FALSE}
@@ -20,10 +23,6 @@ if (length(names(success)[!success])) {
 ## Not yet on cran
 library("rsinaica")
 ```
-
-Sadly, there are some errors in the data that the measuring stations report to SINAICA. Internally,
-the stations and SINAICA are supposed to flag data that is mistaken, but this is not always the case; in addition, not all stations send their data to SINAICA in a reliable way.
-
 ## Incomplete data
 
 The data is incomplete in the sense that some networks don't report in a timely maner the values of all the pollutants they measure. For example, if you go to the [Mexicali air quality website](http://www.mexicali.gob.mx/webpub/consultaweb/EmmcaHistorial.aspx) you'll see that they have a section reporting *recent* PM<sub>10</sub> pollution values, but when you query SINAICA for the dates supported by all
@@ -40,7 +39,7 @@ ll
 
 ## Errors in validation
 
-The data reported to SINAICA is supposed to be checked for extreme values and errors, but their methodology must not be very good. The station CBTIS in Aguascalinetes, as can be seen in the chart below, reported pure garbage for ozone data in 2017. A value higher than 0.155 ppm would be a phase I contingency in Mexico City, and given that ozone production depends on chemical reactions between oxides of nitrogen and volatile organic compounds in the presence of sunlight, it's extremely unlikely to be present in large quantities at night or in the early mornging.
+The data reported to SINAICA is supposed to be checked for extreme values and errors, but their methodology must not be very good: The station CBTIS in Aguascalientes reported pure garbage for ozone data in 2017 as can be seen in the chart below. A value higher than 0.155 ppm would be a phase I contingency in Mexico City, and given that ozone production depends on chemical reactions between oxides of nitrogen and volatile organic compounds in the presence of sunlight, it's extremely unlikely to be present in large quantities at night or in the early morning
 
 ```{r warning=FALSE}
 ## Download data for all Aguascalientes stations for a single month

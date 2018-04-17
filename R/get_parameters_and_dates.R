@@ -1,5 +1,7 @@
 #' Parameters supported by a station
 #'
+#' List of air quality parameters of a measuring station for which SINAICA has data
+#'
 #' @param station_id the numeric code corresponding to each station. See
 #' \code{\link{stations_sinaica}} for a list of stations and their ids.
 #' @param type The type of data to download. One of the following:
@@ -69,6 +71,8 @@ get_station_parameters <- function(station_id,
 }
 
 #' Dates supported by a station
+#'
+#' Start date and end date of the range for which SINAICA has data for an air quality station
 #'
 #' @param station_id the numeric code correspongind to each station. See
 #' \code{\link{stations_sinaica}} for a list of stations and their ids.

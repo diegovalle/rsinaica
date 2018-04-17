@@ -25,9 +25,9 @@ knitr::opts_chunk$set(
 knitr::include_graphics('vignettes/header.png')
 ```
 
-Ready-made functions for downloading air quality data from the Mexican National 
+Easy-to-use functions for downloading air quality data from the Mexican National 
 Air Quality Information System (SINAICA). With this R package you can download pollution 
-and meteorological parametrs from the more than a 150 monitoring stations reporting to SINAICA. The package allows you to query for the 'crude' real-time air quality data, or older validated or manually collected data.
+and meteorological parametrs from the more than a 150 monitoring stations located throughout Mexico. The package allows you to query for crude real-time air quality data, validated data, or manually collected data.
 
 ## Installation
 
@@ -66,7 +66,7 @@ library("rsinaica")
 knitr::kable(stations_sinaica[which(stations_sinaica$station_name == "Centro"), 1:6])
 ```
 
-It looks like there are three stations named Centro, the one we are looking for is the one in Guadalajara with a numeric code of 102 (station_id). The ```stations_sinaica``` data.frame also includes the latitude and longitude of all the measuring stations in Mexico (including some that have never reported any data!).
+It looks like there are three stations named Centro, the one we are looking for is the one in Guadalajara with a numeric code (station_id) of 102. The ```stations_sinaica``` data.frame also includes the latitude and longitude of all the measuring stations in Mexico (including some that have never reported any data!).
 
 ```{r warning=FALSE}
 mx <- map_data("world", "Mexico")
@@ -81,7 +81,7 @@ ggplot(stations_sinaica[order(stations_sinaica$color, decreasing = TRUE),], aes(
   theme_void()
 ```
 
-Then we query the dates during which the station has been in operation:
+Then we query the dates for which SINAICA has data from the station:
 
 ```{r}
 get_station_dates(102)

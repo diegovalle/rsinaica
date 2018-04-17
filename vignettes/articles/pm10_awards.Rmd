@@ -22,7 +22,8 @@ Load the packages
 
 ```{r packages,warning=FALSE,message=FALSE}
 ## Auto-install required R packages
-packs <- c("dplyr", "ggplot2", "gghighlight", "lubridate", "anomalize")
+packs <- c("dplyr", "ggplot2", "gghighlight", "lubridate", "anomalize", 
+           "zoo", "tidyr")
 success <- suppressWarnings(sapply(packs, require, character.only = TRUE))
 if (length(names(success)[!success])) {
   install.packages(names(success)[!success])
@@ -41,11 +42,10 @@ pm10_2017 <- bind_rows(
          seq(as.Date("2017-02-01"), as.Date("2018-01-01"), by = "month") - 1,
          SIMPLIFY = FALSE)
 )
-       
 ```
 
 
-```{r manual}
+```{r manual, cache = TRUE}
 # Download all manually collected PM10 pollution data in 2017
 pm10_2017m <- bind_rows(
   mapply(sinaica_byparameter,
@@ -55,39 +55,59 @@ pm10_2017m <- bind_rows(
          "Manual",
          SIMPLIFY = FALSE)
 )
-pm10_2017 = bind_rows(pm10_2017, pm10_2017m)       
+pm10_2017 <-  bind_rows(pm10_2017, pm10_2017m)       
 ```
 
 ```{r}
 knitr::kable(head(pm10_2017))
 ```
 
+Filter netwroks that did not collect or report data for at least 47 weeks and 292  days. Set small values as NA
+
 
 ```{r plot}
 # pm10_2017[which(pm10_2017$value_actual != pm10_2017$value_original),]
 # pm10_2017[which(!is.na(pm10_2017$date_validated)),]
 
-# Only include stations that reported for more than 80% of days (292)
-df_filtered <- pm10_2017 %>%
-  filter(!is.na(value)) 
-
-df_filtered %>%
+pm10_2017 %>%
+  mutate(value = ifelse(value < 3, NA, value)) %>%
   group_by(network_name) %>%
-  summarise(count = n()) %>%
+  filter(!is.na(value)) %>%
+  summarise(count = n_distinct(week(date))) %>%
   arrange(count) %>%
   head(10) %>%
   knitr::kable()
 
+## filter stations that didn't report at least 47 weeks of the year
+df_filtered <- pm10_2017 %>%
+  mutate(value = if_else(value < 1, NA_real_, value)) %>%
+  group_by(network_name) %>%
+  filter(!is.na(value)) %>%
+  mutate(nweeks = n_distinct(week(date))) %>%
+  filter(nweeks >= 47) %>%
+  select(-nweeks) %>%
+  ungroup()
+
+
 
 df_max <- df_filtered %>%
-  group_by(date, station_id, network_name) %>%
-  summarise(mean = mean(value, na.rm = TRUE)) %>%
+  complete(station_id,
+           hour = 0:23,
+           date = as.character(seq(as.Date("2017-01-01"), as.Date("2017-12-31"), by = "day"))) %>%
+  group_by(station_id, network_name) %>%
+  arrange(station_id, date, hour) %>%
+  mutate(roll24 = rollapply(value, 24, mean, na.rm = TRUE, partial = 20, 
+                            fill = NA, align = "right")) %>%
+  ungroup() %>%
+  #summarise(mean = mean(value, na.rm = TRUE)) %>%
   group_by(date, network_name) %>%
-  summarise(max = max(mean, na.rm = TRUE)) %>%
+  summarise(max = max(roll24, na.rm = TRUE)) %>%
   ungroup() %>%
   add_count(network_name) %>%
-  filter(n > (365*.8))  %>%
+  ## Only include stations that reported for more than 80% of days (292)
+  filter(n >= (365*.8))  %>%
   select(-n) %>%
+  filter(is.finite(max)) %>%
   arrange(date)
 ```
 
