@@ -35,7 +35,7 @@
 #'   \item{video_interior}{link to video of the interior of the station}
 #' }
 #' @docType data
-#' @source \href{http://sinaica.inecc.gob.mx/}{SINAICA}
+#' @source \href{http://sinaica.inecc.gob.mx/}{SINAICA} ans Solicitud de Información 1612100005118
 #' @name stations_sinaica
 #' @usage data(stations_sinaica)
 #' @examples
