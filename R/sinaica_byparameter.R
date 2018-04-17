@@ -44,7 +44,9 @@
 #'  \item{"Manual"}{ - Manually collected data that is sent to an external for lab analysis (may no be collected daily)}
 #' }
 #'
-#' @return data.frame with air quality data
+#' @return data.frame with a column named \emph{value} containing the air quality parameter values.
+#' If the data was validated the column named \emph{date_validated} will contain the validation
+#' date
 #' @importFrom httr POST http_error content add_headers
 #' @importFrom jsonlite fromJSON
 #' @importFrom dplyr left_join

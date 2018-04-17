@@ -44,7 +44,9 @@
 #' @param start_date start of range in YYYY-MM-DD format
 #' @param end_date end of range from which to download data in YYYY-MM-DD format
 #'
-#' @return data.frame with air quality data
+#' @return data.frame with air quality data. Note that for O3 all values above .2 are set to NA,
+#' for PM10 those above 600, for PM2.5 above 175, for NO2 above .21, for SO2 above .2, and for CO
+#' above 15.
 #' @importFrom dplyr filter
 #' @importFrom httr POST http_error http_type content status_code add_headers
 #' @importFrom jsonlite fromJSON
