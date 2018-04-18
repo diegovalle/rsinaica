@@ -7,7 +7,7 @@ rsinaica
 
 <img src="vignettes/header.png" width="100%" />
 
-Ready-made functions for downloading air quality data from the Mexican National Air Quality Information System (SINAICA). With this R package you can download pollution and meteorological parametrs from the more than a 150 monitoring stations reporting to SINAICA. The package allows you to query for the 'crude' real-time air quality data, or older validated or manually collected data.
+Easy-to-use functions for downloading air quality data from the Mexican National Air Quality Information System (SINAICA). With this R package you can download pollution and meteorological parametrs from the more than a 150 monitoring stations located throughout Mexico. The package allows you to query for crude real-time air quality data, validated data, or manually collected data.
 
 Installation
 ------------
@@ -47,10 +47,10 @@ knitr::kable(stations_sinaica[which(stations_sinaica$station_name == "Centro"), 
 |     |  station\_id| station\_name | station\_code |  network\_id| network\_name  | network\_code |
 |-----|------------:|:--------------|:--------------|------------:|:---------------|:--------------|
 | 12  |           33| Centro        | CEN           |           30| Aguascalientes | AGS           |
-| 42  |           54| Centro        | CEN           |           38| CHIH1          | CHIH1         |
+| 42  |           54| Centro        | CEN           |           38| Chihuahua      | CHIH1         |
 | 75  |          102| Centro        | CEN           |           63| Guadalajara    | GDL           |
 
-It looks like there are three stations named Centro, the one we are looking for is the one in Guadalajara with a numeric code of 102 (station\_id). The `stations_sinaica` data.frame also includes the latitude and longitude of all the measuring stations in Mexico (including some that have never reported any data!).
+It looks like there are three stations named Centro, the one we are looking for is the one in Guadalajara with a numeric code (station\_id) of 102. The `stations_sinaica` data.frame also includes the latitude and longitude of all the measuring stations in Mexico (including some that have never reported any data!).
 
 ``` r
 mx <- map_data("world", "Mexico")
@@ -67,11 +67,11 @@ ggplot(stations_sinaica[order(stations_sinaica$color, decreasing = TRUE),], aes(
 
 <img src="man/figures/README-unnamed-chunk-3-1.png" width="100%" />
 
-Then we query the dates during which the station has been in operation:
+Then we query the dates for which SINAICA has data from the station:
 
 ``` r
 get_station_dates(102)
-#> [1] "1997-01-01" "2018-04-11"
+#> [1] "1997-01-01" "2018-04-17"
 ```
 
 It's currently reporting data, and has been doing so since 1997. We can also query which type of parameters (pollution, wind, solar radiation, etc) the station has sensors for. Note that the package also includes a `parameters` data.frame with the complete set of supported parameters, but not all stations support all of them.

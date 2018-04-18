@@ -54,7 +54,9 @@ sinaica_bystation(station_id, parameter, start_date, end_date, type = "Crude")
 }}
 }
 \value{
-data.frame with air quality data
+data.frame with air quality data. Note that for O3 all values above .2 are set to NA,
+for PM10 those above 600, for PM2.5 above 175, for NO2 above .21, for SO2 above .2, and for CO
+above 15.
 }
 \description{
 Download data from a single station by specifying a parameter and a date range

@@ -54,7 +54,9 @@ sinaica_byparameter(parameter, start_date, end_date, type = "Crude",
 extreme values (as reported by SINAICa) are turned to NAs}
 }
 \value{
-data.frame with air quality data
+data.frame with a column named \emph{value} containing the air quality parameter values.
+If the data was validated the column named \emph{date_validated} will contain the validation
+date
 }
 \description{
 Download data from all stations for a single parameter by specifying a date range
