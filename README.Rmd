@@ -27,7 +27,7 @@ knitr::include_graphics('vignettes/header.png')
 
 Easy-to-use functions for downloading air quality data from the Mexican National 
 Air Quality Information System (SINAICA). With this R package you can download pollution 
-and meteorological parametrs from the more than a 150 monitoring stations located throughout Mexico. The package allows you to query for crude real-time air quality data, validated data, or manually collected data.
+and meteorological parametrs from the more than a hundred monitoring stations located throughout Mexico. The package allows you to query for crude real-time air quality data, validated data, or manually collected data.
 
 ## Installation
 
@@ -99,7 +99,12 @@ Finally, we can download and plot particulate matter with a diameter smaller tha
 
 ```{r}
 # Download all PM10 data for January 2018
-df <-  sinaica_bystation(102, "PM10", "2018-01-01", "2018-01-31", "Crude")
+df <-  sinaica_bystation(102, # station_id
+                         "PM10", # can be one of parameters$parameter_code
+                         "2018-01-01", 
+                         "2018-01-31", # Maximum of one month
+                         "Crude" # Crude, Manual or Validated
+                         )
 
 ggplot(df, aes(hour, value, group = date)) +
   geom_line(alpha=.9) +
