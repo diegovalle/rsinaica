@@ -97,7 +97,7 @@ sinaica_byparameter <- function(parameter,
   ## Query the SINAICA server for the data
   url <-  "http://sinaica.inecc.gob.mx/lib/j/php/getData.php"
   fd <- list(
-    tabla  = if(type == "Crude") "Datos" else "DatosManuales",
+    tabla  = if (type == "Crude") "Datos" else "DatosManuales",
     fields = "",
     where  = paste0("parametro = '", parameter, "' and fecha >= '", start_date,
                     "' and fecha <= '", end_date, "'")
@@ -122,7 +122,7 @@ sinaica_byparameter <- function(parameter,
   Sys.sleep(runif(1, max = 1.5))
 
   ## Clean the data
-  if(type == "Crude")
+  if (type == "Crude")
     parameter_clean_crude(df, autoclean, parameter)
   else
     parameter_clean_manual(df, autoclean, parameter)

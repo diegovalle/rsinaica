@@ -4,7 +4,8 @@
 \alias{sinaica_bystation}
 \title{Get air quaility data from a measuring station}
 \usage{
-sinaica_bystation(station_id, parameter, start_date, end_date, type = "Crude")
+sinaica_bystation(station_id, parameter, start_date, end_date, type = "Crude",
+  autoclean = TRUE)
 }
 \arguments{
 \item{station_id}{the numeric code correspongind to each station. See
@@ -52,11 +53,13 @@ sinaica_bystation(station_id, parameter, start_date, end_date, type = "Crude")
 \item{"Validated"}{ - Validated data (may not be the most up-to-date)}
 \item{"Manual"}{ - Manually collected data that is sent to an external for lab analysis (may no be collected daily)}
 }}
+
+\item{autoclean}{wether to remove extreme values. For O3 all values above .2 are set to NA,
+for PM10 those above 600, for PM2.5 above 175, for NO2 above .21, for SO2 above .2, and for CO
+above 15.}
 }
 \value{
-data.frame with air quality data. Note that for O3 all values above .2 are set to NA,
-for PM10 those above 600, for PM2.5 above 175, for NO2 above .21, for SO2 above .2, and for CO
-above 15.
+data.frame with air quality data
 }
 \description{
 Download data from a single station by specifying a parameter and a date range

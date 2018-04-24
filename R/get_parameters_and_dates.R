@@ -41,7 +41,7 @@ get_station_parameters <- function(station_id,
                  "Validated" = "V",
                  "Manual"    = "M"
   )
-  #curl 'http://sinaica.inecc.gob.mx/lib/libd/cnxn.php'
+  # curl 'http://sinaica.inecc.gob.mx/lib/libd/cnxn.php'
   # estId=33&metodo=getParamsPorEstAjax&tipoDatos=''
   url <- "http://sinaica.inecc.gob.mx/lib/libd/cnxn.php"
   fd <- list(
@@ -61,7 +61,7 @@ get_station_parameters <- function(station_id,
     stop(paste0(url, " did not return text/html", call. = FALSE))
   json_text <- content(result, "text", encoding = "UTF-8")
   df <- fromJSON(json_text)
-  if(!length(df))
+  if (!length(df))
     return(data.frame(parameter_code = character(0),
                       parameter_name = character(0),
                       stringsAsFactors = FALSE)

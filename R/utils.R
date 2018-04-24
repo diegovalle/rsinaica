@@ -46,9 +46,13 @@ check_arguments <- function(arg_val, valid, arg_name) {
   as.Date(d) %m+% period("m")
 }
 
+# Convert a date range to daily, weekly or monthly ranges
+# The SINAICA website instead of accepting a date range
+# accepts a numerica value specifying the date range
+## 1 = 1 day, 2 = 1 week, 3 = 2 weeks, 4 = 1 month
 ndays_to_range <- function(start_date, end_date) {
-  num_days = as.numeric(as.Date(end_date) - as.Date(start_date) + 1)
-  ## 1 = days, 2 = 1 week, 3 = 2 weeks, 4 = 1 month
+  num_days <-  as.numeric(as.Date(end_date) - as.Date(start_date) + 1)
+  ## 1 = 1 day, 2 = 1 week, 3 = 2 weeks, 4 = 1 month
   ranges <- c(1, 2, 3, 4)
   ## day number to assign to each range value
   cuts <- c(1, 2, 8, 15)

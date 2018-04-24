@@ -8,7 +8,7 @@
 \description{
 Ready-made functions for downloading data from the Mexican
 National Air Quality Information System (SINAICA). See
-\url{http://http://sinaica.inecc.gob.mx} for more information.
+\url{http://sinaica.inecc.gob.mx} for more information.
 }
 \details{
 See the README on
