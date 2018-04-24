@@ -3,7 +3,7 @@
 #' @description
 #' This data set contains all the stations that report to the National
 #' Air Quality Information System
-#' \href{http://http://sinaica.inecc.gob.mx>}{SINAICA}.
+#' \href{http://sinaica.inecc.gob.mx}{SINAICA}.
 #'
 #' @format A data frame with 341 rows and 26 variables:
 #' \describe{
