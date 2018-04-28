@@ -18,9 +18,9 @@
 #'
 #' @examples
 #' ## id 271 is Xalostoc. See `stations_sinaica`
-#' df <- get_station_parameters(271, "Crude")
+#' df <- sinaica_station_param(271, "Crude")
 #' head(df)
-get_station_parameters <- function(station_id,
+sinaica_station_param <- function(station_id,
                                    type = "Crude") {
   if (missing(station_id))
     stop(paste0("argument station_id is missing, please provide it. The",
@@ -91,9 +91,9 @@ get_station_parameters <- function(station_id,
 #'
 #' @examples
 #' ## id 271 is Xalostoc. See `stations_sinaica`
-#' df <- get_station_dates(271, "Manual")
+#' df <- sinaica_station_dates(271, "Manual")
 #' head(df)
-get_station_dates <- function(station_id,
+sinaica_station_dates <- function(station_id,
                               type = "Crude") {
   if (missing(station_id))
     stop(paste0("argument station_id is missing, please provide it. The",

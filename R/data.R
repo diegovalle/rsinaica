@@ -52,8 +52,8 @@ NULL
 #'   \item{parameter_name}{Name of the air quality parameter}
 #' }
 #' @docType data
-#' @name parameters
+#' @name parameters_sinaica
 #' @source \href{http://sinaica.inecc.gob.mx/}{SINAICA}
 #' @examples
-#' head(parameters)
+#' head(parameters_sinaica)
 NULL

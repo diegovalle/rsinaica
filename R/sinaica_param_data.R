@@ -1,4 +1,3 @@
-
 #' Get air quality data from all stations by parameter
 #'
 #' Download data from all stations for a single parameter by specifying a date range
@@ -56,10 +55,10 @@
 #' @examples
 #' \dontrun{
 #' ## May take several seconds
-#' df <- sinaica_byparameter("O3", "2015-10-14", "2015-10-14")
+#' df <- sinaica_param_data("O3", "2015-10-14", "2015-10-14")
 #' head(df)
 #' }
-sinaica_byparameter <- function(parameter,
+sinaica_param_data <- function(parameter,
                               start_date,
                               end_date,
                               type = "Crude",

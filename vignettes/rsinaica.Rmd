@@ -41,15 +41,15 @@ library("rsinaica")
 
 The basic set of functions provided by the package:
 
-* `sinaica_bystation`: Download data from a single station by specifying a parameter and a date range
+* `sinaica_station_data`: Download data from a single station by specifying a parameter and a date range
 
-* `sinaica_byparameter`: Download data from all stations for a single parameter by specifying a date range
+* `sinaica_param_data`: Download data from all stations for a single parameter by specifying a date range
 
 Both functions can download the *crude* real-time data as it comes in, the older and not as complete *validated* data, or pollution data which is collected *manually* and sent to an external for lab analysis.
 
 ## Downloading the data
 
-We'll use the `sinaica_bystation` function to download pollution data for all the stations located in Guadalajara. We'll also use the crude real-time data since there is no validated data in Guadalajara for 2017, and ozone samples are not collected manually in any of the stations.
+We'll use the `sinaica_station_data` function to download pollution data for all the stations located in Guadalajara. We'll also use the crude real-time data since there is no validated data in Guadalajara for 2017, and ozone samples are not collected manually in any of the stations.
 
 
 ```{r download,cache=TRUE}
@@ -61,7 +61,7 @@ network <- "Guadalajara"
 get_month <- function(start_date, end_date, net, parameter){
   bind_rows(
     lapply(stations_sinaica$station_id[stations_sinaica$network_name %in% net],
-           sinaica_bystation, parameter, start_date, end_date, "Crude")
+           sinaica_station_data, parameter, start_date, end_date, "Crude")
   )
 }
 ## Download 2017 data, one month at a time

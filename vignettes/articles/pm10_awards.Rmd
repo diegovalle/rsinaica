@@ -36,7 +36,7 @@ library("rsinaica")
 ```{r download_pm10, cache=TRUE}
 # Download all PM10 pollution data in 2017
 pm10_2017 <- bind_rows(
-  mapply(sinaica_byparameter,
+  mapply(sinaica_param_data,
          "PM10",
          seq(as.Date("2017-01-01"), as.Date("2017-12-01"), by = "month"),
          seq(as.Date("2017-02-01"), as.Date("2018-01-01"), by = "month") - 1,
@@ -48,7 +48,7 @@ pm10_2017 <- bind_rows(
 ```{r manual, cache = TRUE}
 # Download all manually collected PM10 pollution data in 2017
 pm10_2017m <- bind_rows(
-  mapply(sinaica_byparameter,
+  mapply(sinaica_param_data,
          "PM10",
          seq(as.Date("2017-01-01"), as.Date("2017-12-01"), by = "month"),
          seq(as.Date("2017-02-01"), as.Date("2018-01-01"), by = "month") - 1,

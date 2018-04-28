@@ -1,4 +1,4 @@
-#' Get air quaility data from a measuring station
+#' Get air quaility data from a single measuring station
 #'
 #' Download data from a single station by specifying a parameter and a date range
 #'
@@ -60,10 +60,10 @@
 #' @export
 #' @examples
 #' stations_sinaica[which(stations_sinaica$station_name == "Xalostoc"), 1:5]
-#' df <- sinaica_bystation(271, "O3", "2015-09-11", "2015-09-11", "Crude")
+#' df <- sinaica_station_data(271, "O3", "2015-09-11", "2015-09-11", "Crude")
 #' head(df)
 #'
-sinaica_bystation <- function(station_id,
+sinaica_station_data <- function(station_id,
                             parameter,
                             start_date,
                             end_date,

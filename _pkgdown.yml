@@ -10,18 +10,18 @@ reference:
   - title: Get Air Quality Data
     desc: Functions for downloading pollution, wind, temperature, rh in the original units
     contents:
-      - '`sinaica_byparameter`'
-      - '`sinaica_bystation`'
-  - title: Helper Functions
-    desc: Functions to query the dates and parameters for each station
+      - '`sinaica_param_data`'
+      - '`sinaica_station_data`'
+  - title: Query dates and parameters supported by a station
+    desc: Functions to query the dates and parameters for a station
     contents:
-      - '`get_station_dates`'
-      - '`get_station_parameters`'
+      - '`sinaica_station_dates`'
+      - '`sinaica_station_param`'
   - title: Datasets
-    desc: Station location and air quality parameters
+    desc: Station locations and air quality parameters
     contents:
       - '`stations_sinaica`'
-      - '`parameters`'
+      - '`parameters_sinaica`'
   - title: Package
     desc: aire.zmvm package
     contents:

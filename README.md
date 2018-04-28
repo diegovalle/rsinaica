@@ -70,14 +70,14 @@ ggplot(stations_sinaica[order(stations_sinaica$color, decreasing = TRUE),], aes(
 Then we query the dates for which SINAICA has data from the station:
 
 ``` r
-get_station_dates(102)
-#> [1] "1997-01-01" "2018-04-19"
+sinaica_station_dates(102)
+#> [1] "1997-01-01" "2018-04-27"
 ```
 
 It's currently reporting data, and has been doing so since 1997. We can also query which type of parameters (pollution, wind, solar radiation, etc) the station has sensors for. Note that the package also includes a `parameters` data.frame with the complete set of supported parameters, but not all stations support all of them.
 
 ``` r
-cen_params <- get_station_parameters(102)
+cen_params <- sinaica_station_param(102)
 knitr::kable(cen_params)
 ```
 
@@ -102,7 +102,7 @@ Finally, we can download and plot particulate matter with a diameter smaller tha
 
 ``` r
 # Download all PM10 data for January 2018
-df <-  sinaica_bystation(102, # station_id
+df <-  sinaica_station_data(102, # station_id
                          "PM10", # can be one of parameters$parameter_code
                          "2018-01-01", 
                          "2018-01-31", # Maximum of one month

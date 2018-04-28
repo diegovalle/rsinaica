@@ -31,7 +31,7 @@ the Mexicali stations, none support downloading *recent* PM<sub>10</sub> data.
 ```{r}
 mexicali <- stations_sinaica[stations_sinaica$network_name %in% "Mexicali", 1:5]
 ## All PM10 station in Mexicali are manual
-ll <- lapply(mexicali$station_id, function(x) {get_station_dates(x, "Manual")})
+ll <- lapply(mexicali$station_id, function(x) {sinaica_station_dates(x, "Manual")})
 names(ll) <- mexicali$station_id
 ll
 ```
@@ -46,7 +46,7 @@ The data reported to SINAICA is supposed to be checked for extreme values and er
 get_month <- function(start_date, end_date, net){
   bind_rows(
     lapply(stations_sinaica$station_id[stations_sinaica$network_name %in% net],
-           sinaica_bystation, "O3", start_date, end_date, "Crude")
+           sinaica_station_data, "O3", start_date, end_date, "Crude")
   )
 }
 ## Download data for 2017, by month
