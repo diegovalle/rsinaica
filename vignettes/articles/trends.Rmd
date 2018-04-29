@@ -1,0 +1,117 @@
+---
+title: "Long-term pollution trends"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+With this package we can plot the long term trends in pollution for different cities. First, we load the packages
+
+```{r packages, warning=FALSE,message=FALSE}
+## Auto-install required R packages
+packs <- c("dplyr", "ggplot2", "lubridate")
+success <- suppressWarnings(sapply(packs, require, character.only = TRUE))
+if (length(names(success)[!success])) {
+  install.packages(names(success)[!success])
+  sapply(names(success)[!success], require, character.only = TRUE)
+}
+## Not yet on cran
+library("rsinaica")
+```
+
+We create a function for downloading single pollutant data for all the stations that form a network
+
+```{r function, warning=FALSE}
+get_data <- function(network_name, pollutant, autoclean = TRUE) {
+  ## Download data for all Aguascalientes stations for a single month
+  get_month <- function(start_date, end_date, net){
+    bind_rows(
+      lapply(stations_sinaica$station_id[stations_sinaica$network_name %in% net],
+             sinaica_station_data, pollutant, start_date, end_date, "Crude",
+             autoclean = autoclean)
+    )
+  }
+  ## Download data for 2017, by month
+  df <- bind_rows(
+    mapply(get_month,
+           seq(as.Date("1997-01-01"), as.Date("2017-12-01"), by = "month"),
+           seq(as.Date("1997-02-01"), as.Date("2018-01-01"), by = "month") - 1,
+           network_name, 
+           SIMPLIFY = FALSE)
+  )
+  
+  df$datetime <-  with_tz(as.POSIXct(paste0(df$date, " ", df$hour, ":00"), 
+                                     tz = "Etc/GMT+6"),
+                          tz = "America/Mexico_City")
+  df
+}
+```
+
+Now we are ready to plot different cities. When requesting ozone values the data is automatically cleaned and values above .2 ppm are automatically set to NA, since Guadalajara tends to have quite high ozone levels it is probably a good idea to disable this functionality.
+
+```{r guadalajara, cache=TRUE}
+guadalajara <- get_data("Guadalajara", "O3", autoclean = FALSE)
+guadalajara <- guadalajara %>%
+  group_by(date) %>%
+  summarise(value = max(value, na.rm = TRUE)) %>%
+  filter(value < .3)
+
+ggplot(guadalajara, aes(as.Date(date), value)) +
+  geom_point(alpha = .8, size = .3) +
+  geom_smooth(method = 'gam', formula = y ~ s(x)) + 
+  ggtitle("Maximum daily ozone values reported by Guadalajara stations") +
+  xlab("date") +
+  ylab("ppm") +
+  theme_bw()
+```
+
+```{r toluca, cache=TRUE}
+toluca <- get_data("Toluca", "PM2.5")
+toluca <- toluca %>%
+  group_by(date) %>%
+  summarise(value = max(value, na.rm = TRUE))
+
+ggplot(toluca, aes(as.Date(date), value)) +
+  geom_point(alpha = .8, size = .3) +
+  geom_smooth(method = 'gam', formula = y ~ s(x)) + 
+  ggtitle(expression(paste("Maximum daily ", PM[2.5], 
+                           " values reported by Toluca stations"))) +
+  xlab("date") +
+  ylab(expression(paste(mu,"g/", m^3))) +
+  theme_bw()
+```
+
+```{r pachuca, cache=TRUE}
+pachuca <- get_data("Pachuca", "PM2.5")
+pachuca <- pachuca %>%
+  group_by(date) %>%
+  summarise(value = max(value, na.rm = TRUE))
+
+ggplot(pachuca, aes(as.Date(date), value)) +
+  geom_point(alpha = .8, size = .3) +
+  geom_smooth(method = 'gam', formula = y ~ s(x)) + 
+  ggtitle(expression(paste("Maximum daily ", PM[2.5], 
+                           " values reported by Pachuca stations"))) +
+  xlab("date") +
+  ylab(expression(paste(mu,"g/", m^3))) +
+  theme_bw()
+```
+
+
+```{r monterrey, cache=TRUE}
+monterrey <- get_data("Monterrey", "PM10")
+monterrey <- monterrey %>%
+  group_by(date) %>%
+  summarise(value = max(value, na.rm = TRUE))
+
+ggplot(monterrey, aes(as.Date(date), value)) +
+  geom_point(alpha = .8, size = .3) +
+  geom_smooth(method = 'gam', formula = y ~ s(x)) + 
+  ggtitle(expression(paste("Maximum daily ", PM[10], 
+                           " values reported by Monterrey stations"))) +
+  xlab("date") +
+  ylab(expression(paste(mu,"g/", m^3))) +
+  theme_bw()
+```
