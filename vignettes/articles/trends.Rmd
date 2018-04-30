@@ -24,13 +24,13 @@ library("rsinaica")
 We create a function for downloading single pollutant data for all the stations that form a network
 
 ```{r function, warning=FALSE}
-get_data <- function(network_name, pollutant, autoclean = TRUE) {
+get_data <- function(network_name, pollutant, remove_extremes = TRUE) {
   ## Download data for all Aguascalientes stations for a single month
   get_month <- function(start_date, end_date, net){
     bind_rows(
       lapply(stations_sinaica$station_id[stations_sinaica$network_name %in% net],
              sinaica_station_data, pollutant, start_date, end_date, "Crude",
-             autoclean = autoclean)
+             remove_extremes = remove_extremes)
     )
   }
   ## Download data for 2017, by month
@@ -52,7 +52,7 @@ get_data <- function(network_name, pollutant, autoclean = TRUE) {
 Now we are ready to plot different cities. When requesting ozone values the data is automatically cleaned and values above .2 ppm are automatically set to NA, since Guadalajara tends to have quite high ozone levels it is probably a good idea to disable this functionality.
 
 ```{r guadalajara, cache=TRUE}
-guadalajara <- get_data("Guadalajara", "O3", autoclean = FALSE)
+guadalajara <- get_data("Guadalajara", "O3", remove_extremes = FALSE)
 guadalajara <- guadalajara %>%
   group_by(date) %>%
   summarise(value = max(value, na.rm = TRUE)) %>%

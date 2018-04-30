@@ -5,7 +5,7 @@
 \title{Get air quality data from all stations by parameter}
 \usage{
 sinaica_param_data(parameter, start_date, end_date, type = "Crude",
-  autoclean = TRUE)
+  remove_extremes = TRUE)
 }
 \arguments{
 \item{parameter}{type of parameter to download
@@ -47,10 +47,12 @@ sinaica_param_data(parameter, start_date, end_date, type = "Crude",
 \item{type}{The type of data to download. One of the following:
 \itemize{
 \item{"Crude"}{ - Crude data that has not been validated}
-\item{"Manual"}{ - Manually collected data that is sent to an external for lab analysis (may no be collected daily)}
+\item{"Manual"}{ - Manually collected data that is sent to an external
+lab for analysis (may no be collected daily). Mostly used for suspend particles collected by
+pushing air through a filter which is later sent to a lab to be weighted}
 }}
 
-\item{autoclean}{wether to automatically remove invalid data and make sure
+\item{remove_extremes}{wether to automatically remove invalid data and make sure
 extreme values (as reported by SINAICa) are turned to NAs}
 }
 \value{

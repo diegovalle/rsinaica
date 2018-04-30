@@ -3,7 +3,7 @@
 export(sinaica_param_data)
 export(sinaica_station_data)
 export(sinaica_station_dates)
-export(sinaica_station_param)
+export(sinaica_station_params)
 importFrom(dplyr,filter)
 importFrom(dplyr,left_join)
 importFrom(dplyr,recode)

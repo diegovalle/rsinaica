@@ -5,7 +5,7 @@
 \title{Get air quaility data from a single measuring station}
 \usage{
 sinaica_station_data(station_id, parameter, start_date, end_date,
-  type = "Crude", autoclean = TRUE)
+  type = "Crude", remove_extremes = TRUE)
 }
 \arguments{
 \item{station_id}{the numeric code correspongind to each station. See
@@ -50,11 +50,14 @@ sinaica_station_data(station_id, parameter, start_date, end_date,
 \item{type}{The type of data to download. One of the following:
 \itemize{
 \item{"Crude"}{ - Crude data that has not been validated}
-\item{"Validated"}{ - Validated data (may not be the most up-to-date)}
-\item{"Manual"}{ - Manually collected data that is sent to an external for lab analysis (may no be collected daily)}
+\item{"Validated"}{ - data which has undergone a validation process during which
+it was cleaned, verified, and validated}
+\item{"Manual"}{ - Manually collected data that is sent to an external
+lab for analysis (may no be collected daily). Mostly used for suspend particles collected by
+pushing air through a filter which is later sent to a lab to be weighted}
 }}
 
-\item{autoclean}{wether to remove extreme values. For O3 all values above .2 are set to NA,
+\item{remove_extremes}{wether to remove extreme values. For O3 all values above .2 are set to NA,
 for PM10 those above 600, for PM2.5 above 175, for NO2 above .21, for SO2 above .2, and for CO
 above 15.}
 }

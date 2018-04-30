@@ -35,13 +35,15 @@
 #' }
 #' @param start_date start of range in YYYY-MM-DD format
 #' @param end_date end of range from which to download data in YYYY-MM-DD format
-#' @param autoclean wether to automatically remove invalid data and make sure
+#' @param remove_extremes wether to automatically remove invalid data and make sure
 #' extreme values (as reported by SINAICa) are turned to NAs
 #' @param type The type of data to download. One of the following:
 #' \itemize{
 #'  \item{"Crude"}{ - Crude data that has not been validated}
-#'  \item{"Manual"}{ - Manually collected data that is sent to an external for lab analysis (may no be collected daily)}
-#' }
+#'  \item{"Manual"}{ - Manually collected data that is sent to an external
+#'  lab for analysis (may no be collected daily). Mostly used for suspend particles collected by
+#'  pushing air through a filter which is later sent to a lab to be weighted}
+#'  }
 #'
 #' @return data.frame with a column named \emph{value} containing the air quality parameter values.
 #' If the data was validated the column named \emph{date_validated} will contain the validation
@@ -59,10 +61,10 @@
 #' head(df)
 #' }
 sinaica_param_data <- function(parameter,
-                              start_date,
-                              end_date,
-                              type = "Crude",
-                              autoclean = TRUE) {
+                               start_date,
+                               end_date,
+                               type = "Crude",
+                               remove_extremes = TRUE) {
   ## Argument Checking
   if (missing(start_date))
     stop("You need to specify a start date YYYY-MM-DD", call. = FALSE)
@@ -122,13 +124,13 @@ sinaica_param_data <- function(parameter,
 
   ## Clean the data
   if (type == "Crude")
-    parameter_clean_crude(df, autoclean, parameter)
+    parameter_clean_crude(df, remove_extremes, parameter)
   else
-    parameter_clean_manual(df, autoclean, parameter)
+    parameter_clean_manual(df, remove_extremes, parameter)
 }
 
-parameter_clean_manual <- function(df, autoclean, parameter){
-  if (!length(df) & identical(autoclean, TRUE)) {
+parameter_clean_manual <- function(df, remove_extremes, parameter){
+  if (!length(df)) {
     return(data.frame(id = character(0), station_id = integer(0),
                       station_name = character(0),
                       station_code = character(0), network_name = character(0),
@@ -138,63 +140,53 @@ parameter_clean_manual <- function(df, autoclean, parameter){
                       value_actual = character(0),
                       valid_actual = character(0),
                       validation_level = character(0),
-                      unit = character(0), value = numeric(0),
-                      stringsAsFactors = FALSE)
-    )
-  } else if (!length(df)) {
-    return(data.frame(id = character(0), estacionesId = integer(0),
-                      fecha = character(0), parametro = character(0),
-                      valorAct = character(0),
-                      validoAct = character(0), nivelValidacion = character(0),
-                      archivoId = character(0), hora = character(0),
+                      unit = character(0),
+                      value = numeric(0),
                       stringsAsFactors = FALSE)
     )
   }
-  if (identical(autoclean, TRUE)) {
+
+  lim_perm <- switch(parameter, PM10 = 600, PM2.5 = 175, NO2 = .21,
+                     SO2 = .2, CO = 15,
+                     O3 = .2, 10000000000)
+  df$value <- df$valorAct
+  df$value <- as.numeric(df$value)
+  df$value[which(!is.finite(df$value))] <- NA
+  df$value[which(df$validoAct == 0)] <- NA
+  df$value[which(df$value < 0)] <- NA
+  if (identical(remove_extremes, TRUE)) {
     ## Values above this are suppossed to be invalid
-    lim_perm <- switch(parameter, PM10 = 600, PM2.5 = 175, NO2 = .21,
-                       SO2 = .2, CO = 15,
-                       O3 = .2, 10000000000)
-    df$value <- df$valorAct
-    df$value <- as.numeric(df$value)
-    df$value[which(!is.finite(df$value))] <- NA
-    df$value[which(df$validoAct == 0)] <- NA
-    df$value[which(df$value < 0)] <- NA
     df$value[which(df$value > lim_perm)] <- NA
-
-    names(df) <- c("id", "station_id", "date",
-                   "parameter", "value_actual",
-                   "valid_actual",
-                   "validation_level", "arichive_id",
-                   "hour", "value")
-
-    df$hour <- as.integer(df$hour)
-    df$station_id <- as.integer(df$station_id)
-    df <- left_join(df, stations_sinaica[, c("station_id",
-                                             "station_name",
-                                             "station_code",
-                                             "network_name",
-                                             "network_code",
-                                             "network_id")],
-                    by = c("station_id" = "station_id"))
-    df$unit <- .recode_sinaica_units(parameter)
-    df <- df[, c("id", "station_id", "station_name",  "station_code",
-                 "network_name",
-                 "network_code",
-                 "network_id", "date", "hour",
-                 "parameter",  "value_actual",
-                 "valid_actual",
-                 "validation_level", "unit", "value")]
-    return(df)
-  } else {
-    df$estacionesId <- as.integer(df$estacionesId)
-    df$archivoId <- as.character(df$archivoId)
-    df
   }
+
+  names(df) <- c("id", "station_id", "date",
+                 "parameter", "value_actual",
+                 "valid_actual",
+                 "validation_level", "arichive_id",
+                 "hour", "value")
+
+  df$hour <- as.integer(df$hour)
+  df$station_id <- as.integer(df$station_id)
+  df <- left_join(df, stations_sinaica[, c("station_id",
+                                           "station_name",
+                                           "station_code",
+                                           "network_name",
+                                           "network_code",
+                                           "network_id")],
+                  by = c("station_id" = "station_id"))
+  df$unit <- .recode_sinaica_units(parameter)
+  df <- df[, c("id", "station_id", "station_name",  "station_code",
+               "network_name",
+               "network_code",
+               "network_id", "date", "hour",
+               "parameter",  "value_actual",
+               "valid_actual",
+               "validation_level", "unit", "value")]
+  return(df)
 }
 
-parameter_clean_crude <- function(df, autoclean, parameter) {
-  if (!length(df) & identical(autoclean, TRUE)) {
+parameter_clean_crude <- function(df, remove_extremes, parameter) {
+  if (!length(df)) {
     return(data.frame(id = character(0), station_id = integer(0),
                       station_name = character(0), station_code = character(0),
                       network_name = character(0),
@@ -212,62 +204,49 @@ parameter_clean_crude <- function(df, autoclean, parameter) {
                       value = numeric(0),
                       stringsAsFactors = FALSE)
     )
-  } else if (!length(df)) {
-    return(data.frame(id = character(0), estacionesId = integer(0),
-                      fecha = character(0), hora = character(0),
-                      parametro = character(0),
-                      valorOrig = character(0), banderasOrig = character(0),
-                      validoOrig = character(0),
-                      valorAct = character(0), validoAct = character(0),
-                      fechaValidoAct = character(0),
-                      nivelValidacion = character(0),
-                      stringsAsFactors = FALSE)
-    )
   }
 
   df$estacionesId <- as.integer(df$estacionesId)
   df$fechaValidoAct <- as.character(df$fechaValidoAct)
 
-  if (identical(autoclean, TRUE)) {
+
+
+  lim_perm <- switch(parameter, PM10 = 600, PM2.5 = 175, NO2 = .21,
+                     SO2 = .2, CO = 15,
+                     O3 = .2, 10000000000)
+  df$value <- df$valorAct
+  df$value <- as.numeric(df$value)
+  df$value[which(!is.finite(df$value))] <- NA
+  df$value[which(df$validoAct == 0)] <- NA
+  df$value[which(df$value < 0)] <- NA
+  if (identical(remove_extremes, TRUE)) {
     ## Values above this are suppossed to be invalid
-    lim_perm <- switch(parameter, PM10 = 600, PM2.5 = 175, NO2 = .21,
-                       SO2 = .2, CO = 15,
-                       O3 = .2, 10000000000)
-    df$value <- df$valorAct
-    df$value <- as.numeric(df$value)
-    df$value[which(!is.finite(df$value))] <- NA
-    df$value[which(df$validoAct == 0)] <- NA
-    df$value[which(df$value < 0)] <- NA
     df$value[which(df$value > lim_perm)] <- NA
-
-
-    names(df) <- c("id", "station_id", "date", "hour",
-                   "parameter", "value_original",
-                   "flag_original", "valid_original", "value_actual",
-                   "valid_actual", "date_validated",
-                   "validation_level", "value")
-
-    df$hour <- as.integer(df$hour)
-    df$date_validated <- as.character(df$date_validated)
-    data("stations_sinaica", package = "rsinaica", envir = environment())
-    df <- left_join(df, stations_sinaica[, c("station_id",
-                                             "station_name",
-                                             "station_code",
-                                             "network_name",
-                                             "network_code",
-                                             "network_id")],
-                    by = c("station_id" = "station_id"))
-    df$unit <- .recode_sinaica_units(parameter)
-    df <- df[, c("id", "station_id", "station_name",  "station_code",
-                 "network_name",
-                 "network_code",
-                 "network_id", "date", "hour",
+  }
+  names(df) <- c("id", "station_id", "date", "hour",
                  "parameter", "value_original",
                  "flag_original", "valid_original", "value_actual",
                  "valid_actual", "date_validated",
-                 "validation_level", "unit", "value")]
-    return(df)
+                 "validation_level", "value")
 
-  }
-  df
+  df$hour <- as.integer(df$hour)
+  df$date_validated <- as.character(df$date_validated)
+  data("stations_sinaica", package = "rsinaica", envir = environment())
+  df <- left_join(df, stations_sinaica[, c("station_id",
+                                           "station_name",
+                                           "station_code",
+                                           "network_name",
+                                           "network_code",
+                                           "network_id")],
+                  by = c("station_id" = "station_id"))
+  df$unit <- .recode_sinaica_units(parameter)
+  df <- df[, c("id", "station_id", "station_name",  "station_code",
+               "network_name",
+               "network_code",
+               "network_id", "date", "hour",
+               "parameter", "value_original",
+               "flag_original", "valid_original", "value_actual",
+               "valid_actual", "date_validated",
+               "validation_level", "unit", "value")]
+  return(df)
 }

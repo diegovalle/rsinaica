@@ -91,7 +91,7 @@ It's currently reporting data, and has been doing so since 1997. We can also que
 data.frame with the complete set of supported parameters, but not all stations support all of them.
 
 ```{r}
-cen_params <- sinaica_station_param(102)
+cen_params <- sinaica_station_params(102)
 knitr::kable(cen_params)
 ```
 

@@ -20,16 +20,19 @@ test_that("sinaica_param_data works", {
                                  0.0021908, 0.0027581, 0.0063391,
                                  0.0089907, 0.0051245, 0.0018884, 0.0029096))
 
-  df <- sinaica_param_data("O3", "2015-10-14", "2015-10-14", autoclean = FALSE)
-  expect_equal(df$valorAct[1:10], c("0.0066721", "0.014782", "0.011957",
-                                    "0.0021908", "0.0027581", "0.0063391",
-                                    "0.0089907", "0.0051245", "0.0018884",
-                                    "0.0029096"))
-  expect_equal(names(df), c("id", "estacionesId", "fecha", "hora",
-                            "parametro", "valorOrig",
-               "banderasOrig", "validoOrig", "valorAct",
-               "validoAct", "fechaValidoAct",
-               "nivelValidacion"))
+  df <- sinaica_param_data("O3", "2015-10-14", "2015-10-14", remove_extreme = FALSE)
+  expect_equal(df$value[1:10], c(0.0066721, 0.014782, 0.011957,
+                                    0.0021908, 0.0027581, 0.0063391,
+                                    0.0089907, 0.0051245, 0.0018884,
+                                    0.0029096))
+  expect_equal(names(df), c("id", "station_id", "station_name",
+                            "station_code", "network_name",
+                            "network_code", "network_id",
+                            "date", "hour", "parameter", "value_original",
+                            "flag_original", "valid_original",
+                            "value_actual", "valid_actual",
+                            "date_validated", "validation_level",
+                            "unit", "value"))
 
   df <- sinaica_param_data("PM10", "2014-01-01", "2014-01-05",
                       "Manual")
@@ -38,7 +41,7 @@ test_that("sinaica_param_data works", {
 
   ## should be an empty data.frame
   df <- sinaica_param_data("CN", "1997-01-01", "1997-01-01", "Crude",
-                            autoclean = TRUE)
+                           remove_extreme = TRUE)
   expect_equal(nrow(df), 0)
   expect_equal(unname(unlist(lapply(df, typeof))),
                c("character", "integer", "character", "character", "character",
@@ -47,22 +50,24 @@ test_that("sinaica_param_data works", {
                  "character", "character",
                  "character", "character", "character", "double"))
   df <- sinaica_param_data("CN", "1997-01-01", "1997-01-01", "Crude",
-                            autoclean = FALSE)
+                           remove_extreme = FALSE)
   expect_equal(nrow(df), 0)
   expect_equal(unname(unlist(lapply(df, typeof))),
                c("character", "integer", "character", "character", "character",
+                 "character", "integer", "character", "integer", "character",
                  "character", "character", "character",
                  "character", "character",
-                 "character", "character"))
+                 "character", "character", "character", "double"))
 
   df <- sinaica_param_data("PM10", "2014-01-01", "2014-01-01",
-                            "Manual", autoclean = FALSE)
+                            "Manual", remove_extreme = FALSE)
   expect_equal(nrow(df), 0)
   expect_equal(unname(unlist(lapply(df, typeof))),
                c("character", "integer", "character", "character", "character",
-                 "character", "character", "character", "character"))
+                 "character", "integer", "character", "integer", "character",
+                 "character", "character", "character", "character", "double"))
   df <- sinaica_param_data("PM10", "2014-01-01", "2014-01-01",
-                            "Manual", autoclean = TRUE)
+                            "Manual", remove_extreme = TRUE)
   expect_equal(nrow(df), 0)
   expect_equal(unname(unlist(lapply(df, typeof))),
                c("character", "integer", "character", "character", "character",

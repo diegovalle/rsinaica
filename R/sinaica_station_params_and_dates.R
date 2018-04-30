@@ -18,9 +18,9 @@
 #'
 #' @examples
 #' ## id 271 is Xalostoc. See `stations_sinaica`
-#' df <- sinaica_station_param(271, "Crude")
+#' df <- sinaica_station_params(271, "Crude")
 #' head(df)
-sinaica_station_param <- function(station_id,
+sinaica_station_params <- function(station_id,
                                    type = "Crude") {
   if (missing(station_id))
     stop(paste0("argument station_id is missing, please provide it. The",
@@ -66,7 +66,7 @@ sinaica_station_param <- function(station_id,
                       parameter_name = character(0),
                       stringsAsFactors = FALSE)
            )
-  names(df) <- c("parameter_code", "parameter_name")
+  names(df) <- c("param_code", "param_name")
   df
 }
 

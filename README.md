@@ -71,32 +71,32 @@ Then we query the dates for which SINAICA has data from the station:
 
 ``` r
 sinaica_station_dates(102)
-#> [1] "1997-01-01" "2018-04-27"
+#> [1] "1997-01-01" "2018-04-29"
 ```
 
 It's currently reporting data, and has been doing so since 1997. We can also query which type of parameters (pollution, wind, solar radiation, etc) the station has sensors for. Note that the package also includes a `parameters` data.frame with the complete set of supported parameters, but not all stations support all of them.
 
 ``` r
-cen_params <- sinaica_station_param(102)
+cen_params <- sinaica_station_params(102)
 knitr::kable(cen_params)
 ```
 
-| parameter\_code | parameter\_name                 |
-|:----------------|:--------------------------------|
-| CN              | Carbono negro                   |
-| SO2             | Dióxido de azufre               |
-| NO2             | Dióxido de nitrógeno            |
-| DV              | Dirección del viento            |
-| HR              | Humedad relativa                |
-| CO              | Monóxido de carbono             |
-| NO              | Óxido nítrico                   |
-| NOx             | Óxidos de nitrógeno             |
-| O3              | Ozono                           |
-| PM10            | Partículas menores a 10 micras  |
-| PM2.5           | Partículas menores a 2.5 micras |
-| PP              | Precipitación pluvial           |
-| TMPI            | Temperatura interior            |
-| VV              | Velocidad del viento            |
+| param\_code | param\_name                     |
+|:------------|:--------------------------------|
+| CN          | Carbono negro                   |
+| SO2         | Dióxido de azufre               |
+| NO2         | Dióxido de nitrógeno            |
+| DV          | Dirección del viento            |
+| HR          | Humedad relativa                |
+| CO          | Monóxido de carbono             |
+| NO          | Óxido nítrico                   |
+| NOx         | Óxidos de nitrógeno             |
+| O3          | Ozono                           |
+| PM10        | Partículas menores a 10 micras  |
+| PM2.5       | Partículas menores a 2.5 micras |
+| PP          | Precipitación pluvial           |
+| TMPI        | Temperatura interior            |
+| VV          | Velocidad del viento            |
 
 Finally, we can download and plot particulate matter with a diameter smaller than 10 micrometers (μm) (PM<sub>10</sub>) for the month of January
 

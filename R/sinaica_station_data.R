@@ -38,12 +38,15 @@
 #' @param type The type of data to download. One of the following:
 #' \itemize{
 #'  \item{"Crude"}{ - Crude data that has not been validated}
-#'  \item{"Validated"}{ - Validated data (may not be the most up-to-date)}
-#'  \item{"Manual"}{ - Manually collected data that is sent to an external for lab analysis (may no be collected daily)}
+#'  \item{"Validated"}{ - data which has undergone a validation process during which
+#'  it was cleaned, verified, and validated}
+#'  \item{"Manual"}{ - Manually collected data that is sent to an external
+#'  lab for analysis (may no be collected daily). Mostly used for suspend particles collected by
+#'  pushing air through a filter which is later sent to a lab to be weighted}
 #' }
 #' @param start_date start of range in YYYY-MM-DD format
 #' @param end_date end of range from which to download data in YYYY-MM-DD format
-#' @param autoclean wether to remove extreme values. For O3 all values above .2 are set to NA,
+#' @param remove_extremes wether to remove extreme values. For O3 all values above .2 are set to NA,
 #' for PM10 those above 600, for PM2.5 above 175, for NO2 above .21, for SO2 above .2, and for CO
 #' above 15.
 #'
@@ -68,7 +71,7 @@ sinaica_station_data <- function(station_id,
                             start_date,
                             end_date,
                             type = "Crude",
-                            autoclean = TRUE
+                            remove_extremes = TRUE
                             ) {
   if (missing(station_id))
     stop(paste0("argument station_id is missing, please provide it. The",
@@ -171,7 +174,7 @@ sinaica_station_data <- function(station_id,
 
   ## If you look at the source of http://sinaica.inecc.gob.mx/data.php
   ## they filter values above certain limits
-  if (identical(autoclean, TRUE)) {
+  if (identical(remove_extremes, TRUE)) {
     lim_perm <- switch(parameter,
                        PM10 = 600,
                        PM2.5 = 175,

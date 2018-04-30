@@ -48,12 +48,12 @@ NULL
 #'
 #' @format A data frame with 55 rows and 2 variables:
 #' \describe{
-#'   \item{parameter_code}{Abbreviation of the air quality parameter}
-#'   \item{parameter_name}{Name of the air quality parameter}
+#'   \item{param_code}{Abbreviation of the air quality parameter}
+#'   \item{param_name}{Name of the air quality parameter}
 #' }
 #' @docType data
-#' @name parameters_sinaica
+#' @name params_sinaica
 #' @source \href{http://sinaica.inecc.gob.mx/}{SINAICA}
 #' @examples
-#' head(parameters_sinaica)
+#' head(params_sinaica)
 NULL

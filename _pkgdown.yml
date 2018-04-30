@@ -16,12 +16,12 @@ reference:
     desc: Functions to query the dates and parameters for a station
     contents:
       - '`sinaica_station_dates`'
-      - '`sinaica_station_param`'
+      - '`sinaica_station_params`'
   - title: Datasets
     desc: Station locations and air quality parameters
     contents:
       - '`stations_sinaica`'
-      - '`parameters_sinaica`'
+      - '`params_sinaica`'
   - title: Package
     desc: aire.zmvm package
     contents:
