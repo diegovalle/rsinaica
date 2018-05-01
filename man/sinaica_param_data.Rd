@@ -5,7 +5,7 @@
 \title{Get air quality data from all stations by parameter}
 \usage{
 sinaica_param_data(parameter, start_date, end_date, type = "Crude",
-  remove_extremes = TRUE)
+  remove_extremes = FALSE)
 }
 \arguments{
 \item{parameter}{type of parameter to download
@@ -52,8 +52,10 @@ lab for analysis (may no be collected daily). Mostly used for suspend particles 
 pushing air through a filter which is later sent to a lab to be weighted}
 }}
 
-\item{remove_extremes}{wether to automatically remove invalid data and make sure
-extreme values (as reported by SINAICa) are turned to NAs}
+\item{remove_extremes}{wether to remove extreme values. For O3 all values above .2 are set to NA,
+for PM10 those above 600, for PM2.5 above 175, for NO2 above .21, for SO2 above .2, and for CO
+above 15. This is done so that the values match exactly those of the SINAICA website, but it is
+recommended that you use a more complicated statistical procedure to remove outliers.}
 }
 \value{
 data.frame with a column named \emph{value} containing the air quality parameter values.

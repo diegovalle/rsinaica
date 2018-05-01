@@ -52,48 +52,37 @@ get_data <- function(network_name, pollutant, remove_extremes = TRUE) {
 Now we are ready to plot different cities. When requesting ozone values the data is automatically cleaned and values above .2 ppm are automatically set to NA, since Guadalajara tends to have quite high ozone levels it is probably a good idea to disable this functionality.
 
 ```{r guadalajara, cache=TRUE}
-guadalajara <- get_data("Guadalajara", "O3", remove_extremes = FALSE)
-guadalajara <- guadalajara %>%
-  group_by(date) %>%
-  summarise(value = max(value, na.rm = TRUE)) %>%
-  filter(value < .3)
-
-ggplot(guadalajara, aes(as.Date(date), value)) +
-  geom_point(alpha = .8, size = .3) +
+guadalajara <- get_data("Guadalajara", "O3", remove_extremes = FALSE) %>%
+  ## remove ozone values above .3 cause Guadalajara air is extremely dirty
+  filter(value < .3 & value >= 0) %>%
+  ggplot(aes(as.Date(date), value)) +
+  geom_point(alpha = .2, size = .3) +
   geom_smooth(method = 'gam', formula = y ~ s(x)) + 
-  ggtitle("Maximum daily ozone values reported by Guadalajara stations") +
+  ggtitle("Daily ozone values reported by allGuadalajara stations") +
   xlab("date") +
   ylab("ppm") +
   theme_bw()
 ```
 
 ```{r toluca, cache=TRUE}
-toluca <- get_data("Toluca", "PM2.5")
-toluca <- toluca %>%
-  group_by(date) %>%
-  summarise(value = max(value, na.rm = TRUE))
-
-ggplot(toluca, aes(as.Date(date), value)) +
-  geom_point(alpha = .8, size = .3) +
+get_data("Toluca", "PM2.5", remove_extremes = FALSE) %>%
+  ggplot(aes(as.Date(date), value)) +
+  geom_point(alpha = .3, size = .3) +
   geom_smooth(method = 'gam', formula = y ~ s(x)) + 
-  ggtitle(expression(paste("Maximum daily ", PM[2.5], 
-                           " values reported by Toluca stations"))) +
+  ggtitle(expression(paste("Daily ", PM[2.5], 
+                           " values reported by all Toluca stations"))) +
   xlab("date") +
   ylab(expression(paste(mu,"g/", m^3))) +
   theme_bw()
 ```
 
 ```{r pachuca, cache=TRUE}
-pachuca <- get_data("Pachuca", "PM2.5")
-pachuca <- pachuca %>%
-  group_by(date) %>%
-  summarise(value = max(value, na.rm = TRUE))
-
-ggplot(pachuca, aes(as.Date(date), value)) +
-  geom_point(alpha = .8, size = .3) +
+get_data("Pachuca", "PM2.5", remove_extremes = FALSE) %>%
+  ggplot(aes(as.Date(date), value)) +
+  geom_point(alpha = .3, size = .3) +
   geom_smooth(method = 'gam', formula = y ~ s(x)) + 
-  ggtitle(expression(paste("Maximum daily ", PM[2.5], 
-                           " values reported by Pachuca stations"))) +
+  ggtitle(expression(paste("Daily ", PM[2.5], 
+                           " values reported by all Pachuca stations"))) +
   xlab("date") +
   ylab(expression(paste(mu,"g/", m^3))) +
   theme_bw()
@@ -101,17 +90,14 @@ ggplot(pachuca, aes(as.Date(date), value)) +
 
 
 ```{r monterrey, cache=TRUE}
-monterrey <- get_data("Monterrey", "PM10")
-monterrey <- monterrey %>%
-  group_by(date) %>%
-  summarise(value = max(value, na.rm = TRUE))
-
-ggplot(monterrey, aes(as.Date(date), value)) +
-  geom_point(alpha = .8, size = .3) +
+get_data("Monterrey", "PM10", remove_extremes = FALSE) %>%
+  ggplot(aes(as.Date(date), value)) +
+  geom_point(alpha = .2, size = .3) +
   geom_smooth(method = 'gam', formula = y ~ s(x)) + 
-  ggtitle(expression(paste("Maximum daily ", PM[10], 
-                           " values reported by Monterrey stations"))) +
+  ggtitle(expression(paste("Daily ", PM[10], 
+                           " values reported by all Monterrey stations"))) +
   xlab("date") +
   ylab(expression(paste(mu,"g/", m^3))) +
   theme_bw()
 ```
+

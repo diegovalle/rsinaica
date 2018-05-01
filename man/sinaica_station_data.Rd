@@ -5,7 +5,7 @@
 \title{Get air quaility data from a single measuring station}
 \usage{
 sinaica_station_data(station_id, parameter, start_date, end_date,
-  type = "Crude", remove_extremes = TRUE)
+  type = "Crude", remove_extremes = FALSE)
 }
 \arguments{
 \item{station_id}{the numeric code correspongind to each station. See
@@ -59,7 +59,8 @@ pushing air through a filter which is later sent to a lab to be weighted}
 
 \item{remove_extremes}{wether to remove extreme values. For O3 all values above .2 are set to NA,
 for PM10 those above 600, for PM2.5 above 175, for NO2 above .21, for SO2 above .2, and for CO
-above 15.}
+above 15. This is done so that the values match exactly those of the SINAICA website, but it is
+recommended that you use a more complicated statistical procedure to remove outliers.}
 }
 \value{
 data.frame with air quality data
