@@ -35,8 +35,10 @@
 #' }
 #' @param start_date start of range in YYYY-MM-DD format
 #' @param end_date end of range from which to download data in YYYY-MM-DD format
-#' @param remove_extremes wether to automatically remove invalid data and make sure
-#' extreme values (as reported by SINAICa) are turned to NAs
+#' @param remove_extremes wether to remove extreme values. For O3 all values above .2 are set to NA,
+#' for PM10 those above 600, for PM2.5 above 175, for NO2 above .21, for SO2 above .2, and for CO
+#' above 15. This is done so that the values match exactly those of the SINAICA website, but it is
+#' recommended that you use a more complicated statistical procedure to remove outliers.
 #' @param type The type of data to download. One of the following:
 #' \itemize{
 #'  \item{"Crude"}{ - Crude data that has not been validated}
@@ -64,7 +66,7 @@ sinaica_param_data <- function(parameter,
                                start_date,
                                end_date,
                                type = "Crude",
-                               remove_extremes = TRUE) {
+                               remove_extremes = FALSE) {
   ## Argument Checking
   if (missing(start_date))
     stop("You need to specify a start date YYYY-MM-DD", call. = FALSE)
@@ -151,12 +153,12 @@ parameter_clean_manual <- function(df, remove_extremes, parameter){
                      O3 = .2, 10000000000)
   df$value <- df$valorAct
   df$value <- as.numeric(df$value)
-  df$value[which(!is.finite(df$value))] <- NA
-  df$value[which(df$validoAct == 0)] <- NA
-  df$value[which(df$value < 0)] <- NA
+  df$value[which(!is.finite(df$value))] <- NA_real_
+  df$value[which(df$validoAct == 0)] <- NA_real_
+  df$value[which(df$value < 0)] <- NA_real_
   if (identical(remove_extremes, TRUE)) {
     ## Values above this are suppossed to be invalid
-    df$value[which(df$value > lim_perm)] <- NA
+    df$value[which(df$value > lim_perm)] <- NA_real_
   }
 
   names(df) <- c("id", "station_id", "date",
@@ -216,12 +218,12 @@ parameter_clean_crude <- function(df, remove_extremes, parameter) {
                      O3 = .2, 10000000000)
   df$value <- df$valorAct
   df$value <- as.numeric(df$value)
-  df$value[which(!is.finite(df$value))] <- NA
-  df$value[which(df$validoAct == 0)] <- NA
-  df$value[which(df$value < 0)] <- NA
+  df$value[which(!is.finite(df$value))] <- NA_real_
+  df$value[which(df$validoAct == 0)] <- NA_real_
+  df$value[which(df$value < 0)] <- NA_real_
   if (identical(remove_extremes, TRUE)) {
     ## Values above this are suppossed to be invalid
-    df$value[which(df$value > lim_perm)] <- NA
+    df$value[which(df$value > lim_perm)] <- NA_real_
   }
   names(df) <- c("id", "station_id", "date", "hour",
                  "parameter", "value_original",

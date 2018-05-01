@@ -48,7 +48,8 @@
 #' @param end_date end of range from which to download data in YYYY-MM-DD format
 #' @param remove_extremes wether to remove extreme values. For O3 all values above .2 are set to NA,
 #' for PM10 those above 600, for PM2.5 above 175, for NO2 above .21, for SO2 above .2, and for CO
-#' above 15.
+#' above 15. This is done so that the values match exactly those of the SINAICA website, but it is
+#' recommended that you use a more complicated statistical procedure to remove outliers.
 #'
 #' @return data.frame with air quality data
 #' @importFrom dplyr filter
@@ -71,7 +72,7 @@ sinaica_station_data <- function(station_id,
                             start_date,
                             end_date,
                             type = "Crude",
-                            remove_extremes = TRUE
+                            remove_extremes = FALSE
                             ) {
   if (missing(station_id))
     stop(paste0("argument station_id is missing, please provide it. The",
@@ -184,8 +185,8 @@ sinaica_station_data <- function(station_id,
                        O3 = .2,
                        10000000000)
     df$value[which(df$value > lim_perm)] <- NA_real_
-    df$value[which(df$value < 0)] <- NA_real_
   }
+  df$value[which(df$value < 0)] <- NA_real_
   data("stations_sinaica", package = "rsinaica", envir = environment())
   df <- left_join(df, stations_sinaica[, c("station_id", "station_name")],
                   by = "station_id")
