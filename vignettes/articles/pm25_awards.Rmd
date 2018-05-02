@@ -76,6 +76,7 @@ pm25_2017 %>%
 
 ## filter stations that didn't report at least 47 weeks of the year
 df_filtered <- pm25_2017 %>%
+  filter(value < 250) %>%
   mutate(value = if_else(value < 1, NA_real_, value)) %>%
   group_by(network_name) %>%
   filter(!is.na(value)) %>%

@@ -16,13 +16,14 @@ knitr::opts_chunk$set(
 )
 ```
 
-
+We can use the package to find out which city is the most ozone-polluted in all of Mexico.
 
 Load the packages
 
 ```{r packages,warning=FALSE,message=FALSE}
 ## Auto-install required R packages
-packs <- c("dplyr", "ggplot2", "gghighlight", "lubridate", "anomalize")
+packs <- c("dplyr", "ggplot2", "gghighlight", "lubridate", "anomalize", 
+           "aire.zmvm", "tidyr", "zoo", "plotly")
 success <- suppressWarnings(sapply(packs, require, character.only = TRUE))
 if (length(names(success)[!success])) {
   install.packages(names(success)[!success])
@@ -39,6 +40,7 @@ o3_2017 <- bind_rows(
          "O3",
          seq(as.Date("2017-01-01"), as.Date("2017-12-01"), by = "month"),
          seq(as.Date("2017-02-01"), as.Date("2018-01-01"), by = "month") - 1,
+         remove_extremes = FALSE,
          SIMPLIFY = FALSE)
 )
        
@@ -68,7 +70,8 @@ df_filtered <- o3_2017 %>%
   # filter values above .155 (phase I pollution contingency)
   # that occurred during the night, since ozone is a photosensitive
   # pollutant
-  filter(!(value > .155 & hour %in% c(0:11, 20:23))) 
+  filter(!(value > .155 & hour %in% c(0:12, 20:23))) %>%
+  filter(value < .3)
 
 df_filtered %>%
   group_by(network_name) %>%
@@ -98,13 +101,32 @@ ggplot(df_max, aes(as.Date(date), max)) +
   theme_bw() +
   theme(axis.text.x=element_text(angle=60,hjust=1))
 
+# ggplot(df_filtered %>%
+#   mutate(date = as.POSIXct(paste0(date, " ", hour, ":00")),  tz = "Etc/GMT+6"), aes(date, value)) +
+#   geom_line(size = .3, color = "black")+
+#   facet_wrap(~ network_name, ncol = 3) +
+#   ggtitle("Maximum daily ozone concentration by network") +
+#   xlab("date") +
+#   ylab("daily maximum hourly ozone concentration (ppm)") +
+#   theme_bw() +
+#   theme(axis.text.x=element_text(angle=60,hjust=1))
+
 df_max <- df_max %>%
   ungroup() %>%
   group_by(network_name) %>%
   mutate(date = as.Date(date)) %>%
-  time_decompose(max, method = "stl") %>%
+  time_decompose(max, method = "twitter", trend = "3 months") %>%
   anomalize(remainder, method = "gesd", alpha = 0.0001) %>%
   time_recompose()
+
+# df_max <- df_filtered %>%
+#   mutate(date = as.POSIXct(paste0(date, " ", hour, ":00")),  tz = "Etc/GMT+6") %>%
+#   ungroup() %>%
+#   group_by(station_id) %>%
+#   arrange(date) %>%
+#   time_decompose(value, method = "stl") %>%
+#   anomalize(remainder, method = "gesd", alpha = 0.0001) %>%
+#   time_recompose()
 
 
 # Anomaly Visualization
@@ -113,9 +135,10 @@ df_max %>% plot_anomalies(time_recomposed = TRUE, ncol = 3, alpha_dots = 0.25) +
 
 df_max <- filter(df_max, anomaly != "Yes")
 ```
+It was decided to remove Piedras Negras
 
 ```{r}
-
+df_max <- filter(df_max, network_name != "Piedras Negras")
 gghighlight_line(df_max, aes(as.Date(date), observed, 
                               group = network_name, color = network_name),
                  mean(observed, na.rm = TRUE), max_highlight = 1) +
@@ -127,9 +150,6 @@ gghighlight_line(df_max, aes(as.Date(date), observed,
 
 
 ```{r plotly, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 4,out.width = '100%'}
-library("plotly")
-library("tidyr")
-library("zoo")
 
 top3 <- filter(df_max, network_name %in% c("Valle de México",
                                            "Guadalajara",
@@ -153,6 +173,8 @@ plot_ly(as.data.frame(top3), x = ~date, y = ~`Valle de México`, name = "Valle d
   add_trace(y = ~Monterrey, name = 'Monterrey', mode = 'lines', line = list(color = '#4daf4a'), width = .5) %>%
   layout(title = "Top 3 most ozone-polluted cities in Mexico", xaxis = x, yaxis = y)
 ```
+
+
 ```{r}
 df_max %>%
   group_by(network_name) %>%

@@ -71,6 +71,7 @@ Filter netwroks that did not collect or report data for at least 47 weeks and 29
 
 pm10_2017 %>%
   mutate(value = ifelse(value < 3, NA, value)) %>%
+  filter(value < 600) %>%
   group_by(network_name) %>%
   filter(!is.na(value)) %>%
   summarise(count = n_distinct(week(date))) %>%

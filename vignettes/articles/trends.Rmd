@@ -11,7 +11,7 @@ With this package we can plot the long term trends in pollution for different ci
 
 ```{r packages, warning=FALSE,message=FALSE}
 ## Auto-install required R packages
-packs <- c("dplyr", "ggplot2", "lubridate")
+packs <- c("dplyr", "ggplot2", "lubridate", "scales")
 success <- suppressWarnings(sapply(packs, require, character.only = TRUE))
 if (length(names(success)[!success])) {
   install.packages(names(success)[!success])
@@ -24,7 +24,7 @@ library("rsinaica")
 We create a function for downloading single pollutant data for all the stations that form a network
 
 ```{r function, warning=FALSE}
-get_data <- function(network_name, pollutant, remove_extremes = TRUE) {
+get_network_data <- function(network_name, pollutant, remove_extremes = TRUE) {
   ## Download data for all Aguascalientes stations for a single month
   get_month <- function(start_date, end_date, net){
     bind_rows(
@@ -51,53 +51,60 @@ get_data <- function(network_name, pollutant, remove_extremes = TRUE) {
 
 Now we are ready to plot different cities. When requesting ozone values the data is automatically cleaned and values above .2 ppm are automatically set to NA, since Guadalajara tends to have quite high ozone levels it is probably a good idea to disable this functionality.
 
-```{r guadalajara, cache=TRUE}
-guadalajara <- get_data("Guadalajara", "O3", remove_extremes = FALSE) %>%
+```{r guadalajara, cache=TRUE, warning=FALSE}
+get_network_data("Guadalajara", "O3", remove_extremes = FALSE) %>%
   ## remove ozone values above .3 cause Guadalajara air is extremely dirty
   filter(value < .3 & value >= 0) %>%
   ggplot(aes(as.Date(date), value)) +
-  geom_point(alpha = .2, size = .3) +
+  geom_point(alpha = .01, size = .3) +
   geom_smooth(method = 'gam', formula = y ~ s(x)) + 
-  ggtitle("Daily ozone values reported by allGuadalajara stations") +
+  ggtitle("Daily ozone values reported by all Guadalajara stations") +
   xlab("date") +
   ylab("ppm") +
+  coord_cartesian(ylim = c(0, 0.3)) +
   theme_bw()
 ```
 
-```{r toluca, cache=TRUE}
-get_data("Toluca", "PM2.5", remove_extremes = FALSE) %>%
+```{r toluca, cache=TRUE, warning=FALSE}
+get_network_data("Toluca", "PM2.5", remove_extremes = FALSE) %>%
+  filter(value <= 750) %>%
   ggplot(aes(as.Date(date), value)) +
-  geom_point(alpha = .3, size = .3) +
+  geom_point(alpha = .01, size = .3) +
   geom_smooth(method = 'gam', formula = y ~ s(x)) + 
   ggtitle(expression(paste("Daily ", PM[2.5], 
                            " values reported by all Toluca stations"))) +
   xlab("date") +
   ylab(expression(paste(mu,"g/", m^3))) +
+  coord_cartesian(ylim = c(0, 210)) +
   theme_bw()
 ```
 
-```{r pachuca, cache=TRUE}
-get_data("Pachuca", "PM2.5", remove_extremes = FALSE) %>%
+```{r pachuca, cache=TRUE, warning=FALSE}
+get_network_data("Pachuca", "PM2.5", remove_extremes = FALSE) %>%
+  filter(value <= 600) %>%
   ggplot(aes(as.Date(date), value)) +
-  geom_point(alpha = .3, size = .3) +
+  geom_point(alpha = .01, size = .3) +
   geom_smooth(method = 'gam', formula = y ~ s(x)) + 
   ggtitle(expression(paste("Daily ", PM[2.5], 
                            " values reported by all Pachuca stations"))) +
   xlab("date") +
   ylab(expression(paste(mu,"g/", m^3))) +
+  coord_cartesian(ylim = c(0, 150)) +
   theme_bw()
 ```
 
 
-```{r monterrey, cache=TRUE}
-get_data("Monterrey", "PM10", remove_extremes = FALSE) %>%
+```{r monterrey, cache=TRUE, warning=FALSE}
+get_network_data("Monterrey", "PM10", remove_extremes = FALSE) %>%
+  filter(value <= 1000) %>%
   ggplot(aes(as.Date(date), value)) +
-  geom_point(alpha = .2, size = .3) +
+  geom_point(alpha = .01, size = .3) +
   geom_smooth(method = 'gam', formula = y ~ s(x)) + 
   ggtitle(expression(paste("Daily ", PM[10], 
                            " values reported by all Monterrey stations"))) +
   xlab("date") +
   ylab(expression(paste(mu,"g/", m^3))) +
+  coord_cartesian(ylim=c(0, 500)) +
   theme_bw()
 ```
 
