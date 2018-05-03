@@ -71,7 +71,7 @@ Filter netwroks that did not collect or report data for at least 47 weeks and 29
 
 pm10_2017 %>%
   mutate(value = ifelse(value < 3, NA, value)) %>%
-  filter(value < 600) %>%
+  ##filter(value < 600) %>%
   group_by(network_name) %>%
   filter(!is.na(value)) %>%
   summarise(count = n_distinct(week(date))) %>%
@@ -97,7 +97,7 @@ df_max <- df_filtered %>%
            date = as.character(seq(as.Date("2017-01-01"), as.Date("2017-12-31"), by = "day"))) %>%
   group_by(station_id, network_name) %>%
   arrange(station_id, date, hour) %>%
-  mutate(roll24 = rollapply(value, 24, mean, na.rm = TRUE, partial = 20, 
+  mutate(roll24 = rollapply(value, 24, mean, na.rm = TRUE, partial = 18, 
                             fill = NA, align = "right")) %>%
   ungroup() %>%
   #summarise(mean = mean(value, na.rm = TRUE)) %>%
@@ -116,18 +116,21 @@ df_max <- df_filtered %>%
 ggplot(df_max, aes(as.Date(date), max)) +
   geom_line(size = .3, color = "black") +
   facet_wrap(~ network_name, ncol = 3) +
-  ggtitle("Maximum daily ozone concentration by network") +
+  ggtitle(expression(paste("Maximum daily ", 
+                           PM[10], " values in 2017"))) +
   xlab("date") +
-  ylab("daily maximum hourly ozone concentration (ppm)") +
+  ylab(expression(paste("daily maximum 24 average of ", PM[10], 
+                        " (", mu,"g/", m^3, ")"))) +
   theme_bw() +
   theme(axis.text.x=element_text(angle=60,hjust=1))
 
 df_max <- df_max %>%
+  filter(max <= 750) %>%
   ungroup() %>%
   group_by(network_name) %>%
   mutate(date = as.Date(date)) %>%
   time_decompose(max, method = "stl") %>%
-  anomalize(remainder, method = "gesd", alpha = 0.0001) %>%
+  anomalize(remainder, method = "iqr", alpha = 0.02) %>%
   time_recompose()
 
 
@@ -135,11 +138,11 @@ df_max <- df_max %>%
 df_max %>% plot_anomalies(time_recomposed = TRUE, ncol = 3, alpha_dots = 0.25) +
   labs(title = "Tidyverse Anomalies", subtitle = "STL + GESD Methods") 
 
-#df_max <- filter(df_max, anomaly != "Yes")
+df_max <- filter(df_max, anomaly != "Yes")
 ```
 
 ```{r}
-
+df_max <- filter(df_max, network_name != "Monclova")
 gghighlight_line(df_max, aes(as.Date(date), observed, 
                               group = network_name, color = network_name),
                  mean(observed, na.rm = TRUE), max_highlight = 1) +

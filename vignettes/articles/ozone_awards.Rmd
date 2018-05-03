@@ -58,6 +58,7 @@ knitr::kable(head(o3_2017))
 # Only include stations that reported for more than 80% of days (292)
 df_filtered <- o3_2017 %>%
   filter(!is.na(value)) %>%
+  filter(value > .0001) %>%
   add_count(station_id, network_name) %>%
   ## these stations are mostly error values
   filter(!station_id %in% c(173, #"Facultad Psicología" SLP
@@ -67,10 +68,10 @@ df_filtered <- o3_2017 %>%
                             39, #COCABH Mexicali
                             56 #Conalep torreon
                             )) %>%
-  # filter values above .155 (phase I pollution contingency)
+  # filter values above .095 (bad (MALA) air quality)
   # that occurred during the night, since ozone is a photosensitive
   # pollutant
-  filter(!(value > .155 & hour %in% c(0:12, 20:23))) %>%
+  filter(!(value > .0955 & hour %in% c(0:11, 20:23))) %>%
   filter(value < .3)
 
 df_filtered %>%
@@ -115,8 +116,8 @@ df_max <- df_max %>%
   ungroup() %>%
   group_by(network_name) %>%
   mutate(date = as.Date(date)) %>%
-  time_decompose(max, method = "twitter", trend = "3 months") %>%
-  anomalize(remainder, method = "gesd", alpha = 0.0001) %>%
+  time_decompose(max) %>%
+  anomalize(remainder, method = "iqr", alpha = .03) %>%
   time_recompose()
 
 # df_max <- df_filtered %>%
