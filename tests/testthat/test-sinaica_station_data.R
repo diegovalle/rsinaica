@@ -39,6 +39,30 @@ test_that("sinaica_station_data returns correct data", {
                           0.027, 0.027, 0.029, 0.024,
                           0.016, 0.007, 0.01, 0.01, 0.01, 0.008))
 
+  # Because remove_extremes is set to TRUE this will actually match the
+  # data on the SINAICA website for the station "Miravalle"
+  df <- sinaica_station_data(106, "O3", "2017-06-12", "2017-06-12", "Crude",
+                             remove_extremes = TRUE)
+  expect_equal(df$value, c(0.041803, 0.04066, 0.040928, 0.04081,
+                           0.027097, 0.020292, 0.015198,
+                           0.021249, 0.0078623, 0.0069464,
+                           0.012834, 0.025063, 0.039992,
+                           0.064407, 0.11428, 0.154, 0.18171, NA,
+                           0.16116, 0.12221, 0.08886,
+                           0.064847, 0.055287, 0.047521))
+
+  # Because remove_extremes is set to FALSE this will not match the
+  # data on the SINAICA website for the station "Miravalle"
+  df <- sinaica_station_data(106, "O3", "2017-06-12", "2017-06-12", "Crude",
+                             remove_extremes = FALSE)
+  expect_equal(df$value, c(0.041803, 0.04066, 0.040928, 0.04081,
+                           0.027097, 0.020292, 0.015198,
+                           0.021249, 0.0078623, 0.0069464,
+                           0.012834, 0.025063, 0.039992,
+                           0.064407, 0.11428, 0.154, 0.18171, 0.2002900,
+                           0.16116, 0.12221, 0.08886,
+                           0.064847, 0.055287, 0.047521))
+
   # Datos validados
   df <- sinaica_station_data(271, "O3", "2015-10-14", "2015-11-14", "Validated")
   expect_equal(df$value[743:748], c(0.013, 0.009, 0.019, 0.017, 0.018, 0.02))
