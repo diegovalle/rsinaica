@@ -25,7 +25,7 @@ library("rsinaica")
 ```
 ## Incomplete data
 
-The data is incomplete in the sense that some networks don't report in a timely maner the values of all the pollutants they measure. For example, if you go to the [Mexicali air quality website](http://www.mexicali.gob.mx/webpub/consultaweb/EmmcaHistorial.aspx) you'll see that they have a section reporting *recent* PM<sub>10</sub> pollution values, but when you query SINAICA for the dates supported by all
+The data is incomplete in the sense that some networks don't report in a timely maner the values of all the pollutants they measure. For example, if you visit the [Mexicali air quality website](http://www.mexicali.gob.mx/webpub/consultaweb/EmmcaHistorial.aspx) you'll see that they have a section reporting *recent* PM<sub>10</sub> pollution values, but when you query SINAICA for the dates supported by all
 the Mexicali stations, none support downloading *recent* PM<sub>10</sub> data.
 
 ```{r}
@@ -36,17 +36,21 @@ names(ll) <- mexicali$station_id
 ll
 ```
 
+There's only manually collected data available from SINAICA, while the data at the [Mexicali air quality website](http://www.mexicali.gob.mx/webpub/consultaweb/EmmcaHistorial.aspx) seems to be automatically collected, since it's available hourly. Guess they just haven't gotten around to connecting this new air quality information source to SINAICA.
 
 ## Errors in validation
 
-The data reported to SINAICA is supposed to be checked for extreme values and errors, but their methodology must not be very good: The station CBTIS in Aguascalientes reported pure garbage for ozone data in 2017 as can be seen in the chart below. A value higher than 0.155 ppm would be a phase I contingency in Mexico City, and given that ozone production depends on chemical reactions between oxides of nitrogen and volatile organic compounds in the presence of sunlight, it's extremely unlikely to be present in large quantities at night or in the early morning
+The data reported to SINAICA is supposed to be checked for extreme values and errors, but this is quite often not possible. In addition, when you query data from SINAICA it automatically removes all O<sub>3</sub> values above 0.2, PM<sub>10</sub> above 600, PM<sub>2.5</sub> above 175, NO<sub>2</sub> above 0.21, SO<sub>2</sub> above 0.2, and for CO above 15. But we know that particularly in Mexico City and Guadalajara there have been days where the O<sub>3</sub> values were above 0.2 ppm. The functions in this package have a `remove_extremes` option to this, but by default it is not enabled.
+
+For example, the station CBTIS in Aguascalientes reported pure garbage for ozone data in 2017, even with the option `remove_extremes` set to TRUE, as can be seen in the chart below. A value higher than 0.155 ppm would be a phase I contingency in Mexico City, and given that ozone production depends on chemical reactions between oxides of nitrogen and volatile organic compounds in the presence of sunlight, it's extremely unlikely to be present in large quantities at night or in the early morning
 
 ```{r warning=FALSE}
 ## Download data for all Aguascalientes stations for a single month
 get_month <- function(start_date, end_date, net){
   bind_rows(
     lapply(stations_sinaica$station_id[stations_sinaica$network_name %in% net],
-           sinaica_station_data, "O3", start_date, end_date, "Crude")
+           sinaica_station_data, "O3", start_date, end_date, "Crude", 
+           remove_extremes = TRUE)
   )
 }
 ## Download data for 2017, by month
@@ -62,7 +66,7 @@ df$datetime <-  with_tz(as.POSIXct(paste0(df$date, " ", df$hour, ":00"),
                        tz = "America/Mexico_City") 
 ggplot(df, aes(datetime, value, group = station_name, color = station_name)) +
   geom_line(alpha = .8, size = .3) +
-  ggtitle("Data reported by the Aguascalientes stations") +
+  ggtitle("Ozone data reported by the Aguascalientes stations") +
   xlab("date") +
   ylab("hourly ozone concentration in ppm") +
   theme_bw()

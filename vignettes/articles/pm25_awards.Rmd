@@ -18,7 +18,7 @@ knitr::opts_chunk$set(
 
 
 
-Load the packages
+First, load the packages
 
 ```{r packages,warning=FALSE,message=FALSE}
 ## Auto-install required R packages

@@ -18,7 +18,7 @@ knitr::opts_chunk$set(
 
 We can use the package to find out which city is the most ozone-polluted in all of Mexico.
 
-Load the packages
+First, we load the packages
 
 ```{r packages,warning=FALSE,message=FALSE}
 ## Auto-install required R packages
@@ -32,6 +32,8 @@ if (length(names(success)[!success])) {
 ## Not yet on cran
 library("rsinaica")
 ```
+Then we download the data for the whole year of 2017
+
 
 ```{r download_o3, cache=TRUE}
 # Download all O3 pollution data in 2017
@@ -45,11 +47,13 @@ o3_2017 <- bind_rows(
 )
        
 ```
+This is what the data looks like:
 
 ```{r}
 knitr::kable(head(o3_2017))
 ```
 
+Once we've downloaded the data we filter values below 1e-4 since they're calibration errors and also filter some stations that never report correct ozone values.
 
 ```{r plot}
 # o3_2017[which(o3_2017$value_actual != o3_2017$value_original),]

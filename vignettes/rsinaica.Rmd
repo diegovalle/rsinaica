@@ -56,6 +56,7 @@ We'll use the `sinaica_station_data` function to download pollution data for all
 ## Change this if you want a map of another city or parameter
 parameter <- "PM10"
 network <- "Guadalajara"
+midpoint <- 76 # midpoint of regular air quality converted to IMECAs
 
 ## Download a single month of data for all Guadalajara stations
 get_month <- function(start_date, end_date, net, parameter){
@@ -191,7 +192,7 @@ qmplot(x1, x2, data = data.frame(grid), geom = "blank",
                        low = "#abd9e9",
                        mid = "#ffffbf",
                        high = "#f46d43",
-                       midpoint = 76) + # midpoint of regular air quality converted from IMECAs
+                       midpoint = midpoint) + # midpoint of regular air quality converted from IMECAs
   geom_point(data = stations_sinaica[stations_sinaica$station_id %in% reporting_stations, ],
              aes(lon, lat), shape = 22, size = 2.6) +
   ggtitle(expression(paste("Average of ", PM[10], 
