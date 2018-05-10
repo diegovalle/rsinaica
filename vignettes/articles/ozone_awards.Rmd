@@ -1,5 +1,5 @@
 ---
-title: "Most Ozone-Polluted City in Mexico"
+title: "Most Ozone-Polluted City in Mexico - 2017"
 author: "Diego Valle-Jones"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
