@@ -3,6 +3,7 @@ url: https://hoyodesmog.diegovalle.net/rsinaica
 template:
   params:
     ganalytics: UA-100264-10
+    bootswatch: readable
 authors:
   Diego Valle-Jones:
     href: https://www.diegovalle.net

@@ -9,7 +9,7 @@ Description: Easy-to-use functions for downloading air quality data from the
     monitoring stations located throughout Mexico. See <http://sinaica.inecc.gob.mx> 
     for more information.
 License: MIT + file LICENSE
-URL: https://github.com/diegovalle/rsinaica
+URL: https://hoyodesmog.diegovalle.net/rsinaica/, https://github.com/diegovalle/rsinaica
 BugReports: https://github.com/diegovalle/rsinaica/issues
 Encoding: UTF-8
 LazyData: TRUE
