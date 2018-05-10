@@ -1,5 +1,5 @@
 ---
-title: "Most PM2.5 Polluted City in Mexico"
+title: "Most PM2.5 Polluted City in Mexico - 2017"
 author: "Diego Valle-Jones"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
