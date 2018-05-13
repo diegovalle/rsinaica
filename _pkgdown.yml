@@ -3,18 +3,18 @@ url: https://hoyodesmog.diegovalle.net/rsinaica
 template:
   params:
     ganalytics: UA-100264-10
-    bootswatch: readable
+    bootswatch: united
 authors:
   Diego Valle-Jones:
     href: https://www.diegovalle.net
 reference:
   - title: Get Air Quality Data
-    desc: Functions for downloading pollution, wind, temperature, rh in the original units
+    desc: Functions for downloading pollution, wind, temperature, and rh in the original units
     contents:
       - '`sinaica_param_data`'
       - '`sinaica_station_data`'
   - title: Query dates and parameters supported by a station
-    desc: Functions to query the dates and parameters for a station
+    desc: Functions to query the dates and air quality parameters supported by a station
     contents:
       - '`sinaica_station_dates`'
       - '`sinaica_station_params`'
