@@ -27,6 +27,18 @@ reference:
     desc: aire.zmvm package
     contents:
       - '`rsinaica`'
+articles:
+  - title: "Articles"
+    desc: >
+      Download and analyze air quality data from more than a 100 stations in Mexico
+    contents:
+    - articles/errors
+    - articles/ozone_awards
+    - articles/pm10_awards
+    - articles/pm25_awards
+    - articles/trends
+    - articles/pollution_cdmx_vs_guadalajara
+    - articles/airezmvm_vs_rsinaica
 figures:
   dev: grDevices::png
   dpi: 96

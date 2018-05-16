@@ -87,7 +87,7 @@ Then we query the dates for which SINAICA has data from the station:
 sinaica_station_dates(102)
 ```
 
-It's currently reporting data, and has been doing so since 1997. We can also query which type of parameters (pollution, wind, solar radiation, etc) the station has sensors for. Note that the package also includes a ```parameters```
+It's currently reporting data (this document was built on `r Sys.Date()`), and has been doing so since 1997. We can also query which type of parameters (pollution, wind, solar radiation, etc) the station has sensors for. Note that the package also includes a ```parameters```
 data.frame with the complete set of supported parameters, but not all stations support all of them.
 
 ```{r}
@@ -95,7 +95,7 @@ cen_params <- sinaica_station_params(102)
 knitr::kable(cen_params)
 ```
 
-Finally, we can download and plot particulate matter with a diameter smaller than 10 micrometers (μm) (PM<sub>10</sub>) for the month of January
+Finally, we can download and plot particulate matter with a diameter smaller than 10 micrometers (μm) (PM<sub>10</sub>) during the month of January
 
 ```{r}
 # Download all PM10 data for January 2018

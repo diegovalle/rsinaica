@@ -1,0 +1,80 @@
+---
+title: "Comparing rsinaica to aire.zmvm"
+author: "Diego Valle-Jones"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+First, we load the packages
+
+```{r}
+## Auto-install required R packages
+packs <- c("dplyr", "ggplot2", "aire.zmvm")
+success <- suppressWarnings(sapply(packs, require, character.only = TRUE))
+if (length(names(success)[!success])) {
+  install.packages(names(success)[!success])
+  sapply(names(success)[!success], require, character.only = TRUE)
+}
+## Not yet on cran
+library("rsinaica")
+```
+
+Then we download the data and make sure that both the values from aire.zmvm and rsinaica are in ppb
+(parts per billion), since rsinaica returns values in ppm (parts per million) we multiply by 1,000. We also make sure to set the datetime to GMT+6 (Mexico City time with no DST)
+
+```{r}
+df_aire <- get_station_month_data("HORARIOS", "O3", 2018, 4) %>%
+  filter(station_code == "XAL") %>%
+  mutate(value_aire.zmvm = value)
+df_aire$datetime <-  as.POSIXct(
+  strptime(paste0(df_aire$date, " ", df_aire$hour),
+           "%Y-%m-%d %H", tz = "Etc/GMT+6")
+)
+df_aire <- df_aire[, c("datetime", "value_aire.zmvm")]
+
+
+## values from sinaica are in ppb and those from aire.cdmx in ppm
+## Xalostoc station has an rsinaica station_id of 271
+df_sinaica <- sinaica_station_data(271, "O3", "2018-03-01", "2018-03-30") %>%
+  mutate(value = value * 1000) %>%
+  mutate(value_sinaica = value) %>%
+  mutate(date = as.Date(date))
+df_sinaica$datetime <-  as.POSIXct(
+  strptime(paste0(df_sinaica$date, " ", df_sinaica$hour),
+           "%Y-%m-%d %H", tz = "Etc/GMT+6")
+)
+df_sinaica <- df_sinaica[, c("datetime", "value_sinaica")]
+
+df <- inner_join(df_aire, df_sinaica, by = c("datetime" = "datetime"))
+```
+
+This is what the data looks like:
+
+```{r echo=FALSE}
+knitr::kable(df[5:10, ])
+```
+
+We can visually compare them with a plot. The values are extremely similar, but the aire.zmvm data is a little bit more complete since it comes directly from the source.
+
+```{r}
+ggplot(df_aire, aes(datetime, value, color = "aire.zmvm")) +
+  geom_line(size = 1.5, alpha = .4) +
+  geom_line(data = df_sinaica, aes(datetime, value, color = "rsinaica"),
+            alpha = .4, size = 1.5) +
+  xlab("datetime (GMT+6)") +
+  ylab("ppb") +
+  scale_color_discrete("package") +
+  ggtitle(expression(paste("Hourly ", O[3], " pollution values during March"))) +
+  theme_bw()
+```

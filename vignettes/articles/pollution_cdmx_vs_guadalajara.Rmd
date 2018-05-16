@@ -1,0 +1,90 @@
+---
+title: "Ozone Pollution in CDMX and Guadalajara"
+author: "Diego Valle-Jones"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+We can compare ozone pollution trends in two most polluted cities in Mexico: CDMX and Guadalajara
+
+First, we load the packages needed for the analysis
+
+```{r message=FALSE, warning=FALSE}
+## Auto-install required R packages
+packs <- c("dplyr", "ggplot2", "lubridate", "sp", "ggmap", "gstat", "zoo", 
+           "tidyr")
+success <- suppressWarnings(sapply(packs, require, character.only = TRUE))
+if (length(names(success)[!success])) {
+  install.packages(names(success)[!success])
+  sapply(names(success)[!success], require, character.only = TRUE)
+}
+## Not yet on cran
+library("rsinaica")
+```
+
+## Download data
+
+```{r download, cache=TRUE}
+## Download a single month of data for all Guadalajara and CDMX stations
+get_month <- function(start_date, end_date, net, parameter){
+  bind_rows(
+    lapply(stations_sinaica$station_id[stations_sinaica$network_name %in% net],
+           sinaica_station_data, parameter, start_date, end_date, "Crude")
+  )
+}
+## Download 2018 data, one month at a time
+cdmx <- bind_rows(
+  mapply(get_month,
+         seq(as.Date("2018-01-01"), as.Date("2018-12-01"), by = "month"),
+         seq(as.Date("2018-02-01"), as.Date("2019-01-01"), by = "month") - 1,
+         "Valle de México", 
+         "O3",
+         SIMPLIFY = FALSE)
+  )
+
+guad <- bind_rows(
+  mapply(get_month,
+         seq(as.Date("2018-01-01"), as.Date("2018-12-01"), by = "month"),
+         seq(as.Date("2018-02-01"), as.Date("2019-01-01"), by = "month") - 1,
+         "Guadalajara", 
+         "O3",
+         SIMPLIFY = FALSE)
+  )
+```
+
+We'll be comparing the maximum daily ozone values among all stations
+
+```{r}
+cdmx <- cdmx %>%
+  group_by(date) %>%
+  summarise(max = max(value, na.rm = TRUE)) %>%
+  mutate(city = "CDMX")
+
+guad <- guad %>%
+  group_by(date) %>%
+  summarise(max = max(value, na.rm = TRUE)) %>%
+  mutate(city = "Guadalajara")
+```
+
+and finally we plot the data
+
+```{r}
+ggplot(rbind(cdmx, guad), aes(as.Date(date), max, group = city, color = city)) +
+  geom_line(size = .2) +
+  geom_smooth() +
+  xlab("date") +
+  ylab(expression(paste(O[3], " concentration in ppm"))) +
+  ggtitle(expression(paste(O[3], " maximum daily value in Guadalajara and CDMX"))) + 
+  theme_bw()
+```

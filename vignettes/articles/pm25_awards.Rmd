@@ -108,7 +108,7 @@ df_max <- df_filtered %>%
   arrange(date)
 ```
 
-```{r, fig.widht = 8, fig.height = 18}
+```{r, fig.width = 8, fig.height = 18}
 ggplot(df_max, aes(as.Date(date), max)) +
   geom_line(size = .3, color = "black") +
   facet_wrap(~ network_name, ncol = 3) +

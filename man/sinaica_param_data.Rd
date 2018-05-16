@@ -60,7 +60,10 @@ recommended that you use a more complicated statistical procedure to remove outl
 \value{
 data.frame with a column named \emph{value} containing the air quality parameter values.
 If the data was validated the column named \emph{date_validated} will contain the validation
-date
+date.  The hours are given as an offset of GMT time
+from the eastermost timezone (Zona Sureste) to the westernmost timezone (Zona Noroeste) of Mexico
+with no daylight saving time. Finding the exact timezone should be done by consulting a timezone map
+of Mexico.
 }
 \description{
 Download data from all stations for a single parameter by specifying a date range
