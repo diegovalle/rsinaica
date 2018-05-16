@@ -51,7 +51,10 @@
 #' above 15. This is done so that the values match exactly those of the SINAICA website, but it is
 #' recommended that you use a more complicated statistical procedure to remove outliers.
 #'
-#' @return data.frame with air quality data
+#' @return data.frame with air quality data. The hours are given as an offset of GMT time
+#' from the eastermost timezone (Zona Sureste) to the westernmost timezone (Zona Noroeste) of Mexico
+#' with no daylight saving time. Finding the exact timezone should be done by consulting a timezone map
+#' of Mexico.
 #' @importFrom dplyr filter
 #' @importFrom httr POST http_error http_type content status_code add_headers
 #' @importFrom jsonlite fromJSON
