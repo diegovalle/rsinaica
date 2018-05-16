@@ -46,7 +46,7 @@ df_aire <- df_aire[, c("datetime", "value_aire.zmvm")]
 
 ## values from sinaica are in ppb and those from aire.cdmx in ppm
 ## Xalostoc station has an rsinaica station_id of 271
-df_sinaica <- sinaica_station_data(271, "O3", "2018-03-01", "2018-03-30") %>%
+df_sinaica <- sinaica_station_data(271, "O3", "2018-04-01", "2018-04-30") %>%
   mutate(value = value * 1000) %>%
   mutate(value_sinaica = value) %>%
   mutate(date = as.Date(date))
