@@ -63,10 +63,9 @@ above 15. This is done so that the values match exactly those of the SINAICA web
 recommended that you use a more complicated statistical procedure to remove outliers.}
 }
 \value{
-data.frame with air quality data. The hours are given as an offset of GMT time
-from the eastermost timezone (Zona Sureste) to the westernmost timezone (Zona Noroeste) of Mexico
-with no daylight saving time. Finding the exact timezone should be done by consulting a timezone map
-of Mexico.
+data.frame with air quality data. Care should be taken when working with hourly data since
+each station has their own timezone (available in the \code{\link{stations_sinaica}} data.frame)
+and some stations reported the timezome in which they are located erroneously.
 }
 \description{
 Download data from a single station by specifying a parameter and a date range
