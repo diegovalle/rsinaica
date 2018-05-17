@@ -3,6 +3,5 @@
 .Rproj.user
 inst/doc
 docs/*
-data-raw/stations_sinaica.R
 vignettes/articles/*_cache*
 vignettes/*_cache*
