@@ -41,7 +41,7 @@ test_that("sinaica_param_data works", {
 
   ## should be an empty data.frame
   df <- sinaica_param_data("CN", "1997-01-01", "1997-01-01", "Crude",
-                           remove_extreme = TRUE)
+                           remove_extremes = TRUE)
   expect_equal(nrow(df), 0)
   expect_equal(unname(unlist(lapply(df, typeof))),
                c("character", "integer", "character", "character", "character",
@@ -50,7 +50,7 @@ test_that("sinaica_param_data works", {
                  "character", "character",
                  "character", "character", "character", "double"))
   df <- sinaica_param_data("CN", "1997-01-01", "1997-01-01", "Crude",
-                           remove_extreme = FALSE)
+                           remove_extremes = FALSE)
   expect_equal(nrow(df), 0)
   expect_equal(unname(unlist(lapply(df, typeof))),
                c("character", "integer", "character", "character", "character",
@@ -60,7 +60,7 @@ test_that("sinaica_param_data works", {
                  "character", "character", "character", "double"))
 
   df <- sinaica_param_data("PM10", "2014-01-01", "2014-01-01",
-                            "Manual", remove_extreme = FALSE)
+                            "Manual", remove_extremes = FALSE)
   expect_equal(nrow(df), 0)
   expect_equal(unname(unlist(lapply(df, typeof))),
                c("character", "integer", "character", "character", "character",
