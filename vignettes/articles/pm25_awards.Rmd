@@ -129,7 +129,7 @@ It looks like we can safely remove values above 250 µg/m³ and get rid of the A
 
 ## Anomalies
 
-We can also use the `anomalize` package to detect extreme values, but actually figuring out if they are errors is a little bit more tricky since fires or firecrackers can temporarily spike PM<sub>25</sub> levels as often happens during the winter holidays when people burn trash and tires. I've opted to remove them since I'm interested in the average of the whole year and these PM<sub>25</sub> outliers are unlikely to have a substantial effect on the rankings.
+We can also use the `anomalize` package to detect extreme values, but actually figuring out if they are errors is a little bit more tricky since fires can temporarily spike PM<sub>25</sub> levels as often happens during the winter holidays when people burn trash and tires, and set off fireworks. I've opted *not* to remove them, because of the spikes around new year. Since I'm interested in the average of the whole year, these PM<sub>25</sub> outliers are unlikely to have a substantial effect on the rankings.
 
 ```{r fig.width = 8, fig.height = 18}
 df_max <- filter(df_max, !network_name %in% 
@@ -149,7 +149,9 @@ df_max <- df_max %>%
 df_max %>% plot_anomalies(time_recomposed = TRUE, ncol = 3, alpha_dots = 0.25) +
   labs(title = "Tidyverse Anomalies", subtitle = "STL + GESD Methods") 
 
-df_max <- filter(df_max, anomaly != "Yes")
+## Don not remove outliers, if you look at the chart some values around new year
+## are detected as spikes, but it's people setting off fireworks and burning trash
+## df_max <- filter(df_max, anomaly != "Yes")
 ```
 
 It was decided to remove Irapuato from the rankings and keep Oaxaca and Tepic because PM<sub>2.5</sub> values can spike because of fires.

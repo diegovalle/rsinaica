@@ -129,7 +129,7 @@ It looks like we can safely remove values above 750 µg/m³ and get rid of the A
 
 ## Anomalies
 
-We can also use the `anomalize` package to detect extreme values, but actually figuring out if they are errors is a little bit more tricky since fires can temporarily spike PM<sub>10</sub> levels. I've opted to remove them since I'm interested in the average of the whole year and these PM<sub>10</sub> outliers are unlikely to have a substantial effect on the rankings.
+We can also use the `anomalize` package to detect extreme values, but actually figuring out if they are errors is a little bit more tricky since fires can temporarily spike PM<sub>10</sub> levels as often happens during the winter holidays when people burn trash and tires, and set off fireworks. I've opted to remove them, since I'm interested in the average of the whole year these PM<sub>10</sub> outliers are unlikely to have a substantial effect on the rankings.
 
 ```{r fig.width = 8, fig.height = 18}
 df_max <- df_max %>%
@@ -139,11 +139,11 @@ df_max <- df_max %>%
   group_by(network_name) %>%
   mutate(date = as.Date(date)) %>%
   time_decompose(max, method = "stl") %>%
-  anomalize(remainder, method = "iqr", alpha = 0.02) %>%
+  anomalize(remainder, method = "iqr", alpha = 0.015) %>%
   time_recompose()
 
 
-# Anomaly Visualization
+## Anomaly Visualization
 df_max %>% plot_anomalies(time_recomposed = TRUE, ncol = 3, alpha_dots = 0.25) +
   labs(title = "Tidyverse Anomalies", subtitle = "STL + GESD Methods") 
 
