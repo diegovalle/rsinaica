@@ -16,14 +16,14 @@ knitr::opts_chunk$set(
 )
 ```
 
+We can use the package to find out which city is the most PM<sub>10</sub>-polluted in all of Mexico.
 
-
-Load the packages
+First, we load the packages:
 
 ```{r packages,warning=FALSE,message=FALSE}
 ## Auto-install required R packages
 packs <- c("dplyr", "ggplot2", "gghighlight", "lubridate", "anomalize", 
-           "zoo", "tidyr")
+           "aire.zmvm", "tidyr", "zoo", "plotly")
 success <- suppressWarnings(sapply(packs, require, character.only = TRUE))
 if (length(names(success)[!success])) {
   install.packages(names(success)[!success])
@@ -32,6 +32,10 @@ if (length(names(success)[!success])) {
 ## Not yet on cran
 library("rsinaica")
 ```
+
+## Download
+
+Then we download the data for the whole year of 2017 using the `sinaica_param_data`. Since the maximum data range we can download is 1 month, we have to use a little mapply magic to download the entire year.
 
 ```{r download_pm10, cache=TRUE}
 # Download all PM10 pollution data in 2017
@@ -44,6 +48,7 @@ pm10_2017 <- bind_rows(
 )
 ```
 
+There a few cities that collect PM<sub>10</sub> data manually (they collect it through a filter and send it to be weighted to an external lab, sometimes in another country). Let's also download that data:
 
 ```{r manual, cache = TRUE}
 # Download all manually collected PM10 pollution data in 2017
@@ -58,26 +63,19 @@ pm10_2017m <- bind_rows(
 pm10_2017 <-  bind_rows(pm10_2017, pm10_2017m)       
 ```
 
+This is what the data looks like:
+
 ```{r}
 knitr::kable(head(pm10_2017))
 ```
 
-Filter netwroks that did not collect or report data for at least 47 weeks and 292  days. Set small values as NA
+## Cleanup
 
+Once we've downloaded the data we filter values below 1 µg/m³ since they're probably calibration errors. And we only include stations that reported for more than 80% of days (292). We also have to take into account that PM<sub>10</sub> data is measured as a 24 hour average.
 
 ```{r plot}
 # pm10_2017[which(pm10_2017$value_actual != pm10_2017$value_original),]
 # pm10_2017[which(!is.na(pm10_2017$date_validated)),]
-
-pm10_2017 %>%
-  mutate(value = ifelse(value < 3, NA, value)) %>%
-  ##filter(value < 600) %>%
-  group_by(network_name) %>%
-  filter(!is.na(value)) %>%
-  summarise(count = n_distinct(week(date))) %>%
-  arrange(count) %>%
-  head(10) %>%
-  knitr::kable()
 
 ## filter stations that didn't report at least 47 weeks of the year
 df_filtered <- pm10_2017 %>%
@@ -112,7 +110,9 @@ df_max <- df_filtered %>%
   arrange(date)
 ```
 
-```{r, fig.width = 8, fig.height = 18}
+When plotting the daily 24 hour average maximums we can see that there are still some obvious errors in the data.
+
+```{r fig.width = 8, fig.height = 18}
 ggplot(df_max, aes(as.Date(date), max)) +
   geom_line(size = .3, color = "black") +
   facet_wrap(~ network_name, ncol = 3) +
@@ -123,8 +123,17 @@ ggplot(df_max, aes(as.Date(date), max)) +
                         " (", mu,"g/", m^3, ")"))) +
   theme_bw() +
   theme(axis.text.x=element_text(angle=60,hjust=1))
+```
 
+It looks like we can safely remove values above 750 µg/m³ and get rid of the Aguascalientes and Monclova networks. 
+
+## Anomalies
+
+We can also use the `anomalize` package to detect extreme values, but actually figuring out if they are errors is a little bit more tricky since fires can temporarily spike PM<sub>10</sub> levels. I've opted to remove them since I'm interested in the average of the whole year and these PM<sub>10</sub> outliers are unlikely to have a substantial effect on the rankings.
+
+```{r fig.width = 8, fig.height = 18}
 df_max <- df_max %>%
+  filter(!network_name %in% c("Aguascalientes", "Monclova")) %>%
   filter(max <= 750) %>%
   ungroup() %>%
   group_by(network_name) %>%
@@ -141,8 +150,12 @@ df_max %>% plot_anomalies(time_recomposed = TRUE, ncol = 3, alpha_dots = 0.25) +
 df_max <- filter(df_max, anomaly != "Yes")
 ```
 
+
+## Most PM<sub>10</sub>-Polluted City
+
+And here is the most PM<sub>10</sub>-polluted city in Mexico: <b>Monterrey</b>
+
 ```{r}
-df_max <- filter(df_max, network_name != "Monclova")
 gghighlight_line(df_max, aes(as.Date(date), observed, 
                               group = network_name, color = network_name),
                  mean(observed, na.rm = TRUE), max_highlight = 1) +
@@ -154,12 +167,9 @@ gghighlight_line(df_max, aes(as.Date(date), observed,
                         " (", mu,"g/", m^3, ")")))
 ```
 
+The top 3 most PM<sub>10</sub>-polluted cities in Mexico:
 
 ```{r plotly, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 4}
-library("plotly")
-library("tidyr")
-library("zoo")
-
 top3 <- filter(df_max, network_name %in% c("Toluca",
                                            "Guadalajara",
                                            "Monterrey"))[, 1:3]
@@ -182,6 +192,11 @@ plot_ly(as.data.frame(top3), x = ~date, y = ~Monterrey, name = "Monterrey" ,
   add_trace(y = ~Toluca, name = 'Toluca', mode = 'lines', line = list(color = '#4daf4a'), width = .5) %>%
   layout(title = "Top 3 most PM10-polluted cities in Mexico", xaxis = x, yaxis = y)
 ```
+
+## Days with bad air quality
+
+Number of days with bad air quality (Índice IMECA MALO)
+
 ```{r}
 df_max %>%
   group_by(network_name) %>%
@@ -190,7 +205,11 @@ df_max %>%
   arrange(-count) %>%
   head() %>%
   knitr::kable()
+```
 
+Number of days with very bad air quality (Índice IMECA MUY MALO). 
+
+```{r}
 df_max %>%
   group_by(network_name) %>%
   filter(observed > 215.5) %>%

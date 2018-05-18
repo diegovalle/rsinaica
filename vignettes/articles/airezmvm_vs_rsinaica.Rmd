@@ -82,7 +82,7 @@ mean((df$value_aire.zmvm - df$value_sinaica)^2, na.rm = TRUE)
 
 
 
-We can visually compare them with a plot. The values are extremely similar, but the aire.zmvm data is a little bit more complete since it comes directly from the source.
+We can visually compare them with a plot. The values are extremely similar, but the aire.zmvm data is a little bit more accurate since it comes directly from the source.
 
 ```{r}
 ggplot(df_aire, aes(datetime, value_aire.zmvm, color = "aire.zmvm")) +

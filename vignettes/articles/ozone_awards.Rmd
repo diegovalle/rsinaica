@@ -32,7 +32,9 @@ if (length(names(success)[!success])) {
 ## Not yet on cran
 library("rsinaica")
 ```
-Then we download the data for the whole year of 2017
+## Download
+
+Then we download the data for the whole year of 2017 using the `sinaica_param_data`. Since the maximum data range we can download is 1 month, we have to use a little mapply magic to download the entire year.
 
 
 ```{r download_o3, cache=TRUE}
@@ -53,7 +55,9 @@ This is what the data looks like:
 knitr::kable(head(o3_2017))
 ```
 
-Once we've downloaded the data we filter values below 1e-4 since they're calibration errors and also filter some stations that never report correct ozone values.
+## Cleanup
+
+Once we've downloaded the data we filter values below .3 ppm since they're probably calibration errors, and also filter some stations that never report correct ozone values. Given that ozone production depends on chemical reactions between oxides of nitrogen and volatile organic compounds in the presence of sunlight, it’s extremely unlikely to be present in large quantities at night or in the early morning, so we can filter high ozone values during those times.
 
 ```{r plot}
 # o3_2017[which(o3_2017$value_actual != o3_2017$value_original),]
@@ -62,7 +66,6 @@ Once we've downloaded the data we filter values below 1e-4 since they're calibra
 # Only include stations that reported for more than 80% of days (292)
 df_filtered <- o3_2017 %>%
   filter(!is.na(value)) %>%
-  filter(value > .0001) %>%
   add_count(station_id, network_name) %>%
   ## these stations are mostly error values
   filter(!station_id %in% c(173, #"Facultad Psicología" SLP
@@ -75,17 +78,13 @@ df_filtered <- o3_2017 %>%
   # filter values above .095 (bad (MALA) air quality)
   # that occurred during the night, since ozone is a photosensitive
   # pollutant
-  filter(!(value > .0955 & hour %in% c(0:11, 20:23))) %>%
+  filter(!(value > .0955 & hour %in% c(0:11, 21:23))) %>%
   filter(value < .3)
+```
 
-df_filtered %>%
-  group_by(network_name) %>%
-  summarise(count = n()) %>%
-  arrange(count) %>%
-  head(10) %>%
-  knitr::kable()
+We'll be taking the average of the maximum daily value among all stations in each network for the entire year of 2017 and only include stations that reported data at least 80% of the days.
 
-
+```{r}
 df_max <- df_filtered %>%
   group_by(date, network_name) %>%
   summarise(max = max(value, na.rm = TRUE)) %>%
@@ -96,6 +95,8 @@ df_max <- df_filtered %>%
   arrange(network_name)
 ```
 
+When plotting the daily maximums we can see that there are still some obvious errors in the data even after removing the stations that always report erroneous data and the extreme ozone values outside peak daylight hours.
+
 ```{r, fig.widht = 8, fig.height = 18}
 ggplot(df_max, aes(as.Date(date), max)) +
   geom_line(size = .3, color = "black") +
@@ -105,17 +106,11 @@ ggplot(df_max, aes(as.Date(date), max)) +
   ylab("daily maximum hourly ozone concentration (ppm)") +
   theme_bw() +
   theme(axis.text.x=element_text(angle=60,hjust=1))
+```
 
-# ggplot(df_filtered %>%
-#   mutate(date = as.POSIXct(paste0(date, " ", hour, ":00")),  tz = "Etc/GMT+6"), aes(date, value)) +
-#   geom_line(size = .3, color = "black")+
-#   facet_wrap(~ network_name, ncol = 3) +
-#   ggtitle("Maximum daily ozone concentration by network") +
-#   xlab("date") +
-#   ylab("daily maximum hourly ozone concentration (ppm)") +
-#   theme_bw() +
-#   theme(axis.text.x=element_text(angle=60,hjust=1))
+We can use the `anomalize` package to detect and remove the extreme values, while being careful not to remove the high ozone levels that happen in Mexico City, Guadalajara and Monterrey.
 
+```{r, fig.widht = 8, fig.height = 18}
 df_max <- df_max %>%
   ungroup() %>%
   group_by(network_name) %>%
@@ -140,10 +135,18 @@ df_max %>% plot_anomalies(time_recomposed = TRUE, ncol = 3, alpha_dots = 0.25) +
 
 df_max <- filter(df_max, anomaly != "Yes")
 ```
-It was decided to remove Piedras Negras
+
+After looking at the plots it was decided to remove the whole network of Piedras Negras since it only reported ozone concentrations close to zero during the first few months of 2017.
 
 ```{r}
 df_max <- filter(df_max, network_name != "Piedras Negras")
+```
+
+## Most Ozone-Polluted City
+
+And here is the most ozone-polluted city in Mexico: the <b>Valle de México</b> metro area
+
+```{r}
 gghighlight_line(df_max, aes(as.Date(date), observed, 
                               group = network_name, color = network_name),
                  mean(observed, na.rm = TRUE), max_highlight = 1) +
@@ -153,6 +156,7 @@ gghighlight_line(df_max, aes(as.Date(date), observed,
   ylab("daily maximum hourly ozone concentration (ppm)")
 ```
 
+Perhaps not surprisingly, the 3 most ozone-polluted cities in Mexico are also the three biggest:
 
 ```{r plotly, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 4,out.width = '100%'}
 
@@ -179,6 +183,9 @@ plot_ly(as.data.frame(top3), x = ~date, y = ~`Valle de México`, name = "Valle d
   layout(title = "Top 3 most ozone-polluted cities in Mexico", xaxis = x, yaxis = y)
 ```
 
+## Days with bad air quality
+
+Number of days with bad air quality (Índice IMECA MALO)
 
 ```{r}
 df_max %>%
@@ -188,13 +195,21 @@ df_max %>%
   arrange(-count) %>%
   head() %>%
   knitr::kable()
+```
 
+
+
+Number of days with very bad air quality (Índice IMECA MUY MALO). 
+
+```{r}
 df_max %>%
   group_by(network_name) %>%
-  filter(observed > 154.4/1000) %>%
+  filter(observed > 155/1000) %>%
   summarise(count = n()) %>%
   arrange(-count) %>%
   head() %>%
   knitr::kable()
 
 ```
+
+Here we see that Guadalajara actually had more very bad days. If this had happened in Mexico City a phase I smog alert would have been issued and 40% of cars would have been banned from taking to the roads, but Guadalajarans are to smart to implement something like this, since it doesn't seem to work.
