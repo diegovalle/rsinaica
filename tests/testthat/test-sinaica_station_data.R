@@ -14,9 +14,11 @@ test_that("sinaica_station_data returns correct data", {
   expect_error(sinaica_station_data(271, "PM10", "2015-09-11", "2015-09-11",
                                  "ERROR"),
                 "type should be one of: Crude, Validated, Manual")
-  expect_error(sinaica_station_data(271, "PM10", "ERROR", "2015-09-11", "Manual"),
+  expect_error(sinaica_station_data(271, "PM10", "ERROR",
+                                    "2015-09-11", "Manual"),
                 "date should be in YYYY-MM-DD format")
-  expect_error(sinaica_station_data(271, "PM10", "2015-09-11", "ERROR", "Manual"),
+  expect_error(sinaica_station_data(271, "PM10",
+                                    "2015-09-11", "ERROR", "Manual"),
                 "end_date")
   expect_error(sinaica_station_data(),
                "argument station_id is missing")
