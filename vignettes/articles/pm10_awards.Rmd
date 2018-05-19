@@ -125,7 +125,7 @@ ggplot(df_max, aes(as.Date(date), max)) +
   theme(axis.text.x=element_text(angle=60,hjust=1))
 ```
 
-It looks like we can safely remove values above 750 µg/m³ and get rid of the Aguascalientes and Monclova networks. 
+It looks like we can safely remove values above 500 µg/m³ and get rid of the Aguascalientes and Monclova networks. 
 
 ## Anomalies
 
@@ -134,7 +134,7 @@ We can also use the `anomalize` package to detect extreme values, but actually f
 ```{r fig.width = 8, fig.height = 18}
 df_max <- df_max %>%
   filter(!network_name %in% c("Aguascalientes", "Monclova")) %>%
-  filter(max <= 750) %>%
+  filter(max <= 500) %>%
   ungroup() %>%
   group_by(network_name) %>%
   mutate(date = as.Date(date)) %>%
@@ -160,25 +160,37 @@ gghighlight_line(df_max, aes(as.Date(date), observed,
                               group = network_name, color = network_name),
                  mean(observed, na.rm = TRUE), max_highlight = 1) +
   theme_bw() +
-  ggtitle(expression(paste("Pollution measuring network with highest average maximum ", 
-                           PM[10], " pollution values in 2017"))) +
+  ggtitle(expression(paste("Pollution measuring network with highest ", 
+                           PM[10], " pollution values in 2017")),
+          subtitle = "Based on the mean of the highest 24-hour rolling average daily maximums. Source: SINAICA") +
   xlab("date") +
-  ylab(expression(paste("daily maximum 24 average of ", PM[10], 
-                        " (", mu,"g/", m^3, ")")))
+  ylab(expression(paste(PM[10], " ", mu,"g/", m^3)))
+```
+
+## Top polluted cities
+
+```{r}
+knitr::kable(
+  df_max %>%
+    group_by(network_name) %>%
+    summarise(mean = mean(observed, na.rm = TRUE)) %>%
+    arrange(-mean) %>%
+    head(10)
+  )
 ```
 
 The top 3 most PM<sub>10</sub>-polluted cities in Mexico:
 
 ```{r plotly, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 4}
-top3 <- filter(df_max, network_name %in% c("Toluca",
+top3 <- filter(df_max, network_name %in% c("Torreón",
                                            "Guadalajara",
                                            "Monterrey"))[, 1:3]
 
 top3 <- spread(top3, network_name, observed)
 top3$date <- as.Date(as.Date(top3$date))
-top3$Toluca <- na.spline(top3$Toluca)
-top3$Guadalajara <- na.spline(top3$Guadalajara)
-top3$Monterrey <- na.spline(top3$Monterrey)
+#top3$Torreón <- na.spline(top3$Torreón)
+#top3$Guadalajara <- na.spline(top3$Guadalajara)
+#top3$Monterrey <- na.spline(top3$Monterrey)
 x <- list(
   title = "date"
 )
@@ -189,7 +201,7 @@ y <- list(
 plot_ly(as.data.frame(top3), x = ~date, y = ~Monterrey, name = "Monterrey" ,
         type = 'scatter', mode = 'lines', line = list(color = '#e41a1c'), width = .5) %>%
   add_trace(y = ~Guadalajara, name = 'Guadalajara', mode = 'lines', line = list(color = '#377eb8'), width = .5) %>%
-  add_trace(y = ~Toluca, name = 'Toluca', mode = 'lines', line = list(color = '#4daf4a'), width = .5) %>%
+  add_trace(y = ~Torreón, name = 'Torreón', mode = 'lines', line = list(color = '#4daf4a'), width = .5) %>%
   layout(title = "Top 3 most PM10-polluted cities in Mexico", xaxis = x, yaxis = y)
 ```
 

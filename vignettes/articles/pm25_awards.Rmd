@@ -125,7 +125,7 @@ ggplot(df_max, aes(as.Date(date), max)) +
   theme(axis.text.x=element_text(angle=60,hjust=1))
 ```
 
-It looks like we can safely remove values above 250 µg/m³ and get rid of the Aguascalientes, Irapuato and Monclova networks. 
+It looks like we can safely remove values above 200 µg/m³ and get rid of the Aguascalientes, Irapuato and Monclova networks. 
 
 ## Anomalies
 
@@ -134,7 +134,7 @@ We can also use the `anomalize` package to detect extreme values, but actually f
 ```{r fig.width = 8, fig.height = 18}
 df_max <- filter(df_max, !network_name %in% 
                    c("Irapuato", "Monclova", "Aguascalientes")) %>%
-  filter(max <= 250)
+  filter(max <= 200)
 
 df_max <- df_max %>%
   ungroup() %>%
@@ -154,7 +154,7 @@ df_max %>% plot_anomalies(time_recomposed = TRUE, ncol = 3, alpha_dots = 0.25) +
 ## df_max <- filter(df_max, anomaly != "Yes")
 ```
 
-It was decided to remove Irapuato from the rankings and keep Oaxaca and Tepic because PM<sub>2.5</sub> values can spike because of fires.
+It was decided to remove Irapuato from the rankings and keep Tepic because PM<sub>2.5</sub> values can spike because of fires. Normally I would have removed Mexicali since it didn't report any correct data during the winter season, but its levels of PM<sub>2.5</sbu> where so high that I decided to keep it.
 
 ## Most PM<sub>25</sub>-Polluted City
 
@@ -166,25 +166,37 @@ gghighlight_line(df_max, aes(as.Date(date), observed,
                               group = network_name, color = network_name),
                  mean(observed, na.rm = TRUE), max_highlight = 1) +
   theme_bw() +
-  ggtitle(expression(paste("Pollution measuring network with highest average maximum ", 
-                           PM[2.5], " pollution values in 2017"))) +
+  ggtitle(expression(paste("Pollution measuring network with the highest ", 
+                           PM[2.5], " pollution values in 2017")),
+          subtitle = "Based on the mean of the highest 24-hour rolling average daily maximums. Source: SINAICA") +
   xlab("date") +
-  ylab(expression(paste("daily maximum 24 average of ", PM[2.5], 
-                        " (", mu,"g/", m^3, ")")))
+  ylab(expression(paste(PM[2.5], " ", mu,"g/", m^3)))
 ```
 
-The top 3 most PM<sub>25</sub>-polluted cities in Mexico:
+## Top polluted cities
+
+```{r}
+knitr::kable(
+  df_max %>%
+    group_by(network_name) %>%
+    summarise(mean = mean(observed, na.rm = TRUE)) %>%
+    arrange(-mean) %>%
+    head(10)
+  )
+```
+
+The top 3 most PM<sub>25</sub>-polluted cities in Mexico. Note that Mexicali didn't report any data during the winter, which is the season with the highest levels of PM<sub>2.5</sub> pollution, it could probably have ranked higher if they bothered to keep their instruments working.
 
 ```{r plotly, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 4}
 top3 <- filter(df_max, network_name %in% c("Toluca",
-                                           "Pachuca",
+                                           "Cuernavaca",
                                            "Guadalajara"))[, 1:3]
 
 top3 <- spread(top3, network_name, observed)
 top3$date <- as.Date(as.Date(top3$date))
-top3$Toluca <- na.spline(top3$Toluca)
-top3$Guadalajara <- na.spline(top3$Guadalajara)
-top3$Pachuca <- na.spline(top3$Pachuca)
+#top3$Toluca <- na.spline(top3$Toluca)
+#top3$Guadalajara <- na.spline(top3$Guadalajara)
+#top3$Mexicali <- na.spline(top3$Mexicali)
 x <- list(
   title = "date"
 )
@@ -194,8 +206,8 @@ y <- list(
 
 plot_ly(as.data.frame(top3), x = ~date, y = ~`Toluca`, name = "Toluca" ,
         type = 'scatter', mode = 'lines', line = list(color = '#e41a1c'), width = .5) %>%
-  add_trace(y = ~Pachuca, name = 'Pachuca', mode = 'lines', line = list(color = '#377eb8'), width = .5) %>%
-  add_trace(y = ~Guadalajara, name = 'Guadalajara', mode = 'lines', line = list(color = '#4daf4a'), width = .5) %>%
+  add_trace(y = ~Guadalajara, name = 'Guadalajara', mode = 'lines', line = list(color = '#4daf4a'), width = .5)  %>%
+  add_trace(y = ~Cuernavaca, name = 'Cuernavaca', mode = 'lines', line = list(color = '#377eb8'), width = .5) %>%
   layout(title = "Top 3 most PM2.5-polluted cities in Mexico", xaxis = x, yaxis = y)
 ```
 

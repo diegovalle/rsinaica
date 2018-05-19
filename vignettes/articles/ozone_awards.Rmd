@@ -108,6 +108,9 @@ ggplot(df_max, aes(as.Date(date), max)) +
   theme(axis.text.x=element_text(angle=60,hjust=1))
 ```
 
+
+## Anomalies
+
 We can use the `anomalize` package to detect and remove the extreme values, while being careful not to remove the high ozone levels that happen in Mexico City, Guadalajara and Monterrey.
 
 ```{r, fig.widht = 8, fig.height = 18}
@@ -151,24 +154,37 @@ gghighlight_line(df_max, aes(as.Date(date), observed,
                               group = network_name, color = network_name),
                  mean(observed, na.rm = TRUE), max_highlight = 1) +
   theme_bw() +
-  ggtitle("Pollution measuring network with highest average maximum ozone pollution values in 2017") +
+  ggtitle("Pollution measuring network with highest ozone pollution values in 2017",
+          subtitle = "Based on the average of the maximum daily hourly value. Source: SINAICA") +
   xlab("date") +
-  ylab("daily maximum hourly ozone concentration (ppm)")
+  ylab(expression(paste(O[3], " ppm")))
 ```
 
-Perhaps not surprisingly, the 3 most ozone-polluted cities in Mexico are also the three biggest:
+## Top polluted cities
+
+```{r}
+knitr::kable(
+  df_max %>%
+    group_by(network_name) %>%
+    summarise(mean = mean(observed, na.rm = TRUE)) %>%
+    arrange(-mean) %>%
+    head(10)
+  )
+```
+
+Perhaps not surprisingly, the most ozone-polluted cities in Mexico are also the among the most populous. It's kind of embarassing that Puebla doesn't have a working air quality network since it is the fourth biggest metro area by population.
 
 ```{r plotly, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 4,out.width = '100%'}
 
 top3 <- filter(df_max, network_name %in% c("Valle de México",
                                            "Guadalajara",
-                                           "Monterrey"))[, 1:3]
+                                           "Toluca"))[, 1:3]
 
 top3 <- spread(top3, network_name, observed)
 top3$date <- as.Date(as.Date(top3$date))
 top3$`Valle de México` <- na.spline(top3$`Valle de México`)
 top3$Guadalajara <- na.spline(top3$Guadalajara)
-top3$Monterrey <- na.spline(top3$Monterrey)
+top3$Toluca <- na.spline(top3$Toluca)
 x <- list(
   title = "date"
 )
@@ -179,7 +195,7 @@ y <- list(
 plot_ly(as.data.frame(top3), x = ~date, y = ~`Valle de México`, name = "Valle de México" ,
         type = 'scatter', mode = 'lines', line = list(color = '#e41a1c'), width = .5) %>%
   add_trace(y = ~Guadalajara, name = 'Guadalajara', mode = 'lines', line = list(color = '#377eb8'), width = .5) %>%
-  add_trace(y = ~Monterrey, name = 'Monterrey', mode = 'lines', line = list(color = '#4daf4a'), width = .5) %>%
+  add_trace(y = ~Toluca, name = 'Toluca', mode = 'lines', line = list(color = '#4daf4a'), width = .5) %>%
   layout(title = "Top 3 most ozone-polluted cities in Mexico", xaxis = x, yaxis = y)
 ```
 
