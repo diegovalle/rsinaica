@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-We can use the package to find out which city is the most ozone-polluted in all of Mexico.
+We can use `rsinaica` to find out which city is the most ozone-polluted in all of Mexico.
 
 First, we load the packages
 
@@ -34,7 +34,7 @@ library("rsinaica")
 ```
 ## Download
 
-Then we download the data for the whole year of 2017 using the `sinaica_param_data`. Since the maximum data range we can download is 1 month, we have to use a little mapply magic to download the entire year.
+Then we download the data for the whole year of 2017 using the `sinaica_param_data` function. Since the maximum data range we can download is 1 month, we have to use a little mapply magic to download the entire year.
 
 
 ```{r download_o3, cache=TRUE}
@@ -82,7 +82,7 @@ df_filtered <- o3_2017 %>%
   filter(value < .3)
 ```
 
-We'll be taking the average of the maximum daily value among all stations in each network for the entire year of 2017 and only include stations that reported data at least 80% of the days.
+We'll be taking the average of the maximum daily value among all stations in each network for the entire year of 2017, and only include stations that reported data at least 80% of the days.
 
 ```{r}
 df_max <- df_filtered %>%
@@ -111,7 +111,7 @@ ggplot(df_max, aes(as.Date(date), max)) +
 
 ## Anomalies
 
-We can use the `anomalize` package to detect and remove the extreme values, while being careful not to remove the high ozone levels that happen in Mexico City, Guadalajara and Monterrey.
+We can use the `anomalize` package to detect and remove the extreme values, while being careful not to remove the high ozone levels that happen in Mexico City, Guadalajara, and Monterrey.
 
 ```{r, fig.widht = 8, fig.height = 18}
 df_max <- df_max %>%
@@ -139,7 +139,7 @@ df_max %>% plot_anomalies(time_recomposed = TRUE, ncol = 3, alpha_dots = 0.25) +
 df_max <- filter(df_max, anomaly != "Yes")
 ```
 
-After looking at the plots it was decided to remove the whole network of Piedras Negras since it only reported ozone concentrations close to zero during the first few months of 2017.
+Besides removing the outliers, after looking at the plots it was decided to remove the whole network of Piedras Negras since it only reported ozone concentrations close to zero during the first few months of 2017.
 
 ```{r}
 df_max <- filter(df_max, network_name != "Piedras Negras")
@@ -172,7 +172,7 @@ knitr::kable(
   )
 ```
 
-Perhaps not surprisingly, the most ozone-polluted cities in Mexico are also the among the most populous. It's kind of embarassing that Puebla doesn't have a working air quality network since it is the fourth biggest metro area by population.
+Perhaps not surprisingly, the most ozone-polluted cities in Mexico are also the among the most populous. It's kind of embarrassing that Puebla doesn't have a working air quality network since it is the fourth biggest metro area by population.
 
 ```{r plotly, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 4,out.width = '100%'}
 
@@ -182,9 +182,6 @@ top3 <- filter(df_max, network_name %in% c("Valle de México",
 
 top3 <- spread(top3, network_name, observed)
 top3$date <- as.Date(as.Date(top3$date))
-top3$`Valle de México` <- na.spline(top3$`Valle de México`)
-top3$Guadalajara <- na.spline(top3$Guadalajara)
-top3$Toluca <- na.spline(top3$Toluca)
 x <- list(
   title = "date"
 )
@@ -228,4 +225,4 @@ df_max %>%
 
 ```
 
-Here we see that Guadalajara actually had more very bad days. If this had happened in Mexico City a phase I smog alert would have been issued and 40% of cars would have been banned from taking to the roads, but Guadalajarans are to smart to implement something like this, since it doesn't seem to work.
+Here we see that Guadalajara actually had more very bad days. If this had happened in Mexico City, a phase I smog alert would have been issued and 40% of cars would have been banned from taking to the roads, but Guadalajarans are to smart to implement something like this, since it doesn't seem to work.

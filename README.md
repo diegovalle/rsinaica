@@ -71,10 +71,10 @@ Then we query the dates for which SINAICA has data from the station:
 
 ``` r
 sinaica_station_dates(102)
-#> [1] "1997-01-01" "2018-04-29"
+#> [1] "1997-01-01" "2018-05-19"
 ```
 
-It's currently reporting data, and has been doing so since 1997. We can also query which type of parameters (pollution, wind, solar radiation, etc) the station has sensors for. Note that the package also includes a `parameters` data.frame with the complete set of supported parameters, but not all stations support all of them.
+It's currently reporting data (this document was built on 2018-05-19), and has been doing so since 1997. We can also query which type of parameters (pollution, wind, solar radiation, etc) the station has sensors for. Note that the package also includes a `parameters` data.frame with the complete set of supported parameters, but not all stations support all of them.
 
 ``` r
 cen_params <- sinaica_station_params(102)
@@ -98,7 +98,7 @@ knitr::kable(cen_params)
 | TMPI        | Temperatura interior            |
 | VV          | Velocidad del viento            |
 
-Finally, we can download and plot particulate matter with a diameter smaller than 10 micrometers (μm) (PM<sub>10</sub>) for the month of January
+Finally, we can download and plot hourly concentrations of particulate matter with a diameter smaller than 10 micrometers (μm) (PM<sub>10</sub>) during the month of January.
 
 ``` r
 # Download all PM10 data for January 2018
@@ -119,3 +119,12 @@ ggplot(df, aes(hour, value, group = date)) +
 ```
 
 <img src="man/figures/README-unnamed-chunk-6-1.png" width="100%" />
+
+the hours are in the local Guadalajara time zone of UTC-6 since we plotted January data.
+
+``` r
+stations_sinaica$timezone[which(stations_sinaica$station_id == 102)]
+#> [1] "Tiempo del centro, UTC-6 (UTC-5 en verano)"
+```
+
+You can find a handy map of Mexico's time zones from [Wikipedia](https://en.wikipedia.org/wiki/Time_in_Mexico) to help you with any time conversions you might need.

@@ -17,7 +17,7 @@ knitr::opts_chunk$set(
 ```
 
 
-We can use the package to find out which city is the most PM<sub>25</sub>-polluted in all of Mexico.
+We can use `rsinaica` to find out which city is the most PM<sub>25</sub>-polluted in all of Mexico.
 
 First, we load the packages:
 
@@ -36,7 +36,7 @@ library("rsinaica")
 
 ## Download
 
-Then we download the data for the whole year of 2017 using the `sinaica_param_data`. Since the maximum data range we can download is 1 month, we have to use a little mapply magic to download the entire year.
+Then we download the data for the whole year of 2017 using the `sinaica_param_data` function. Since the maximum data range we can download is 1 month, we have to use a little mapply magic to download the entire year.
 
 ```{r download_pm25, cache=TRUE}
 # Download all PM25 pollution data in 2017
@@ -50,7 +50,7 @@ pm25_2017 <- bind_rows(
        
 ```
 
-There a few cities that collect PM<sub>25</sub> data manually (they collect it through a filter and send it to be weighted to an external lab, sometimes in another country). Let's also download that data:
+I thought there would be a few cities that collected PM<sub>25</sub> data manually (they collect it through a filter and send it to be weighted to an external lab, sometimes in another country). But no air quality station collected manual PM<sub>2.5</sub> in 2017.
 
 ```{r}
 bind_rows(
@@ -154,7 +154,7 @@ df_max %>% plot_anomalies(time_recomposed = TRUE, ncol = 3, alpha_dots = 0.25) +
 ## df_max <- filter(df_max, anomaly != "Yes")
 ```
 
-It was decided to remove Irapuato from the rankings and keep Tepic because PM<sub>2.5</sub> values can spike because of fires. Normally I would have removed Mexicali since it didn't report any correct data during the winter season, but its levels of PM<sub>2.5</sbu> where so high that I decided to keep it.
+It was decided to remove Irapuato from the rankings and keep Tepic because PM<sub>2.5</sub> values can spike because of fires. Normally I would have removed Mexicali since it didn't report any correct data during the winter season, but its levels of PM<sub>2.5</sub> where so high that I decided to keep it.
 
 ## Most PM<sub>25</sub>-Polluted City
 

@@ -7,7 +7,7 @@ output: github_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-With this package we can plot the long term trends in pollution for different cities. First, we load the packages
+With `rsinaica` we can plot the long term trends in pollution for different cities. First, we load the packages
 
 ```{r packages, warning=FALSE,message=FALSE}
 ## Auto-install required R packages
@@ -49,7 +49,7 @@ get_network_data <- function(network_name, pollutant, remove_extremes = TRUE) {
 }
 ```
 
-Now we are ready to plot different cities. When requesting ozone values the data is automatically cleaned and values above .2 ppm are automatically set to NA, since Guadalajara tends to have quite high ozone levels it is probably a good idea to disable this functionality.
+Now we are ready to plot different cities. When requesting ozone values with the `sinaica_station_data` function, there is an option to automatically clean the data and set values above .2 ppm to NA, since Guadalajara tends to have quite high ozone levels it is probably a good idea to disable this functionality.
 
 ```{r guadalajara, cache=TRUE, warning=FALSE}
 get_network_data("Guadalajara", "O3", remove_extremes = FALSE) %>%

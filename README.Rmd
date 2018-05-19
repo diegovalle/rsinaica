@@ -95,7 +95,7 @@ cen_params <- sinaica_station_params(102)
 knitr::kable(cen_params)
 ```
 
-Finally, we can download and plot particulate matter with a diameter smaller than 10 micrometers (μm) (PM<sub>10</sub>) during the month of January
+Finally, we can download and plot hourly concentrations of particulate matter with a diameter smaller than 10 micrometers (μm) (PM<sub>10</sub>) during the month of January.
 
 ```{r}
 # Download all PM10 data for January 2018
@@ -114,3 +114,12 @@ ggplot(df, aes(hour, value, group = date)) +
   ylab(expression(paste(mu,"g/", m^3))) +
   theme_bw()
 ```
+
+
+the hours are in the local Guadalajara time zone of UTC-6 since we plotted January data.
+
+```{r}
+stations_sinaica$timezone[which(stations_sinaica$station_id == 102)]
+```
+
+You can find a handy map of Mexico's time zones from [Wikipedia](https://en.wikipedia.org/wiki/Time_in_Mexico) to help you with any time conversions you might need.

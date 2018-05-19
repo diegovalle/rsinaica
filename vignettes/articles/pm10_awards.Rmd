@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-We can use the package to find out which city is the most PM<sub>10</sub>-polluted in all of Mexico.
+We can use `rsinaica` to find out which city is the most PM<sub>10</sub>-polluted in all of Mexico.
 
 First, we load the packages:
 
@@ -35,7 +35,7 @@ library("rsinaica")
 
 ## Download
 
-Then we download the data for the whole year of 2017 using the `sinaica_param_data`. Since the maximum data range we can download is 1 month, we have to use a little mapply magic to download the entire year.
+Then we download the data for the whole year of 2017 using the `sinaica_param_data` function. Since the maximum data range we can download is 1 month, we have to use a little mapply magic to download the entire year.
 
 ```{r download_pm10, cache=TRUE}
 # Download all PM10 pollution data in 2017
@@ -71,7 +71,7 @@ knitr::kable(head(pm10_2017))
 
 ## Cleanup
 
-Once we've downloaded the data we filter values below 1 µg/m³ since they're probably calibration errors. And we only include stations that reported for more than 80% of days (292). We also have to take into account that PM<sub>10</sub> data is measured as a 24 hour average.
+Once we've downloaded the data we filter values below 1 µg/m³ since they're probably calibration errors. And we only include stations that reported for more than 80% of days (292). We also have to take into account that PM<sub>10</sub> data is measured as a 24 hour rolling average.
 
 ```{r plot}
 # pm10_2017[which(pm10_2017$value_actual != pm10_2017$value_original),]
@@ -188,9 +188,6 @@ top3 <- filter(df_max, network_name %in% c("Torreón",
 
 top3 <- spread(top3, network_name, observed)
 top3$date <- as.Date(as.Date(top3$date))
-#top3$Torreón <- na.spline(top3$Torreón)
-#top3$Guadalajara <- na.spline(top3$Guadalajara)
-#top3$Monterrey <- na.spline(top3$Monterrey)
 x <- list(
   title = "date"
 )

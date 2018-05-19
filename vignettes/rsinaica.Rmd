@@ -143,7 +143,7 @@ coordinates(geog) <- ~lon+lat
 points(geog, pch = 22, col = "lightgray", bg = "tomato1", cex = 1.2)
 text(geog$lon, geog$lat, geog$station_code, pos = 1)
 ```
-Now that the grid is ready we can use inverse distance to calculate the values in each grid cell.
+Now that the grid is ready we can use inverse distance to calculate the pollution values in each grid cell.
 
 ```{r}
 heatmap <- function(df, grid){
@@ -179,7 +179,7 @@ idw_tiles <- heatmap(df, grid)
 ```
 ## Plot
 
-Now we will use the package ggmap to plot the locations of the stations and the pollution grid on top of a map.
+Now we will use the package `ggmap` to plot the locations of the stations and the pollution grid on top of a map.
 
 ```{r plot, warning=FALSE, message=FALSE, fig.dim = c(6,8)}
 qmplot(x1, x2, data = data.frame(grid), geom = "blank", 

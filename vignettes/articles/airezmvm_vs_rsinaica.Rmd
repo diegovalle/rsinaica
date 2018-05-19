@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-We can compare data downloaded from `rsinaica` to that of `aire.zmvm` by downloading data from the same station. In this example we'll download data from the Xalostoc station in Mexico City. First, we load the necessary packages:
+We can compare the data available from `rsinaica` to that of `aire.zmvm` by downloading data from the same station. In this example we'll download data from the Xalostoc station in Mexico City. First, we load the necessary packages:
 
 ```{r warning=FALSE,message=FALSE}
 ## Auto-install required R packages
@@ -68,7 +68,7 @@ df_sinaica <- df_sinaica[, c("datetime", "value_sinaica")]
 df <- full_join(df_aire, df_sinaica, by = c("datetime" = "datetime"))
 ```
 
-This is what the data looks like:
+This is what the merged data looks like:
 
 ```{r echo=FALSE}
 knitr::kable(df[5:10, ])
@@ -89,7 +89,7 @@ ggplot(df_aire, aes(datetime, value_aire.zmvm, color = "aire.zmvm")) +
   geom_line(size = 1.5, alpha = .4) +
   geom_line(data = df_sinaica, aes(datetime, value_sinaica, color = "rsinaica"),
             alpha = .4, size = 1.5) +
-  xlab("datetime (GMT+6)") +
+  xlab("datetime") +
   ylab("ppb") +
   scale_color_discrete("package") +
   ggtitle(expression(paste("Hourly ", O[3], " pollution values during March"))) +
