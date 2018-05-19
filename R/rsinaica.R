@@ -1,4 +1,4 @@
-#' \code{rsinaicaa} package
+#' \code{rsinaica} package
 #'
 #' Ready-made functions for downloading data from the Mexican
 #' National Air Quality Information System (SINAICA). See
