@@ -4,7 +4,7 @@
 \name{rsinaica}
 \alias{rsinaica}
 \alias{rsinaica-package}
-\title{\code{rsinaicaa} package}
+\title{\code{rsinaica} package}
 \description{
 Ready-made functions for downloading data from the Mexican
 National Air Quality Information System (SINAICA). See
