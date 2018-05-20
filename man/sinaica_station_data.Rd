@@ -33,7 +33,7 @@ sinaica_station_data(station_id, parameter, start_date, end_date,
 \item{"PM10"}{ - Partículas menores a 10 micras}
 \item{"PM2.5"}{ - Partículas menores a 2.5 micras}
 \item{"PP"}{ - Precipitación pluvial}
-\item{"PST"}{ - Particulas Suspendidas totales}
+\item{"PST"}{ - Partículas Suspendidas totales}
 \item{"RS"}{ - Radiación solar}
 \item{"SO2"}{ - Dióxido de azufre}
 \item{"TMP"}{ - Temperatura}
@@ -57,7 +57,7 @@ lab for analysis (may no be collected daily). Mostly used for suspend particles 
 pushing air through a filter which is later sent to a lab to be weighted}
 }}
 
-\item{remove_extremes}{wether to remove extreme values. For O3 all values above .2 are set to NA,
+\item{remove_extremes}{whether to remove extreme values. For O3 all values above .2 are set to NA,
 for PM10 those above 600, for PM2.5 above 175, for NO2 above .21, for SO2 above .2, and for CO
 above 15. This is done so that the values match exactly those of the SINAICA website, but it is
 recommended that you use a more complicated statistical procedure to remove outliers.}

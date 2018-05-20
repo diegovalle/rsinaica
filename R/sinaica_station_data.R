@@ -26,7 +26,7 @@
 #'  \item{"PM10"}{ - Partículas menores a 10 micras}
 #'  \item{"PM2.5"}{ - Partículas menores a 2.5 micras}
 #'  \item{"PP"}{ - Precipitación pluvial}
-#'  \item{"PST"}{ - Particulas Suspendidas totales}
+#'  \item{"PST"}{ - Partículas Suspendidas totales}
 #'  \item{"RS"}{ - Radiación solar}
 #'  \item{"SO2"}{ - Dióxido de azufre}
 #'  \item{"TMP"}{ - Temperatura}

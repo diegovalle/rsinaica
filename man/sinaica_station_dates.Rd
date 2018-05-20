@@ -7,7 +7,7 @@
 sinaica_station_dates(station_id, type = "Crude")
 }
 \arguments{
-\item{station_id}{the numeric code correspongind to each station. See
+\item{station_id}{the numeric code corresponding to each station. See
 \code{\link{stations_sinaica}} for a list of stations and their ids.}
 
 \item{type}{The type of data to download. One of the following:
