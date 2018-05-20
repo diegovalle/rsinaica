@@ -5,7 +5,7 @@ Version: 0.5.0
 Authors@R: c(person("Diego", "Valle-Jones", email = "diego@diegovalle.net", role = c("aut", "cre")))
 Description: Easy-to-use functions for downloading air quality data from the 
     Mexican National Air Quality Information System (SINAICA).  Allows you to 
-    query pollution and meteorological parameters from the more than a hundred
+    query pollution and meteorological parameters from more than a hundred
     monitoring stations located throughout Mexico. See <http://sinaica.inecc.gob.mx> 
     for more information.
 License: MIT + file LICENSE
