@@ -5,6 +5,13 @@ test_that("sinaica_station_data returns correct data", {
   skip_on_cran()
 
   # Test errors in parameters
+  expect_error(sinaica_station_data("ERROR"),
+               "argument station_id must be an integer")
+  expect_error(sinaica_station_data(271))
+  expect_error(sinaica_station_data(271, "PM10", c("2015-01-01", "2016-01-10")))
+  expect_error(sinaica_station_data(271, "PM10", "2015-01-01"))
+  expect_error(sinaica_station_data(271, "PM10", "2015-01-01",
+                                    c("2015-01-01", "2016-01-10")))
   expect_error(sinaica_station_data(271, "PM10", "2015-09-11", "2015-09-11",
                                  "Manual"),
                 "for type 'Manual' data you can only request")

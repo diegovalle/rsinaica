@@ -12,3 +12,5 @@
 ^readme.html
 ^_pkgdown\.yml$
 ^docs$
+^cran-comments\.md$
+cran-comments.md

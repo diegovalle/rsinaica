@@ -6,6 +6,10 @@ test_that("sinaica_param_data works", {
   # Errors
   expect_error(sinaica_param_data("ERROR", "2017-01-01", "2017-01-31"),
                "parameter should be one of: BEN, CH4")
+  expect_error(sinaica_param_data("PM2.5"),
+               "You need to specify a start date YYYY-MM-DD")
+  expect_error(sinaica_param_data("PM2.5", "2012-01-01"),
+               "You need to specify an end date YYYY-MM-DD")
   expect_error(sinaica_param_data("PM2.5", "2017-01-32", "2017-01-31"),
                "start_date should be in YYYY-MM-DD")
   expect_error(sinaica_param_data("PM2.5", "2017-02-01", "2017-02-29"),
@@ -13,7 +17,8 @@ test_that("sinaica_param_data works", {
   expect_error(sinaica_param_data("O3", "2017-01-01", "2016-12-31"),
                "start_date should be less than or equal")
   # attempting to download more than 1 month of data should throw an error
-  expect_error(sinaica_param_data("PM2.5", "2017-01-01", "2017-02-31"))
+  expect_error(sinaica_param_data("PM2.5", "2017-01-01", "2017-02-28"),
+               "The maximum amount of data you can download is 1 month")
 
   df <- sinaica_param_data("O3", "2015-10-14", "2015-10-14")
   expect_equal(df$value[1:10], c(0.0066721, 0.014782, 0.011957,
