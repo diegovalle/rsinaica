@@ -19,7 +19,7 @@ knitr::opts_chunk$set(
 [![AppVeyor build status](https://ci.appveyor.com/api/projects/status/p281myk561l2kxgt?svg=true)](https://ci.appveyor.com/project/diegovalle/rsinaica/branch/master) 
 [![Coverage Status](https://img.shields.io/codecov/c/github/diegovalle/rsinaica/master.svg)](https://codecov.io/github/diegovalle/rsinaica?branch=master)
 [![lifecycle](https://img.shields.io/badge/lifecycle-experimental-red.svg)](https://www.tidyverse.org/lifecycle/#experitmental) 
-[![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version-ago/rsinaica?color=red)]()
+[![CRAN\_Status\_Badge](https://www.r-pkg.org/badges/version-ago/rsinaica?color=red)]()
 
 ```{r echo=FALSE, out.width='100%'}
 knitr::include_graphics('vignettes/header.png')
