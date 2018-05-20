@@ -1,8 +1,8 @@
-#' Get air quaility data from a single measuring station
+#' Get air quality data from a single measuring station
 #'
 #' Download data from a single station by specifying a parameter and a date range
 #'
-#' @param station_id the numeric code correspongind to each station. See
+#' @param station_id the numeric code corresponding to each station. See
 #' \code{\link{stations_sinaica}} for a list of stations and their ids.
 #' @param parameter type of parameter to download
 #' \itemize{

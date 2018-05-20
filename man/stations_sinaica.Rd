@@ -9,7 +9,7 @@
 \item{station_id}{Numeric code of the station}
 \item{station_name}{Name of the station}
 \item{station_code}{Abbreviation of the station}
-\item{network_id}{Numeric code for the networ}
+\item{network_id}{Numeric code for the network}
 \item{network_name}{Name of the network}
 \item{network_code}{Abbreviation of the network}
 \item{street}{street}

@@ -2,13 +2,13 @@
 % Please edit documentation in R/sinaica_station_data.R
 \name{sinaica_station_data}
 \alias{sinaica_station_data}
-\title{Get air quaility data from a single measuring station}
+\title{Get air quality data from a single measuring station}
 \usage{
 sinaica_station_data(station_id, parameter, start_date, end_date,
   type = "Crude", remove_extremes = FALSE)
 }
 \arguments{
-\item{station_id}{the numeric code correspongind to each station. See
+\item{station_id}{the numeric code corresponding to each station. See
 \code{\link{stations_sinaica}} for a list of stations and their ids.}
 
 \item{parameter}{type of parameter to download
