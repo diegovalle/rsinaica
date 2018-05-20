@@ -37,7 +37,7 @@ rsinaica is not currently available from CRAN, but you can install the developme
 if (!require(devtools)) {
     install.packages("devtools")
 }
-devtools::install_github('diegovalle/rsinaica')
+devtools::install_github("diegovalle/rsinaica")
 ```
 
 
