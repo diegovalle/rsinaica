@@ -74,7 +74,7 @@ sinaica_station_params <- function(station_id,
 #'
 #' Start date and end date of the range for which SINAICA has data for an air quality station
 #'
-#' @param station_id the numeric code correspongind to each station. See
+#' @param station_id the numeric code corresponding to each station. See
 #' \code{\link{stations_sinaica}} for a list of stations and their ids.
 #' @param type The type of data to download. One of the following:
 #' \itemize{
