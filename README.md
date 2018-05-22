@@ -12,7 +12,7 @@ Easy-to-use functions for downloading air quality data from the Mexican National
 Installation
 ------------
 
-To install the most recent package version from [CRAN](https://CRAN.R-project.org) type:
+To install the most recent package version from [CRAN](https://cran.r-project.org/package=rsinaica) type:
 
 ``` r
 install.packages("rsinaica")
