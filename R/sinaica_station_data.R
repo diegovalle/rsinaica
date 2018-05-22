@@ -88,16 +88,16 @@ sinaica_station_data <- function(station_id,
                 " and names"), call. = FALSE)
 
   if (missing(start_date))
-    stop("You need to specify a date YYYY-MM-DD", call. = FALSE)
+    stop("You need to specify a start_date YYYY-MM-DD", call. = FALSE)
   if (length(start_date) != 1)
     stop("start_date should be a date in YYYY-MM-DD format", call. = FALSE)
   if (!is.Date(start_date))
     stop("start_date should be in YYYY-MM-DD format", call. = FALSE)
 
   if (missing(end_date))
-    stop("You need to specify a date YYYY-MM-DD", call. = FALSE)
+    stop("You need to specify an end_date in YYYY-MM-DD format", call. = FALSE)
   if (length(end_date) != 1)
-    stop("end_date should be a date in YYYY-MM-DD format", call. = FALSE)
+    stop("end_date should be an end_date in YYYY-MM-DD format", call. = FALSE)
   if (!is.Date(end_date))
     stop("end_date should be in YYYY-MM-DD format", call. = FALSE)
 

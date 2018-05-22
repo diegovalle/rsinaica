@@ -20,13 +20,20 @@ test_that("get-parameters_and_dates", {
   expect_equal(df$param_code, c("SO2", "NO2", "DV", "HR", "CO",
                                   "NO", "NOx", "O3", "PM10",
                                   "PM2.5", "PP", "PB", "RS", "TMPI", "VV"))
+  ## 1 is an invalid station_id
+  expect_equal(sinaica_station_params(1),
+               data.frame(parameter_code = character(0),
+                          parameter_name = character(0),
+                          stringsAsFactors = FALSE))
 })
 
 test_that("sinaica_station_dates", {
   skip_on_cran()
 
-  expect_error(sinaica_station_date())
-  expect_error(sinaica_station_date("ERROR"))
+  expect_error(sinaica_station_dates(),
+               "argument station_id is missing, please provide it")
+  expect_error(sinaica_station_dates("ERROR"),
+               "argument station_id must be an integer")
 
   expect_equal(sinaica_station_dates(271, "Manual"),
                c("1997-01-02", "2015-12-26"))

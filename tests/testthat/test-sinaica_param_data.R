@@ -7,9 +7,9 @@ test_that("sinaica_param_data works", {
   expect_error(sinaica_param_data("ERROR", "2017-01-01", "2017-01-31"),
                "parameter should be one of: BEN, CH4")
   expect_error(sinaica_param_data("PM2.5"),
-               "You need to specify a start date YYYY-MM-DD")
+               "You need to specify a start date")
   expect_error(sinaica_param_data("PM2.5", "2012-01-01"),
-               "You need to specify an end date YYYY-MM-DD")
+               "You need to specify an end date")
   expect_error(sinaica_param_data("PM2.5", "2017-01-32", "2017-01-31"),
                "start_date should be in YYYY-MM-DD")
   expect_error(sinaica_param_data("PM2.5", "2017-02-01", "2017-02-29"),

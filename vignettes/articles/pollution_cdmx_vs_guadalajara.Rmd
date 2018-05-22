@@ -33,7 +33,7 @@ if (length(names(success)[!success])) {
 
 ## Download data
 
-```{r download, cache=TRUE}
+```{r download}
 ## Download a single month of data for all Guadalajara and CDMX stations
 get_month <- function(start_date, end_date, net, parameter){
   bind_rows(
