@@ -206,8 +206,8 @@ y <- list(
 
 plot_ly(as.data.frame(top3), x = ~date, y = ~`Toluca`, name = "Toluca" ,
         type = 'scatter', mode = 'lines', line = list(color = '#e41a1c'), width = .5) %>%
-  add_trace(y = ~Guadalajara, name = 'Guadalajara', mode = 'lines', line = list(color = '#4daf4a'), width = .5)  %>%
-  add_trace(y = ~Cuernavaca, name = 'Cuernavaca', mode = 'lines', line = list(color = '#377eb8'), width = .5) %>%
+  add_trace(y = ~Guadalajara, name = 'Guadalajara', mode = 'lines', line = list(color = '#377eb8'), width = .5)  %>%
+  add_trace(y = ~Cuernavaca, name = 'Cuernavaca', mode = 'lines', line = list(color = '#4daf4a'), width = .5) %>%
   layout(title = "Top 3 most PM2.5-polluted cities in Mexico", xaxis = x, yaxis = y)
 ```
 
