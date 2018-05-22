@@ -11,14 +11,12 @@ With `rsinaica` we can plot the long term trends in pollution for different citi
 
 ```{r packages, warning=FALSE,message=FALSE}
 ## Auto-install required R packages
-packs <- c("dplyr", "ggplot2", "lubridate", "scales")
+packs <- c("dplyr", "ggplot2", "lubridate", "scales", "rsinaica")
 success <- suppressWarnings(sapply(packs, require, character.only = TRUE))
 if (length(names(success)[!success])) {
   install.packages(names(success)[!success])
   sapply(names(success)[!success], require, character.only = TRUE)
 }
-## Not yet on cran
-library("rsinaica")
 ```
 
 We create a function for downloading single pollutant data for all the stations that form a network

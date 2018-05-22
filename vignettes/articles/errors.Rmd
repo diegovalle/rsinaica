@@ -14,14 +14,12 @@ First, let's load the packages necessary for the analysis.
 
 ```{r packages, warning=FALSE,message=FALSE}
 ## Auto-install required R packages
-packs <- c("dplyr", "ggplot2", "lubridate")
+packs <- c("dplyr", "ggplot2", "lubridate", "rsinaica")
 success <- suppressWarnings(sapply(packs, require, character.only = TRUE))
 if (length(names(success)[!success])) {
   install.packages(names(success)[!success])
   sapply(names(success)[!success], require, character.only = TRUE)
 }
-## Not yet on cran
-library("rsinaica")
 ```
 ## Incomplete data
 

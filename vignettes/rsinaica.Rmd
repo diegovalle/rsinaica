@@ -27,14 +27,12 @@ First, load the packages necessary for running the analysis
 ```{r message=FALSE, warning=FALSE}
 ## Auto-install required R packages
 packs <- c("dplyr", "ggplot2", "lubridate", "sp", "ggmap", "gstat", "zoo", 
-           "tidyr")
+           "tidyr", "rsinaica")
 success <- suppressWarnings(sapply(packs, require, character.only = TRUE))
 if (length(names(success)[!success])) {
   install.packages(names(success)[!success])
   sapply(names(success)[!success], require, character.only = TRUE)
 }
-## Not yet on cran
-library("rsinaica")
 ```
 
 ## Core Functions

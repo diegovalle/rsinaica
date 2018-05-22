@@ -23,14 +23,12 @@ First, we load the packages
 ```{r packages,warning=FALSE,message=FALSE}
 ## Auto-install required R packages
 packs <- c("dplyr", "ggplot2", "gghighlight", "lubridate", "anomalize", 
-           "aire.zmvm", "tidyr", "zoo", "plotly")
+           "aire.zmvm", "tidyr", "zoo", "plotly", "rsinaica")
 success <- suppressWarnings(sapply(packs, require, character.only = TRUE))
 if (length(names(success)[!success])) {
   install.packages(names(success)[!success])
   sapply(names(success)[!success], require, character.only = TRUE)
 }
-## Not yet on cran
-library("rsinaica")
 ```
 ## Download
 

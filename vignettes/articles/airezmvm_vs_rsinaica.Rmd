@@ -20,14 +20,12 @@ We can compare the data available from `rsinaica` to that of `aire.zmvm` by down
 
 ```{r warning=FALSE,message=FALSE}
 ## Auto-install required R packages
-packs <- c("dplyr", "ggplot2", "lubridate", "aire.zmvm")
+packs <- c("dplyr", "ggplot2", "lubridate", "aire.zmvm", "rsinaica")
 success <- suppressWarnings(sapply(packs, require, character.only = TRUE))
 if (length(names(success)[!success])) {
   install.packages(names(success)[!success])
   sapply(names(success)[!success], require, character.only = TRUE)
 }
-## Not yet on cran
-library("rsinaica")
 ```
 
 The hourly data from the `aire.zmvm` package in most cases corresponds to the GMT+6 time zone (with no Daylight Saving Time), while according to the `stations_sinaica` data.frame the data for the Xalostoc station comes in the local Mexico City time that includes Daylight Saving Time during the summer. Be warned that each station submits its data to SINAICA according to their chosen time zone, and sometimes the reported time zone may be incorrect.

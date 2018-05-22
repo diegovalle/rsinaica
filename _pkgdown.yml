@@ -32,13 +32,14 @@ articles:
     desc: >
       Download and analyze air quality data from more than a 100 stations in Mexico
     contents:
-    - articles/errors
-    - articles/ozone_awards
-    - articles/pm10_awards
-    - articles/pm25_awards
-    - articles/trends
-    - articles/pollution_cdmx_vs_guadalajara
-    - articles/airezmvm_vs_rsinaica
+    - '`articles/errors`'
+    - '`articles/ozone_awards`'
+    - '`articles/pm10_awards`'
+    - '`articles/pm25_awards`'
+    - '`articles/trends`'
+    - '`articles/pollution_cdmx_vs_guadalajara`'
+    - '`articles/airezmvm_vs_rsinaica`'
+    - '`rsinaica`'
 figures:
   dev: grDevices::png
   dpi: 96

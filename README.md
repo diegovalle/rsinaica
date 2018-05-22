@@ -3,7 +3,7 @@
 rsinaica
 ========
 
-[![Travis-CI Build Status](https://travis-ci.org/diegovalle/rsinaica.svg?branch=master)](https://travis-ci.org/diegovalle/rsinaica) [![AppVeyor build status](https://ci.appveyor.com/api/projects/status/p281myk561l2kxgt?svg=true)](https://ci.appveyor.com/project/diegovalle/rsinaica/branch/master) [![Coverage Status](https://img.shields.io/codecov/c/github/diegovalle/rsinaica/master.svg)](https://codecov.io/github/diegovalle/rsinaica?branch=master) [![lifecycle](https://img.shields.io/badge/lifecycle-experimental-red.svg)](https://www.tidyverse.org/lifecycle/#experitmental) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version-ago/rsinaica?color=red)]()
+[![Travis-CI Build Status](https://travis-ci.org/diegovalle/rsinaica.svg?branch=master)](https://travis-ci.org/diegovalle/rsinaica) [![AppVeyor build status](https://ci.appveyor.com/api/projects/status/p281myk561l2kxgt?svg=true)](https://ci.appveyor.com/project/diegovalle/rsinaica/branch/master) [![Coverage Status](https://img.shields.io/codecov/c/github/diegovalle/rsinaica/master.svg)](https://codecov.io/github/diegovalle/rsinaica?branch=master) [![lifecycle](https://img.shields.io/badge/lifecycle-experimental-red.svg)](https://www.tidyverse.org/lifecycle/#experitmental) [![CRAN\_Status\_Badge](https://www.r-pkg.org/badges/version-ago/rsinaica?color=red)]()
 
 <img src="vignettes/header.png" width="100%" />
 
@@ -12,20 +12,21 @@ Easy-to-use functions for downloading air quality data from the Mexican National
 Installation
 ------------
 
-rsinaica is not currently available from CRAN, but you can install the development version from github with:
+To install the most recent package version from [CRAN](https://CRAN.R-project.org) type:
+
+``` r
+install.packages("rsinaica")
+```
+
+You can always install the development version from GitHub:
 
 ``` r
 if (!require(devtools)) {
     install.packages("devtools")
 }
-devtools::install_github('diegovalle/rsinaica')
+devtools::install_github("diegovalle/rsinaica")
 ```
 
-<!--ou can install the released version of rsinaica from [CRAN](https://CRAN.R-project.org) with:
-
-``` r
-install.packages("rsinaica")
-```-->
 Example
 -------
 
@@ -33,13 +34,12 @@ Suppose you wanted to download pollution data from the *Centro* station in Guada
 
 ``` r
 ## Auto-install required R packages
-packs <- c("ggplot2", "maps", "mapproj")
+packs <- c("ggplot2", "maps", "mapproj", "rsinaica")
 success <- suppressWarnings(sapply(packs, require, character.only = TRUE))
 if (length(names(success)[!success])) {
   install.packages(names(success)[!success])
   sapply(names(success)[!success], require, character.only = TRUE)
 }
-library("rsinaica")
 
 knitr::kable(stations_sinaica[which(stations_sinaica$station_name == "Centro"), 1:6])
 ```
@@ -71,10 +71,10 @@ Then we query the dates for which SINAICA has data from the station:
 
 ``` r
 sinaica_station_dates(102)
-#> [1] "1997-01-01" "2018-05-19"
+#> [1] "1997-01-01" "2018-05-22"
 ```
 
-It's currently reporting data (this document was built on 2018-05-19), and has been doing so since 1997. We can also query which type of parameters (pollution, wind, solar radiation, etc) the station has sensors for. Note that the package also includes a `parameters` data.frame with the complete set of supported parameters, but not all stations support all of them.
+It's currently reporting data (this document was built on 2018-05-22), and has been doing so since 1997. We can also query which type of parameters (pollution, wind, solar radiation, etc) the station has sensors for. Note that the package also includes a `parameters` data.frame with the complete set of supported parameters, but not all stations support all of them.
 
 ``` r
 cen_params <- sinaica_station_params(102)
