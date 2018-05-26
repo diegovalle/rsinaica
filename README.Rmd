@@ -79,7 +79,7 @@ ggplot(stations_sinaica[order(stations_sinaica$color, decreasing = TRUE),], aes(
   theme_void()
 ```
 
-Then we query the dates for which SINAICA has data from the station:
+Then we query the start and end dates for which SINAICA has received data from the station:
 
 ```{r}
 sinaica_station_dates(102)
