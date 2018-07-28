@@ -120,16 +120,6 @@ df_max <- df_max %>%
   anomalize(remainder, method = "iqr", alpha = .03) %>%
   time_recompose()
 
-# df_max <- df_filtered %>%
-#   mutate(date = as.POSIXct(paste0(date, " ", hour, ":00")),  tz = "Etc/GMT+6") %>%
-#   ungroup() %>%
-#   group_by(station_id) %>%
-#   arrange(date) %>%
-#   time_decompose(value, method = "stl") %>%
-#   anomalize(remainder, method = "gesd", alpha = 0.0001) %>%
-#   time_recompose()
-
-
 # Anomaly Visualization
 df_max %>% plot_anomalies(time_recomposed = TRUE, ncol = 3, alpha_dots = 0.25) +
   labs(title = "Tidyverse Anomalies", subtitle = "STL + GESD Methods") 
