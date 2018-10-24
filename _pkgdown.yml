@@ -1,12 +1,14 @@
-title: Download Data from Mexico's National Air Quality Information System
+
 url: https://hoyodesmog.diegovalle.net/rsinaica
 template:
   params:
     ganalytics: UA-100264-10
     bootswatch: united
+
 authors:
   Diego Valle-Jones:
     href: https://www.diegovalle.net
+
 reference:
   - title: Get Air Quality Data
     desc: Functions for downloading pollution, wind, temperature, and rh in the original units
