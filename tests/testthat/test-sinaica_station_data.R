@@ -1,6 +1,6 @@
 context("test-sinaica_station_data.R")
 
-# Visit http://sinaica.inecc.gob.mx/data.php to manually check the values
+# Visit https://sinaica.inecc.gob.mx/data.php to manually check the values
 test_that("sinaica_station_data returns correct data", {
   skip_on_cran()
 

@@ -77,7 +77,7 @@ head(df)
 
 }
 \seealso{
-Crude data comes from \url{http://sinaica.inecc.gob.mx/data.php},
-validated data from \url{http://sinaica.inecc.gob.mx/data.php?tipo=V}, and
-manual data from \url{http://sinaica.inecc.gob.mx/data.php?tipo=M}
+Crude data comes from \url{https://sinaica.inecc.gob.mx/data.php},
+validated data from \url{https://sinaica.inecc.gob.mx/data.php?tipo=V}, and
+manual data from \url{https://sinaica.inecc.gob.mx/data.php?tipo=M}
 }

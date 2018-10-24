@@ -60,9 +60,9 @@
 #' @importFrom stringr str_replace_all str_extract
 #' @importFrom utils data
 #' @importFrom stats runif
-#' @seealso Crude data comes from \url{http://sinaica.inecc.gob.mx/data.php},
-#' validated data from \url{http://sinaica.inecc.gob.mx/data.php?tipo=V}, and
-#' manual data from \url{http://sinaica.inecc.gob.mx/data.php?tipo=M}
+#' @seealso Crude data comes from \url{https://sinaica.inecc.gob.mx/data.php},
+#' validated data from \url{https://sinaica.inecc.gob.mx/data.php?tipo=V}, and
+#' manual data from \url{https://sinaica.inecc.gob.mx/data.php?tipo=M}
 #' @export
 #' @examples
 #' stations_sinaica[which(stations_sinaica$station_name == "Xalostoc"), 1:5]
@@ -132,7 +132,7 @@ sinaica_station_data <- function(station_id,
                  "Manual"    = "M"
   )
 
-  url <- "http://sinaica.inecc.gob.mx/pags/datGrafs.php"
+  url <- "https://sinaica.inecc.gob.mx/pags/datGrafs.php"
   fd <- list(
     estacionId  = station_id,
     param       = parameter,
@@ -175,7 +175,7 @@ sinaica_station_data <- function(station_id,
   df$hour <- as.integer(df$hour)
   df$valid <- as.integer(df$valid)
 
-  ## If you look at the source of http://sinaica.inecc.gob.mx/data.php
+  ## If you look at the source of https://sinaica.inecc.gob.mx/data.php
   ## they filter values above certain limits
   if (identical(remove_extremes, TRUE)) {
     lim_perm <- switch(parameter,

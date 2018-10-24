@@ -34,7 +34,7 @@
 \item{video_interior}{link to video of the interior of the station}
 }}
 \source{
-\href{http://sinaica.inecc.gob.mx/}{SINAICA} ans Solicitud de Información 1612100005118
+\href{https://sinaica.inecc.gob.mx/}{SINAICA} ans Solicitud de Información 1612100005118
 }
 \usage{
 data(stations_sinaica)
@@ -42,7 +42,7 @@ data(stations_sinaica)
 \description{
 This data set contains all the stations that report to the National
 Air Quality Information System
-\href{http://sinaica.inecc.gob.mx}{SINAICA}.
+\href{https://sinaica.inecc.gob.mx}{SINAICA}.
 }
 \examples{
 head(stations_sinaica)

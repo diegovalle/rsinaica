@@ -41,9 +41,9 @@ sinaica_station_params <- function(station_id,
                  "Validated" = "V",
                  "Manual"    = "M"
   )
-  # curl 'http://sinaica.inecc.gob.mx/lib/libd/cnxn.php'
+  # curl 'https://sinaica.inecc.gob.mx/lib/libd/cnxn.php'
   # estId=33&metodo=getParamsPorEstAjax&tipoDatos=''
-  url <- "http://sinaica.inecc.gob.mx/lib/libd/cnxn.php"
+  url <- "https://sinaica.inecc.gob.mx/lib/libd/cnxn.php"
   fd <- list(
     estId     = station_id,
     metodo    = "getParamsPorEstAjax",
@@ -114,9 +114,9 @@ sinaica_station_dates <- function(station_id,
                  "Validated" = "V",
                  "Manual"    = "M"
   )
-  #curl 'http://sinaica.inecc.gob.mx/lib/libd/cnxn.php'
+  #curl 'https://sinaica.inecc.gob.mx/lib/libd/cnxn.php'
   # id=31&metodo=getFechasLimiteEstacionAjax&tipoDatos=
-  url <- "http://sinaica.inecc.gob.mx/lib/libd/cnxn.php"
+  url <- "https://sinaica.inecc.gob.mx/lib/libd/cnxn.php"
   fd <- list(
     id        = station_id,
     metodo    = "getFechasLimiteEstacionAjax",

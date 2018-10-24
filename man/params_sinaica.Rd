@@ -10,7 +10,7 @@
 \item{param_name}{Name of the air quality parameter}
 }}
 \source{
-\href{http://sinaica.inecc.gob.mx/}{SINAICA}
+\href{https://sinaica.inecc.gob.mx/}{SINAICA}
 }
 \description{
 Valid air quality parameters

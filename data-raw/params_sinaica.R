@@ -1,7 +1,7 @@
 library(httr)
 library(jsonlite)
 
-url <- "http://sinaica.inecc.gob.mx/lib/j/php/getData.php"
+url <- "https://sinaica.inecc.gob.mx/lib/j/php/getData.php"
 fd <- list(
   tabla   = "Parametros"
 )

@@ -5,7 +5,7 @@ library("rvest")
 library("rsinaica")
 
 get_estaciones_sinaica <- function(type) {
-  url = "http://sinaica.inecc.gob.mx/lib/j/php/getData.php"
+  url = "https://sinaica.inecc.gob.mx/lib/j/php/getData.php"
   fd <- list(
     tabla  = "Estaciones e INNER JOIN Redes r ON e.redesid = r.id",
     fields = paste0("e.id, e.nombre, e.codigo, e.redesId, r.nombre as nombre_red,",
@@ -79,7 +79,7 @@ Encoding(stations_sinaica$address) <- "UTF-8"
 
 ## Get the timezone of each station
 for (i in stations_sinaica$station_id) {
-  url <- paste0("http://sinaica.inecc.gob.mx/estacion.php?estId=", i)
+  url <- paste0("https://sinaica.inecc.gob.mx/estacion.php?estId=", i)
   station_name <- url %>%
     read_html() %>%
     html_nodes("h3") %>%

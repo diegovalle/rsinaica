@@ -100,7 +100,7 @@ sinaica_param_data <- function(parameter,
          call. = FALSE)
 
   ## Query the SINAICA server for the data
-  url <-  "http://sinaica.inecc.gob.mx/lib/j/php/getData.php"
+  url <-  "https://sinaica.inecc.gob.mx/lib/j/php/getData.php"
   fd <- list(
     tabla  = if (type == "Crude") "Datos" else "DatosManuales",
     fields = "",
