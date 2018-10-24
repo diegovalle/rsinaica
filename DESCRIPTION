@@ -1,12 +1,12 @@
 Package: rsinaica
 Type: Package
 Title: Download Data from Mexico's Air Quality Information System
-Version: 0.5.0.9000
+Version: 0.6.0
 Authors@R: c(person("Diego", "Valle-Jones", email = "diego@diegovalle.net", role = c("aut", "cre")))
 Description: Easy-to-use functions for downloading air quality data from the 
     Mexican National Air Quality Information System (SINAICA).  Allows you to 
     query pollution and meteorological parameters from more than a hundred
-    monitoring stations located throughout Mexico. See <http://sinaica.inecc.gob.mx> 
+    monitoring stations located throughout Mexico. See <https://sinaica.inecc.gob.mx> 
     for more information.
 License: MIT + file LICENSE
 URL: https://hoyodesmog.diegovalle.net/rsinaica/, https://github.com/diegovalle/rsinaica
@@ -36,4 +36,4 @@ Imports:
     dplyr,
     lubridate
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.0
