@@ -6,7 +6,6 @@
 * Ubuntu 14.04 (on Travis CI), R version 3.4.4
 * OS X (on Travis CI), R version 3.5.0
 * Windows Server 2012 R2 x64 (on AppVeyor), R version 3.5.1 
-* Windows Server 2012 R2 x64 (on AppVeyor), R version 3.4.4
 * Win-Builder (devel)
 
 ## R CMD check results
