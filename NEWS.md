@@ -1,6 +1,6 @@
 # rsinaica 0.6.0
 
-* Change the web address of the sinaica server to use https
+* Changed the web address of the sinaica server to use https
 
 # rsinaica 0.5.0
 
