@@ -5,3 +5,4 @@ inst/doc
 docs/*
 vignettes/articles/*_cache*
 vignettes/*_cache*
+cran-comments.md
