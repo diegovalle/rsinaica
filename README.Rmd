@@ -18,7 +18,7 @@ knitr::opts_chunk$set(
 [![Travis-CI Build Status](https://travis-ci.org/diegovalle/rsinaica.svg?branch=master)](https://travis-ci.org/diegovalle/rsinaica) 
 [![AppVeyor build status](https://ci.appveyor.com/api/projects/status/p281myk561l2kxgt?svg=true)](https://ci.appveyor.com/project/diegovalle/rsinaica/branch/master) 
 [![Coverage Status](https://img.shields.io/codecov/c/github/diegovalle/rsinaica/master.svg)](https://codecov.io/github/diegovalle/rsinaica?branch=master)
-[![lifecycle](https://img.shields.io/badge/lifecycle-experimental-red.svg)](https://www.tidyverse.org/lifecycle/#experitmental) 
+[![lifecycle](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing) 
 [![CRAN\_Status\_Badge](https://www.r-pkg.org/badges/version-ago/rsinaica)](https://cran.r-project.org/package=rsinaica)
 
 ```{r echo=FALSE, out.width='100%'}

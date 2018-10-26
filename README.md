@@ -3,7 +3,7 @@
 rsinaica
 ========
 
-[![Travis-CI Build Status](https://travis-ci.org/diegovalle/rsinaica.svg?branch=master)](https://travis-ci.org/diegovalle/rsinaica) [![AppVeyor build status](https://ci.appveyor.com/api/projects/status/p281myk561l2kxgt?svg=true)](https://ci.appveyor.com/project/diegovalle/rsinaica/branch/master) [![Coverage Status](https://img.shields.io/codecov/c/github/diegovalle/rsinaica/master.svg)](https://codecov.io/github/diegovalle/rsinaica?branch=master) [![lifecycle](https://img.shields.io/badge/lifecycle-experimental-red.svg)](https://www.tidyverse.org/lifecycle/#experitmental) [![CRAN\_Status\_Badge](https://www.r-pkg.org/badges/version-ago/rsinaica)](https://cran.r-project.org/package=rsinaica)
+[![Travis-CI Build Status](https://travis-ci.org/diegovalle/rsinaica.svg?branch=master)](https://travis-ci.org/diegovalle/rsinaica) [![AppVeyor build status](https://ci.appveyor.com/api/projects/status/p281myk561l2kxgt?svg=true)](https://ci.appveyor.com/project/diegovalle/rsinaica/branch/master) [![Coverage Status](https://img.shields.io/codecov/c/github/diegovalle/rsinaica/master.svg)](https://codecov.io/github/diegovalle/rsinaica?branch=master) [![lifecycle](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing) [![CRAN\_Status\_Badge](https://www.r-pkg.org/badges/version-ago/rsinaica)](https://cran.r-project.org/package=rsinaica)
 
 <img src="vignettes/header.png" width="100%" />
 
@@ -67,14 +67,14 @@ ggplot(stations_sinaica[order(stations_sinaica$color, decreasing = TRUE),], aes(
 
 <img src="man/figures/README-unnamed-chunk-3-1.png" width="100%" />
 
-Then we query the dates for which SINAICA has data from the station:
+Then we query the start and end dates for which SINAICA has received data from the station:
 
 ``` r
 sinaica_station_dates(102)
-#> [1] "1997-01-01" "2018-05-25"
+#> [1] "1997-01-01" "2018-10-26"
 ```
 
-It's currently reporting data (this document was built on 2018-05-25), and has been doing so since 1997. We can also query which type of parameters (pollution, wind, solar radiation, etc) the station has sensors for. Note that the package also includes a `parameters` data.frame with the complete set of supported parameters, but not all stations support all of them.
+It's currently reporting data (this document was built on 2018-10-26), and has been doing so since 1997. We can also query which type of parameters (pollution, wind, solar radiation, etc) the station has sensors for. Note that the package also includes a `parameters` data.frame with the complete set of supported parameters, but not all stations support all of them.
 
 ``` r
 cen_params <- sinaica_station_params(102)
@@ -95,6 +95,7 @@ knitr::kable(cen_params)
 | PM10        | Partículas menores a 10 micras  |
 | PM2.5       | Partículas menores a 2.5 micras |
 | PP          | Precipitación pluvial           |
+| RS          | Radiación solar                 |
 | TMPI        | Temperatura interior            |
 | VV          | Velocidad del viento            |
 
