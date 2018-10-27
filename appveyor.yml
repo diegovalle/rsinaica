@@ -14,11 +14,12 @@ environment:
   global:
     WARNINGS_ARE_ERRORS: 1
     NOT_CRAN: true
+    USE_RTOOLS: true
   matrix:
     - R_VERSION: release
       R_ARCH: x64
     - R_VERSION: oldrel
-    - R_VERSION: patched
+#    - R_VERSION: patched
 
 # Adapt as necessary starting from here
 
