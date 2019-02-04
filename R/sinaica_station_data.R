@@ -103,13 +103,13 @@ sinaica_station_data <- function(station_id,
 
   check_arguments(parameter,
                   valid = c("BEN", "CH4", "CN", "CO", "CO2", "DV",
-                           "H2S", "HCNM", "HCT",
-                           "HR", "HRI", "IUV", "NO", "NO2",
-                           "NOx",
-                           "O3", "PB", "PM10",
-                           "PM2.5", "PP", "PST", "RS", "SO2",
-                           "TMP", "TMPI", "UVA", "UVB",
-                           "VV", "XIL"),
+                            "H2S", "HCNM", "HCT",
+                            "HR", "HRI", "IUV", "NO", "NO2",
+                            "NOx",
+                            "O3", "PB", "PM10",
+                            "PM2.5", "PP", "PST", "RS", "SO2",
+                            "TMP", "TMPI", "UVA", "UVB",
+                            "VV", "XIL"),
                   "parameter")
   check_arguments(type,
                   valid = c("Crude", "Validated", "Manual"),
@@ -140,61 +140,72 @@ sinaica_station_data <- function(station_id,
     rango       = ndays_to_range(start_date, end_date),
     tipoDatos   = type
   )
-  result <- POST(url,
-                 add_headers("user-agent" =
-                               "https://github.com/diegovalle/rsinaica"),
-                 body = fd,
-                 encode = "form")
-  if (http_error(result))
-    stop(sprintf("The request to <%s> failed [%s]",
-                 url,
-                 status_code(result)
-    ), call. = FALSE)
-  if (http_type(result) != "text/html")
-    stop(paste0(url, " did not return text/html", call. = FALSE))
-  json_text <- content(result, "text", encoding = "UTF-8")
-  df <- fromJSON(str_replace_all(str_extract(json_text,
-                                             "var dat = \\[(.|\n)*?\\];"),
-                                 "var dat = |;",
-                                 ""))
-  if (!length(df))
-    return(data.frame(station_id =  integer(),
-                      station_name =  character(),
-                      date =  character(),
-                      hour = integer(),
-                      valid = integer(),
-                      unit =  character(),
-                      value = numeric(),
-                      stringsAsFactors = FALSE)
-           )
-  df$bandO <- NULL
-  names(df) <- c("id", "date", "hour", "value", "valid")
-  df$value <- as.numeric(df$value)
-  df$unit <- .recode_sinaica_units(parameter)
-  df$station_id <- as.integer(station_id)
-  df$hour <- as.integer(df$hour)
-  df$valid <- as.integer(df$valid)
 
-  ## If you look at the source of https://sinaica.inecc.gob.mx/data.php
-  ## they filter values above certain limits
-  if (identical(remove_extremes, TRUE)) {
-    lim_perm <- switch(parameter,
-                       PM10 = 600,
-                       PM2.5 = 175,
-                       NO2 = .21,
-                       SO2 = .2,
-                       CO = 15,
-                       O3 = .2,
-                       10000000000)
-    df$value[which(df$value > lim_perm)] <- NA_real_
-  }
-  df$value[which(df$value < 0)] <- NA_real_
-  data("stations_sinaica", package = "rsinaica", envir = environment())
-  df <- left_join(df, stations_sinaica[, c("station_id", "station_name")],
-                  by = "station_id")
-  df <- filter(df, date <= end_date)
-  ## As not to overload the server wait a random value before the next call
-  Sys.sleep(runif(1, max = .5))
-  df[, c("station_id",  "station_name", "date", "hour",
-         "valid", "unit", "value")]
+  tryCatch(
+    {
+      result <- POST(url,
+                     add_headers("user-agent" =
+                                   "https://github.com/diegovalle/rsinaica"),
+                     body = fd,
+                     encode = "form")
+      if (http_error(result))
+        stop(sprintf("The request to <%s> failed [%s]",
+                     url,
+                     status_code(result)
+        ), call. = FALSE)
+      if (http_type(result) != "text/html")
+        stop(paste0(url, " did not return text/html", call. = FALSE))
+      json_text <- content(result, "text", encoding = "UTF-8")
+      df <- fromJSON(str_replace_all(str_extract(json_text,
+                                                 "var dat = \\[(.|\n)*?\\];"),
+                                     "var dat = |;",
+                                     ""))
+      if (!length(df))
+        return(data.frame(station_id =  integer(),
+                          station_name =  character(),
+                          date =  character(),
+                          hour = integer(),
+                          valid = integer(),
+                          unit =  character(),
+                          value = numeric(),
+                          stringsAsFactors = FALSE)
+        )
+      df$bandO <- NULL
+      names(df) <- c("id", "date", "hour", "value", "valid")
+      df$value <- as.numeric(df$value)
+      df$unit <- .recode_sinaica_units(parameter)
+      df$station_id <- as.integer(station_id)
+      df$hour <- as.integer(df$hour)
+      df$valid <- as.integer(df$valid)
+
+      ## If you look at the source of https://sinaica.inecc.gob.mx/data.php
+      ## they filter values above certain limits
+      if (identical(remove_extremes, TRUE)) {
+        lim_perm <- switch(parameter,
+                           PM10 = 600,
+                           PM2.5 = 175,
+                           NO2 = .21,
+                           SO2 = .2,
+                           CO = 15,
+                           O3 = .2,
+                           10000000000)
+        df$value[which(df$value > lim_perm)] <- NA_real_
+      }
+      df$value[which(df$value < 0)] <- NA_real_
+      data("stations_sinaica", package = "rsinaica", envir = environment())
+      df <- left_join(df, stations_sinaica[, c("station_id", "station_name")],
+                      by = "station_id")
+      df <- filter(df, date <= end_date)
+      ## As not to overload the server wait a random value before the next call
+      Sys.sleep(runif(1, max = .5))
+      df[, c("station_id",  "station_name", "date", "hour",
+             "valid", "unit", "value")]
+      return(df)
+    },
+    error = function(cond) {
+      message("An error occurred downloading data from SINAICA:")
+      message(cond)
+      return(NULL)
+    }
+  )
 }

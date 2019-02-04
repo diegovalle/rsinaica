@@ -49,25 +49,34 @@ sinaica_station_params <- function(station_id,
     metodo    = "getParamsPorEstAjax",
     tipoDatos = type
   )
-  result <- POST(url,
-                 body = fd,
-                 encode = "form")
-  if (http_error(result))
-    stop(sprintf("The request to <%s> failed [%s]",
-                 url,
-                 status_code(result)
-    ), call. = FALSE)
-  if (http_type(result) != "text/html")
-    stop(paste0(url, " did not return text/html", call. = FALSE))
-  json_text <- content(result, "text", encoding = "UTF-8")
-  df <- fromJSON(json_text)
-  if (!length(df))
-    return(data.frame(parameter_code = character(0),
-                      parameter_name = character(0),
-                      stringsAsFactors = FALSE)
-           )
-  names(df) <- c("param_code", "param_name")
-  df
+  tryCatch(
+    {
+      result <- POST(url,
+                     body = fd,
+                     encode = "form")
+      if (http_error(result))
+        stop(sprintf("The request to <%s> failed [%s]",
+                     url,
+                     status_code(result)
+        ), call. = FALSE)
+      if (http_type(result) != "text/html")
+        stop(paste0(url, " did not return text/html", call. = FALSE))
+      json_text <- content(result, "text", encoding = "UTF-8")
+      df <- fromJSON(json_text)
+      if (!length(df))
+        return(data.frame(parameter_code = character(0),
+                          parameter_name = character(0),
+                          stringsAsFactors = FALSE)
+        )
+      names(df) <- c("param_code", "param_name")
+      return(df)
+    },
+    error = function(cond) {
+      message("An error occurred downloading data from SINAICA:")
+      message(cond)
+      return(NULL)
+    }
+  )
 }
 
 #' Dates supported by a station
@@ -122,19 +131,30 @@ sinaica_station_dates <- function(station_id,
     metodo    = "getFechasLimiteEstacionAjax",
     tipoDatos = type
   )
-  result <- POST(url,
-                 body = fd,
-                 encode = "form")
-  if (http_error(result))
-    stop(sprintf("The request to <%s> failed [%s]",
-                 url,
-                 status_code(result)
-    ), call. = FALSE)
-  if (http_type(result) != "text/html")
-    stop(paste0(url, " did not return text/html", call. = FALSE))
-  json_text <- content(result, "text", encoding = "UTF-8")
-  df <- fromJSON(json_text)
-  if (is.na(df[[1]]))
-    df <- c(NA, NA)
-  df
+
+  tryCatch(
+    {
+      result <- POST(url,
+                     body = fd,
+                     encode = "form")
+      if (http_error(result))
+        stop(sprintf("The request to <%s> failed [%s]",
+                     url,
+                     status_code(result)
+        ), call. = FALSE)
+      if (http_type(result) != "text/html")
+        stop(paste0(url, " did not return text/html", call. = FALSE))
+      json_text <- content(result, "text", encoding = "UTF-8")
+      df <- fromJSON(json_text)
+      if (is.na(df[[1]]))
+        df <- c(NA, NA)
+      return(df)
+    },
+    error = function(cond) {
+      message("An error occurred downloading data from SINAICA:")
+      message(cond)
+      return(NULL)
+    }
+  )
+
 }
