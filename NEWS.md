@@ -1,3 +1,5 @@
+# rsinaica 0.6.1.9000
+
 # rsinaica 0.6.1
 
 * `sinaica_station_dates()` and `sinaica_param_data()` return NULL when SINAICA is down
