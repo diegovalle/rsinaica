@@ -138,14 +138,15 @@ df_max <- filter(df_max, network_name != "Piedras Negras")
 And here is the most ozone-polluted city in Mexico: the <b>Valle de México</b> metro area
 
 ```{r}
-gghighlight_line(df_max, aes(as.Date(date), observed, 
-                              group = network_name, color = network_name),
-                 mean(observed, na.rm = TRUE), max_highlight = 1) +
+ggplot(df_max, aes(as.Date(date), observed,
+                   group = network_name, color = network_name)) +
+  geom_line()  +
   theme_bw() +
   ggtitle("Pollution measuring network with highest ozone pollution values in 2017",
           subtitle = "Based on the average of the maximum daily hourly value. Source: SINAICA") +
   xlab("date") +
-  ylab(expression(paste(O[3], " ppm")))
+  ylab(expression(paste(O[3], " ppm"))) +
+  gghighlight(mean(observed, na.rm = TRUE), max_highlight = 1L)
 ```
 
 ## Top polluted cities

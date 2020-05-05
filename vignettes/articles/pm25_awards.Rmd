@@ -1,5 +1,5 @@
 ---
-title: "Most PM2.5 Polluted City in Mexico - 2017"
+title: "Most PM2.5 Polluted City in Mexico - 2018"
 author: "Diego Valle-Jones"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
@@ -34,28 +34,28 @@ if (length(names(success)[!success])) {
 
 ## Download
 
-Then we download the data for the whole year of 2017 using the `sinaica_param_data` function. Since the maximum data range we can download is 1 month, we have to use a little mapply magic to download the entire year.
+Then we download the data for the whole year of 2018 using the `sinaica_param_data` function. Since the maximum data range we can download is 1 month, we have to use a little mapply magic to download the entire year.
 
 ```{r download_pm25, cache=TRUE}
-# Download all PM25 pollution data in 2017
-pm25_2017 <- bind_rows(
+# Download all PM25 pollution data in 2018
+pm25_2018 <- bind_rows(
   mapply(sinaica_param_data,
          "PM2.5",
-         seq(as.Date("2017-01-01"), as.Date("2017-12-01"), by = "month"),
-         seq(as.Date("2017-02-01"), as.Date("2018-01-01"), by = "month") - 1,
+         seq(as.Date("2018-01-01"), as.Date("2018-12-01"), by = "month"),
+         seq(as.Date("2018-02-01"), as.Date("2019-01-01"), by = "month") - 1,
          SIMPLIFY = FALSE)
 )
        
 ```
 
-I thought there would be a few cities that collected PM<sub>25</sub> data manually (they collect it through a filter and send it to be weighted to an external lab, sometimes in another country). But no air quality station collected manual PM<sub>2.5</sub> in 2017.
+I thought there would be a few cities that collected PM<sub>25</sub> data manually (they collect it through a filter and send it to be weighted to an external lab, sometimes in another country). But no air quality station collected manual PM<sub>2.5</sub> in 2018.
 
 ```{r}
 bind_rows(
   mapply(sinaica_param_data,
          "PM2.5",
-         seq(as.Date("2017-01-01"), as.Date("2017-12-01"), by = "month"),
-         seq(as.Date("2017-02-01"), as.Date("2018-01-01"), by = "month") - 1,
+         seq(as.Date("2018-01-01"), as.Date("2018-12-01"), by = "month"),
+         seq(as.Date("2018-02-01"), as.Date("2019-01-01"), by = "month") - 1,
          "Manual",
          SIMPLIFY = FALSE)
 )
@@ -64,7 +64,7 @@ bind_rows(
 This is what the data looks like:
 
 ```{r}
-knitr::kable(head(pm25_2017))
+knitr::kable(head(pm25_2018))
 ```
 
 ## Cleanup
@@ -72,11 +72,11 @@ knitr::kable(head(pm25_2017))
 Once we've downloaded the data we filter values below 1 µg/m³ since they're probably calibration errors. And we only include stations that reported for more than 80% of days (292). We also have to take into account that PM<sub>25</sub> data is measured as a 24 hour average.
 
 ```{r plot}
-# pm25_2017[which(pm25_2017$value_actual != pm25_2017$value_original),]
-# pm25_2017[which(!is.na(pm25_2017$date_validated)),]
+# pm25_2018[which(pm25_2018$value_actual != pm25_2018$value_original),]
+# pm25_2018[which(!is.na(pm25_2018$date_validated)),]
 
 ## filter stations that didn't report at least 47 weeks of the year
-df_filtered <- pm25_2017 %>%
+df_filtered <- pm25_2018 %>%
   #filter(value < 250) %>%
   mutate(value = if_else(value < 1, NA_real_, value)) %>%
   group_by(network_name) %>%
@@ -91,7 +91,7 @@ df_filtered <- pm25_2017 %>%
 df_max <- df_filtered %>%
   complete(station_id,
            hour = 0:23,
-           date = as.character(seq(as.Date("2017-01-01"), as.Date("2017-12-31"), by = "day"))) %>%
+           date = as.character(seq(as.Date("2018-01-01"), as.Date("2018-12-31"), by = "day"))) %>%
   group_by(station_id, network_name) %>%
   arrange(station_id, date, hour) %>%
   mutate(roll24 = rollapply(value, 24, mean, na.rm = TRUE, partial = 18, 
@@ -159,13 +159,12 @@ It was decided to remove Irapuato from the rankings and keep Tepic because PM<su
 And here is the most PM<sub>25</sub>-polluted city in Mexico: <b>Toluca</b>
 
 ```{r}
-
-gghighlight_line(df_max, aes(as.Date(date), observed, 
-                              group = network_name, color = network_name),
-                 mean(observed, na.rm = TRUE), max_highlight = 1) +
+ggplot(df_max, aes(as.Date(date), observed,
+                   group = network_name, color = network_name)) +
+  gghighlight(mean(observed, na.rm = TRUE), max_highlight = 1L) +
   theme_bw() +
   ggtitle(expression(paste("Pollution measuring network with the highest ", 
-                           PM[2.5], " pollution values in 2017")),
+                           PM[2.5], " pollution values in 2018")),
           subtitle = "Based on the mean of the highest 24-hour rolling average daily maximums. Source: SINAICA") +
   xlab("date") +
   ylab(expression(paste(PM[2.5], " ", mu,"g/", m^3)))

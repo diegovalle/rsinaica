@@ -154,15 +154,16 @@ df_max <- filter(df_max, anomaly != "Yes")
 And here is the most PM<sub>10</sub>-polluted city in Mexico: <b>Monterrey</b>
 
 ```{r}
-gghighlight_line(df_max, aes(as.Date(date), observed, 
-                              group = network_name, color = network_name),
-                 mean(observed, na.rm = TRUE), max_highlight = 1) +
+ggplot(df_max, aes(as.Date(date), observed,
+                   group = network_name, color = network_name)) +
+  geom_line()  +
   theme_bw() +
   ggtitle(expression(paste("Pollution measuring network with highest ", 
                            PM[10], " pollution values in 2017")),
           subtitle = "Based on the mean of the highest 24-hour rolling average daily maximums. Source: SINAICA") +
   xlab("date") +
-  ylab(expression(paste(PM[10], " ", mu,"g/", m^3)))
+  ylab(expression(paste(PM[10], " ", mu,"g/", m^3))) +
+  gghighlight(mean(observed, na.rm = TRUE), max_highlight = 1L)
 ```
 
 ## Top polluted cities
