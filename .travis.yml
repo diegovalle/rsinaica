@@ -39,6 +39,7 @@ script:
   - mv vignettes/articles/pm10_awards.Rmd vignettes/articles/_pm10_awards.Rmd
   - mv vignettes/articles/pm25_awards.Rmd vignettes/articles/_pm25_awards.Rmd
   - mv vignettes/articles/trends.Rmd vignettes/articles/_trends.Rmd
+  - rm -rf docs/articles/header.png
   - travis_wait 40 Rscript -e "tryCatch({install.packages('remotes');remotes::install_github('r-lib/pkgdown');remotes::install_github('diegovalle/rsinaica');pkgdown::build_site()}, error = function(e) {quit(status=1)})"
 
 after_failure:
