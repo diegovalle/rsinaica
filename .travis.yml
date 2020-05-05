@@ -29,6 +29,14 @@ matrix:
 #      osx_image: xcode8
 #      r: release
 
+script: 
+  - |
+    R CMD build .
+    travis_wait 40 R CMD check mxmaps*tar.gz
+
+after_failure:
+  find *Rcheck -name '*.fail' -print -exec cat '{}' \;
+
 after_success:
   # The most polluted cities articles take a long time to run, so exclude 'em
   - echo 'options(repos = c(CRAN = "https://cloud.r-project.org"))' > ~/.Rprofile
