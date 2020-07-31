@@ -166,7 +166,7 @@ heatmap <- function(df, grid){
 
 We'll show on the map the average of all the daily maximums of the twenty-four-hour rolling average of PM<sub>10</sub> values.
 
-```{r}
+```{r warning=FALSE}
 df <- df %>%
   group_by(station_id, date) %>%
   summarise(maxroll24 = max(roll24, na.rm = TRUE)) %>% 
