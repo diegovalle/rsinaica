@@ -94,7 +94,7 @@ ggplot(df_ave, aes(doy, ave, group = year, color = as.factor(year))) +
   xlab("day of year") +
   ylab(expression(paste(PM[10], " ", mu,"g/", m^3))) +
   theme_bw() +
-  stat_rollapplyr(width = 30, align = "center") +
+  stat_rollapplyr(width = 30, align = "right") +
   geom_vline(xintercept = 74) + #March 15 is day number 74
   theme(axis.text.x=element_text(angle=60,hjust=1))
 ```
@@ -152,7 +152,7 @@ ggplot(df_ave, aes(doy, ave, group = year, color = as.factor(year))) +
   ylab(expression(paste("daily maximum 24 average of ", PM[2.5], 
                         " (", mu,"g/", m^3, ")"))) +
   theme_bw() +
-  stat_rollapplyr(width = 30, align = "center") +
+  stat_rollapplyr(width = 30, align = "right") +
   geom_vline(xintercept = 74) + #March 15 is day number 74
   theme(axis.text.x=element_text(angle=60,hjust=1))
 ```
@@ -210,7 +210,7 @@ ggplot(df_ave, aes(doy, ave, group = year, color = as.factor(year))) +
   xlab("day of year") +
   ylab(expression(paste(O[3], " ppm"))) +
   theme_bw() +
-  stat_rollapplyr(width = 30, align = "center") +
+  stat_rollapplyr(width = 30, align = "right") +
   geom_vline(xintercept = 74) + #March 15 is day number 74
   theme(axis.text.x=element_text(angle=60,hjust=1))
 ```
