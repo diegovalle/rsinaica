@@ -214,3 +214,62 @@ ggplot(df_ave, aes(doy, ave, group = year, color = as.factor(year))) +
   geom_vline(xintercept = 74) + #March 15 is day number 74
   theme(axis.text.x=element_text(angle=60,hjust=1))
 ```
+
+## NO2 
+
+```{r download_no2_2020, cache=TRUE}
+# Download all PM10 pollution data in 2017
+no2_2020 <- bind_rows(
+  mapply(sinaica_param_data,
+         "NO2",
+         seq(as.Date("2020-01-01"), as.Date("2020-06-01"), by = "month"),
+         seq(as.Date("2020-02-01"), as.Date("2020-07-01"), by = "month") - 1,
+         remove_extremes = FALSE,
+         SIMPLIFY = FALSE)
+)
+no2_2019 <- bind_rows(
+  mapply(sinaica_param_data,
+         "NO2",
+         seq(as.Date("2019-01-01"), as.Date("2019-06-01"), by = "month"),
+         seq(as.Date("2019-02-01"), as.Date("2019-07-01"), by = "month") - 1,
+         remove_extremes = FALSE,
+         SIMPLIFY = FALSE)
+)
+```
+
+```{r}
+# Only include stations that reported for more than 80% of days
+df_filtered <- bind_rows(no2_2019, no2_2020) %>%
+  filter(!is.na(value)) %>%
+  add_count(station_id, network_name)%>%
+  filter(!(value > .0955 & hour %in% c(0:11, 21:23))) %>%
+  filter(value < .3) %>%
+  filter(n > 180*.8)  %>%
+  select(-n)
+
+df_ave <- df_filtered %>%
+  group_by(date, network_name) %>%
+  summarise(ave = mean(value, na.rm = TRUE), .groups = 'drop') %>%
+  add_count(network_name) %>%
+  arrange(network_name) %>%
+  mutate(year = year(date)) %>%
+  mutate(doy = yday(date)) %>%
+  filter(network_name %in% c("Valle de México", "Monterrey", "Toluca",
+                             "Guadalajara", "Pachuca", "Puebla"))
+```
+
+```{r fig.width = 14, fig.height = 10, warnings = FALSE}
+ggplot(df_ave, aes(doy, ave, group = year, color = as.factor(year))) +
+  geom_line(size = .1, alpha = .7) +
+  scale_color_brewer("year", type='qual', palette = "Set1") +
+  facet_wrap(~ network_name, ncol = 3) +
+  ggtitle(expression(paste("Average daily ", NO[2], " concentration and 30 day moving average, by network (2019 and 2020)"))) +
+  labs(subtitle = "Community mobility in Mexico started dropping around March 15 (day 74 highlighted by a vertical black line)") +
+  xlab("day of year") +
+  ylab(expression(paste(NO[2], " ppm"))) +
+  theme_bw() +
+  stat_rollapplyr(width = 30, align = "right") +
+  geom_vline(xintercept = 74) + #March 15 is day number 74
+  theme(axis.text.x=element_text(angle=60,hjust=1))
+```
+
