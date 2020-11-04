@@ -29,6 +29,9 @@ matrix:
 #      osx_image: xcode8
 #      r: release
 
+before_install:
+  - sudo apt-get -y install libharfbuzz-dev libfribidi-dev
+
 script: 
   - |
     R CMD build .
