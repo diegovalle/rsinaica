@@ -3,8 +3,8 @@
 
 # rsinaica
 
-[![Travis-CI Build
-Status](https://travis-ci.org/diegovalle/rsinaica.svg?branch=master)](https://travis-ci.org/diegovalle/rsinaica)
+[![R build
+status](https://github.com/diegovalle/rsinaica/workflows/R-CMD-check/badge.svg)](https://github.com/diegovalle/rsinaica/actions)
 [![AppVeyor build
 status](https://ci.appveyor.com/api/projects/status/p281myk561l2kxgt?svg=true)](https://ci.appveyor.com/project/diegovalle/rsinaica/branch/master)
 [![Coverage
@@ -58,7 +58,7 @@ knitr::kable(stations_sinaica[which(stations_sinaica$station_name == "Centro"), 
 ```
 
 |    | station\_id | station\_name | station\_code | network\_id | network\_name  | network\_code |
-| -- | ----------: | :------------ | :------------ | ----------: | :------------- | :------------ |
+| :- | ----------: | :------------ | :------------ | ----------: | :------------- | :------------ |
 | 12 |          33 | Centro        | CEN           |          30 | Aguascalientes | AGS           |
 | 42 |          54 | Centro        | CEN           |          38 | Chihuahua      | CHIH1         |
 | 75 |         102 | Centro        | CEN           |          63 | Guadalajara    | GDL           |
@@ -89,10 +89,10 @@ data from the station:
 
 ``` r
 sinaica_station_dates(102)
-#> [1] "1997-01-01" "2020-07-31"
+#> [1] "1997-01-01" "2020-11-06"
 ```
 
-It’s currently reporting data (this document was built on 2020-07-31),
+It’s currently reporting data (this document was built on 2020-11-06),
 and has been doing so since 1997. We can also query which type of
 parameters (pollution, wind, solar radiation, etc) the station has
 sensors for. Note that the package also includes a `parameters`
