@@ -25,7 +25,6 @@ Suggests:
     maps,
     mapproj,
     sp, 
-    ggmap, 
     gstat,
     zoo,
     tidyr
