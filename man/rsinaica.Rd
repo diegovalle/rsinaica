@@ -3,7 +3,6 @@
 \docType{package}
 \name{rsinaica}
 \alias{rsinaica}
-\alias{rsinaica-package}
 \title{\code{rsinaica} package}
 \description{
 Ready-made functions for downloading data from the Mexican

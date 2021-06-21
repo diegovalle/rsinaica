@@ -4,7 +4,8 @@
 \name{stations_sinaica}
 \alias{stations_sinaica}
 \title{Air quality measuring stations in Mexico}
-\format{A data frame with 341 rows and 26 variables:
+\format{
+A data frame with 341 rows and 26 variables:
 \describe{
 \item{station_id}{Numeric code of the station}
 \item{station_name}{Name of the station}
@@ -32,7 +33,8 @@
 \item{timezone}{time zone in which the station is located (may contain errors)}
 \item{street_view}{link to Google Street View}
 \item{video_interior}{link to video of the interior of the station}
-}}
+}
+}
 \source{
 \href{https://sinaica.inecc.gob.mx/}{SINAICA} ans Solicitud de Información 1612100005118
 }

@@ -4,8 +4,14 @@
 \alias{sinaica_station_data}
 \title{Get air quality data from a single measuring station}
 \usage{
-sinaica_station_data(station_id, parameter, start_date, end_date,
-  type = "Crude", remove_extremes = FALSE)
+sinaica_station_data(
+  station_id,
+  parameter,
+  start_date,
+  end_date,
+  type = "Crude",
+  remove_extremes = FALSE
+)
 }
 \arguments{
 \item{station_id}{the numeric code corresponding to each station. See

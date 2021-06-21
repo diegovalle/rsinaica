@@ -55,7 +55,7 @@
 #' each station has their own timezone (available in the \code{\link{stations_sinaica}} data.frame)
 #' and some stations reported the timezome in which they are located erroneously.
 #' @importFrom dplyr filter
-#' @importFrom httr POST http_error http_type content status_code add_headers
+#' @importFrom httr POST http_error http_type content status_code add_headers with_config config
 #' @importFrom jsonlite fromJSON
 #' @importFrom stringr str_replace_all str_extract
 #' @importFrom utils data
@@ -143,11 +143,13 @@ sinaica_station_data <- function(station_id,
 
   tryCatch(
     {
-      result <- POST(url,
-                     add_headers("user-agent" =
-                                   "https://github.com/diegovalle/rsinaica"),
-                     body = fd,
-                     encode = "form")
+      result <- httr::with_config(httr::config(ssl_verifypeer = 0L), {
+        POST(url,
+             add_headers("user-agent" =
+                           "https://github.com/diegovalle/rsinaica"),
+             body = fd,
+             encode = "form")
+      })
       if (http_error(result))
         stop(sprintf("The request to <%s> failed [%s]",
                      url,

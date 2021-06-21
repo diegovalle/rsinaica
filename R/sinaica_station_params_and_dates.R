@@ -51,9 +51,11 @@ sinaica_station_params <- function(station_id,
   )
   tryCatch(
     {
-      result <- POST(url,
+      result <- httr::with_config(httr::config(ssl_verifypeer = 0L), {
+        POST(url,
                      body = fd,
                      encode = "form")
+      })
       if (http_error(result))
         stop(sprintf("The request to <%s> failed [%s]",
                      url,
@@ -94,7 +96,7 @@ sinaica_station_params <- function(station_id,
 #'
 #' @return a vector containing the date the station started reporting
 #' and end reporting date
-#' @importFrom httr POST http_error http_type content status_code
+#' @importFrom httr POST http_error http_type content status_code with_config config
 #' @importFrom jsonlite fromJSON
 #' @export
 #'
@@ -134,9 +136,11 @@ sinaica_station_dates <- function(station_id,
 
   tryCatch(
     {
-      result <- POST(url,
-                     body = fd,
-                     encode = "form")
+      result <- httr::with_config(httr::config(ssl_verifypeer = 0L), {
+        POST(url,
+             body = fd,
+             encode = "form")
+      })
       if (http_error(result))
         stop(sprintf("The request to <%s> failed [%s]",
                      url,

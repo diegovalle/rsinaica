@@ -52,7 +52,7 @@
 #' date. Care should be taken when working with hourly data since
 #' each station has their own timezone (available in the \code{\link{stations_sinaica}} data.frame)
 #' and some stations reported the timezome in which they are located erroneously.
-#' @importFrom httr POST http_error content add_headers
+#' @importFrom httr POST http_error content add_headers with_config config
 #' @importFrom jsonlite fromJSON
 #' @importFrom dplyr left_join
 #' @importFrom utils data
@@ -107,12 +107,13 @@ sinaica_param_data <- function(parameter,
     where  = paste0("parametro = '", parameter, "' and fecha >= '", start_date,
                     "' and fecha <= '", end_date, "'")
   )
-
-  result <- POST(url,
-                 add_headers("user-agent" =
-                               "https://github.com/diegovalle/rsinaica"),
-                 body = fd,
-                 encode = "form")
+  result <- httr::with_config(httr::config(ssl_verifypeer = 0L), {
+    POST(url,
+         add_headers("user-agent" =
+                       "https://github.com/diegovalle/rsinaica"),
+         body = fd,
+         encode = "form")
+  })
   if (http_error(result))
     stop(sprintf("The request to <%s> failed [%s]",
                  url,

@@ -4,11 +4,13 @@
 \name{params_sinaica}
 \alias{params_sinaica}
 \title{Valid air quality parameters}
-\format{A data frame with 55 rows and 2 variables:
+\format{
+A data frame with 55 rows and 2 variables:
 \describe{
 \item{param_code}{Abbreviation of the air quality parameter}
 \item{param_name}{Name of the air quality parameter}
-}}
+}
+}
 \source{
 \href{https://sinaica.inecc.gob.mx/}{SINAICA}
 }

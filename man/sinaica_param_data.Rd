@@ -4,8 +4,13 @@
 \alias{sinaica_param_data}
 \title{Get air quality data from all stations by parameter}
 \usage{
-sinaica_param_data(parameter, start_date, end_date, type = "Crude",
-  remove_extremes = FALSE)
+sinaica_param_data(
+  parameter,
+  start_date,
+  end_date,
+  type = "Crude",
+  remove_extremes = FALSE
+)
 }
 \arguments{
 \item{parameter}{type of parameter to download
