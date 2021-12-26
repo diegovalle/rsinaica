@@ -2,7 +2,7 @@
 # https://community.rstudio.com/new-topic?category=Package%20development&tags=github-actions
 on:
   schedule:
-    - cron: '11 04 * * 7'
+    - cron: '11 4 * * 7'
   push:
     branches:
       - main
