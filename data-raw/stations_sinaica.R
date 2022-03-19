@@ -1,10 +1,34 @@
+
+library("curl")
 library("httr")
 library("jsonlite")
 library("dplyr")
 library("rvest")
 library("rsinaica")
 
+get_stations_sinaica <- function()
+{
+  url <- 'https://api.datos.gob.mx/v2/sinaica-estaciones?pageSize=5000'
+  result = GET(url)
+  json_text <- content(result, "text", encoding = "UTF-8")
+  o <- fromJSON(json_text)
+  df <- data.frame(o$result)
+  df <- df %>% rename(
+    station_id = id,
+    station_name = nombre,
+    station_code = codigo,
+    lat = lat,
+    lon = long) %>%
+    select(station_id, station_name, station_code, lat, lon)
+  df
+}
+df <- get_stations_sinaica()
+
+
 get_estaciones_sinaica <- function(type) {
+  h <- new_handle()
+  handle_setopt(h, ssl_verifyhost = 0, ssl_verifypeer=0)
+
   url = "https://sinaica.inecc.gob.mx/lib/j/php/getData.php"
   fd <- list(
     tabla  = "Estaciones e INNER JOIN Redes r ON e.redesid = r.id",
@@ -51,6 +75,12 @@ names(stations_sinaica) <- c("station_id",
                              "timezone",
                              "street_view",
                              "video_interior")
+
+diffs <- setdiff(df[, c("station_id", "lat", "lon")],
+        stations_sinaica[, c("station_id", "lat", "lon")])
+stations_sinaica[which(stations_sinaica$station_id == diffs$station_id),
+                 c("station_id", "lat", "lon")]
+
 stations_sinaica$station_id <- as.integer(stations_sinaica$station_id)
 stations_sinaica$network_id <- as.integer(stations_sinaica$network_id)
 stations_sinaica$lat <- as.numeric(stations_sinaica$lat)
@@ -93,11 +123,12 @@ for (i in stations_sinaica$station_id) {
     read_html() %>%
     html_nodes("table") %>%
     html_table()
+
   stations_sinaica$timezone[which(stations_sinaica$station_id == i)] <-
-    timezone[[1]][which(timezone[[1]]$X1 == "Zona horaria:"), "X2"]
+    timezone[[1]][which(timezone[[1]]$X1 == "Zona horaria:"), ]$X2
   print(timezone[[1]][which(timezone[[1]]$X1 == "Zona horaria:"), "X2"])
 }
 
 Encoding(stations_sinaica$timezone) <- "UTF-8"
 write.csv(stations_sinaica, "data-raw/stations_sinaica.csv", row.names = FALSE)
-devtools::use_data(stations_sinaica, overwrite = TRUE, compress = "xz")
+usethis::use_data(stations_sinaica, overwrite = TRUE, compress = "xz")
