@@ -3,6 +3,7 @@ context("test-sinaica_param_data.R")
 test_that("sinaica_param_data works", {
   skip_on_cran()
 
+  skip("skip large downloads")
   # Errors
   expect_error(sinaica_param_data("ERROR", "2017-01-01", "2017-01-31"),
                "parameter should be one of: BEN, CH4")
