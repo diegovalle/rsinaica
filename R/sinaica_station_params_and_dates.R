@@ -6,9 +6,9 @@
 #' \code{\link{stations_sinaica}} for a list of stations and their ids.
 #' @param type The type of data to download. One of the following:
 #' \itemize{
-#'  \item{"Crude"}{ - Crude data that has not been validated}
-#'  \item{"Validated"}{ - Validated data (may not be the most up-to-date)}
-#'  \item{"Manual"}{ - Manual data}
+#'  \item Crude - Crude data that has not been validated
+#'  \item Validated - Validated data (may not be the most up-to-date)
+#'  \item Manual - Manual data
 #' }
 #'
 #' @return a data.frame with the parameters supported by the station
@@ -89,9 +89,9 @@ sinaica_station_params <- function(station_id,
 #' \code{\link{stations_sinaica}} for a list of stations and their ids.
 #' @param type The type of data to download. One of the following:
 #' \itemize{
-#'  \item{"Crude"}{ - Crude data that has not been validated}
-#'  \item{"Validated"}{ - Validated data (may not be the most up-to-date)}
-#'  \item{"Manual"}{ - Manual data}
+#'  \item Crude - Crude data that has not been validated
+#'  \item Validated - Validated data (may not be the most up-to-date)
+#'  \item Manual - Manual data
 #' }
 #'
 #' @return a vector containing the date the station started reporting

@@ -12,9 +12,9 @@ sinaica_station_dates(station_id, type = "Crude")
 
 \item{type}{The type of data to download. One of the following:
 \itemize{
-\item{"Crude"}{ - Crude data that has not been validated}
-\item{"Validated"}{ - Validated data (may not be the most up-to-date)}
-\item{"Manual"}{ - Manual data}
+\item Crude - Crude data that has not been validated
+\item Validated - Validated data (may not be the most up-to-date)
+\item Manual - Manual data
 }}
 }
 \value{
