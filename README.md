@@ -8,8 +8,8 @@ status](https://github.com/diegovalle/rsinaica/workflows/R-CMD-check/badge.svg)]
 [![AppVeyor build
 status](https://ci.appveyor.com/api/projects/status/p281myk561l2kxgt?svg=true)](https://ci.appveyor.com/project/diegovalle/rsinaica/branch/master)
 [![Coverage
-Status](https://img.shields.io/codecov/c/github/diegovalle/rsinaica/master.svg)](https://codecov.io/github/diegovalle/rsinaica?branch=master)
-[![lifecycle](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
+Status](https://img.shields.io/codecov/c/github/diegovalle/rsinaica/master.svg)](https://app.codecov.io/github/diegovalle/rsinaica?branch=master)
+[![lifecycle](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://lifecycle.r-lib.org/articles/stages.html)
 [![CRAN_Status_Badge](https://www.r-pkg.org/badges/version-ago/rsinaica)](https://cran.r-project.org/package=rsinaica)
 
 <img src="vignettes/header.png" width="100%" />
