@@ -52,6 +52,7 @@ check_arguments <- function(arg_val, valid, arg_name) {
 #' @return month + 1
 #' @importFrom lubridate period %m+%
 #' @keywords internal
+#' @noRd
 .increase_month <- function(d) {
   as.Date(d) %m+% period("m")
 }
@@ -76,6 +77,7 @@ ndays_to_range <- function(start_date, end_date) {
 #' @return vector
 #' @importFrom dplyr recode
 #' @keywords internal
+#' @noRd
 .recode_sinaica_units <- function(pollutant) {
   recode(pollutant,
     "O3" = "ppm",
