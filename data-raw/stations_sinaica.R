@@ -26,9 +26,6 @@ df <- get_stations_sinaica()
 
 
 get_estaciones_sinaica <- function(type) {
-  h <- new_handle()
-  handle_setopt(h, ssl_verifyhost = 0, ssl_verifypeer=0)
-
   url = "https://sinaica.inecc.gob.mx/lib/j/php/getData.php"
   fd <- list(
     tabla  = "Estaciones e INNER JOIN Redes r ON e.redesid = r.id",
@@ -39,10 +36,11 @@ get_estaciones_sinaica <- function(type) {
                     "e.pasoVal, e.video, e.lat, e.long, e.fechaIniDatos, e.zonaHoraria,",
                     "e.streetView, e.videoInt"),
     where  = "1=1 ORDER BY r.nombre, e.codigo"
-
   )
 
   result <- POST(url,
+                 ## remove this it's very unsafe
+                 config = config(ssl_verifypeer = F, ssl_verifyhost=F),
                  body = fd,
                  encode = "form")
   html_text <- content(result, "text", encoding = "UTF-8")

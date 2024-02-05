@@ -17,9 +17,9 @@ test_that("get-parameters_and_dates", {
   df <- sinaica_station_params(271, "Manual")
   expect_equal(df$param_code, c("PM10", "PM2.5"))
   df <- sinaica_station_params(33, "Validated")
-  expect_equal(df$param_code, c("SO2", "NO2", "DV", "HR", "CO",
-                                  "NO", "NOx", "O3", "PM10",
-                                  "PM2.5", "PP", "PB", "RS", "TMPI", "VV"))
+  expect_equal(df$param_code, c("SO2", "NO2", "DV", "HR", "IUV", "CO", "NO",
+                                "NOx", "O3", "PM10",
+                                "PM2.5", "PP", "PB", "RS", "TMP", "TMPI", "VV"))
   ## 1 is an invalid station_id
   expect_equal(sinaica_station_params(1),
                data.frame(parameter_code = character(0),

@@ -70,6 +70,10 @@ It looks like there are three stations named Centro, the one we are looking for 
 mx <- map_data("world", "Mexico")
 stations_sinaica$color <- "Others"
 stations_sinaica$color[stations_sinaica$station_id == 102] <- "Centro (102)"
+## There seems to be a mistake in some of the air quality stations longitudes
+## having been assigned positive values (longitudes to the west of the
+## prime meridian are supposed to be negative)
+stations_sinaica <- subset(stations_sinaica, lon < 0)
 ggplot(stations_sinaica[order(stations_sinaica$color, decreasing = TRUE),], aes(lon, lat)) + 
   geom_polygon(data = mx, aes(x= long, y = lat, group = group)) +
   geom_point(alpha = .9, size = 3, aes(fill = color), shape = 21) + 

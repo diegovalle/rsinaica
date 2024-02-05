@@ -10,7 +10,7 @@ status](https://ci.appveyor.com/api/projects/status/p281myk561l2kxgt?svg=true)](
 [![Coverage
 Status](https://img.shields.io/codecov/c/github/diegovalle/rsinaica/master.svg)](https://codecov.io/github/diegovalle/rsinaica?branch=master)
 [![lifecycle](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
-[![CRAN\_Status\_Badge](https://www.r-pkg.org/badges/version-ago/rsinaica)](https://cran.r-project.org/package=rsinaica)
+[![CRAN_Status_Badge](https://www.r-pkg.org/badges/version-ago/rsinaica)](https://cran.r-project.org/package=rsinaica)
 
 <img src="vignettes/header.png" width="100%" />
 
@@ -57,22 +57,27 @@ if (length(names(success)[!success])) {
 knitr::kable(stations_sinaica[which(stations_sinaica$station_name == "Centro"), 1:6])
 ```
 
-|    | station\_id | station\_name | station\_code | network\_id | network\_name  | network\_code |
-| :- | ----------: | :------------ | :------------ | ----------: | :------------- | :------------ |
-| 12 |          33 | Centro        | CEN           |          30 | Aguascalientes | AGS           |
-| 42 |          54 | Centro        | CEN           |          38 | Chihuahua      | CHIH1         |
-| 75 |         102 | Centro        | CEN           |          63 | Guadalajara    | GDL           |
+|     | station_id | station_name | station_code | network_id | network_name                    | network_code |
+|:----|-----------:|:-------------|:-------------|-----------:|:--------------------------------|:-------------|
+| 12  |         33 | Centro       | CEN          |         30 | Aguascalientes                  | AGS          |
+| 47  |         54 | Centro       | CEN          |         38 | Chihuahua                       | CHIH1        |
+| 84  |        102 | Centro       | CEN          |         63 | Guadalajara                     | GDL          |
+| 358 |        170 | Centro       | CEN          |         78 | Zona Metropolitana de Querétaro | ZMQ          |
 
 It looks like there are three stations named Centro, the one we are
-looking for is the one in Guadalajara with a numeric code (station\_id)
+looking for is the one in Guadalajara with a numeric code (station_id)
 of 102. The `stations_sinaica` data.frame also includes the latitude and
 longitude of all the measuring stations in Mexico (including some that
-have never reported any data\!).
+have never reported any data!).
 
 ``` r
 mx <- map_data("world", "Mexico")
 stations_sinaica$color <- "Others"
 stations_sinaica$color[stations_sinaica$station_id == 102] <- "Centro (102)"
+## There seems to be a mistake in some of the air quality stations longitudes
+## having been assigned positive values (longitudes to the west of the
+## prime meridian are supposed to be negative)
+stations_sinaica <- subset(stations_sinaica, lon < 0)
 ggplot(stations_sinaica[order(stations_sinaica$color, decreasing = TRUE),], aes(lon, lat)) + 
   geom_polygon(data = mx, aes(x= long, y = lat, group = group)) +
   geom_point(alpha = .9, size = 3, aes(fill = color), shape = 21) + 
@@ -89,10 +94,10 @@ data from the station:
 
 ``` r
 sinaica_station_dates(102)
-#> [1] "1997-01-01" "2020-11-06"
+#> [1] "1997-01-01" "2024-02-05"
 ```
 
-It’s currently reporting data (this document was built on 2020-11-06),
+It’s currently reporting data (this document was built on 2024-02-05),
 and has been doing so since 1997. We can also query which type of
 parameters (pollution, wind, solar radiation, etc) the station has
 sensors for. Note that the package also includes a `parameters`
@@ -104,23 +109,23 @@ cen_params <- sinaica_station_params(102)
 knitr::kable(cen_params)
 ```
 
-| param\_code | param\_name                     |
-| :---------- | :------------------------------ |
-| CN          | Carbono negro                   |
-| SO2         | Dióxido de azufre               |
-| NO2         | Dióxido de nitrógeno            |
-| DV          | Dirección del viento            |
-| HR          | Humedad relativa                |
-| CO          | Monóxido de carbono             |
-| NO          | Óxido nítrico                   |
-| NOx         | Óxidos de nitrógeno             |
-| O3          | Ozono                           |
-| PM10        | Partículas menores a 10 micras  |
-| PM2.5       | Partículas menores a 2.5 micras |
-| PP          | Precipitación pluvial           |
-| RS          | Radiación solar                 |
-| TMPI        | Temperatura interior            |
-| VV          | Velocidad del viento            |
+| param_code | param_name                      |
+|:-----------|:--------------------------------|
+| CN         | Carbono negro                   |
+| SO2        | Dióxido de azufre               |
+| NO2        | Dióxido de nitrógeno            |
+| DV         | Dirección del viento            |
+| HR         | Humedad relativa                |
+| CO         | Monóxido de carbono             |
+| NO         | Óxido nítrico                   |
+| NOx        | Óxidos de nitrógeno             |
+| O3         | Ozono                           |
+| PM10       | Partículas menores a 10 micras  |
+| PM2.5      | Partículas menores a 2.5 micras |
+| PP         | Precipitación pluvial           |
+| RS         | Radiación solar                 |
+| TMPI       | Temperatura interior            |
+| VV         | Velocidad del viento            |
 
 Finally, we can download and plot hourly concentrations of particulate
 matter with a diameter smaller than 10 micrometers (μm)

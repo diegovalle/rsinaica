@@ -19,34 +19,34 @@ sinaica_station_data(
 
 \item{parameter}{type of parameter to download
 \itemize{
-\item{"BEN"}{ - Benceno}
-\item{"CH4"}{ - Metano}
-\item{"CN"}{ - Carbono negro}
-\item{"CO"}{ - Monóxido de carbono}
-\item{"CO2"}{ - Dióxido de carbono}
-\item{"DV"}{ - Dirección del viento}
-\item{"H2S"}{ - Acido Sulfhídrico}
-\item{"HCNM"}{ - Hidrocarburos no metánicos}
-\item{"HCT"}{ - Hidrocarburos Totales}
-\item{"HR"}{ - Humedad relativa}
-\item{"HRI"}{ - Humedad relativa interior}
-\item{"IUV"}{ - Índice de radiación ultravioleta}
-\item{"NO"}{ - Óxido nítrico}
-\item{"NO2"}{ - Dióxido de nitrógeno}
-\item{"NOx"}{ - Óxidos de nitrógeno}
-\item{"O3"}{ - Ozono}
-\item{"PB"}{ - Presión Barométrica}
-\item{"PM10"}{ - Partículas menores a 10 micras}
-\item{"PM2.5"}{ - Partículas menores a 2.5 micras}
-\item{"PP"}{ - Precipitación pluvial}
-\item{"PST"}{ - Partículas Suspendidas totales}
-\item{"RS"}{ - Radiación solar}
-\item{"SO2"}{ - Dióxido de azufre}
-\item{"TMP"}{ - Temperatura}
-\item{"TMPI"}{ - Temperatura interior}
-\item{"UVA"}{ - Radiación ultravioleta A}
-\item{"VV"}{ - Radiación ultravioleta B}
-\item{"XIL"}{ - Xileno}
+\item BEN - Benceno
+\item CH4" - Metano
+\item CN - Carbono negro
+\item CO - Monóxido de carbono
+\item CO2 - Dióxido de carbono
+\item DV - Dirección del viento
+\item H2S - Acido Sulfhídrico
+\item HCNM - Hidrocarburos no metánicos
+\item HCT - Hidrocarburos Totales
+\item HR - Humedad relativa
+\item HRI - Humedad relativa interior
+\item IUV - Índice de radiación ultravioleta
+\item NO - Óxido nítrico
+\item NO2 - Dióxido de nitrógeno
+\item NOx - Óxidos de nitrógeno
+\item O3 - Ozono
+\item PB - Presión Barométrica
+\item PM10 - Partículas menores a 10 micras
+\item PM2.5 - Partículas menores a 2.5 micras
+\item PP - Precipitación pluvial
+\item PST - Partículas Suspendidas totales
+\item RS - Radiación solar
+\item SO2 - Dióxido de azufre
+\item TMP - Temperatura
+\item TMPI - Temperatura interior
+\item UVA - Radiación ultravioleta A
+\item VV - Radiación ultravioleta B
+\item XIL - Xileno
 }}
 
 \item{start_date}{start of range in YYYY-MM-DD format}
@@ -55,12 +55,12 @@ sinaica_station_data(
 
 \item{type}{The type of data to download. One of the following:
 \itemize{
-\item{"Crude"}{ - Crude data that has not been validated}
-\item{"Validated"}{ - data which has undergone a validation process during which
-it was cleaned, verified, and validated}
-\item{"Manual"}{ - Manually collected data that is sent to an external
+\item Crude - Crude data that has not been validated
+\item Validated - data which has undergone a validation process during which
+it was cleaned, verified, and validated
+\item Manual - Manually collected data that is sent to an external
 lab for analysis (may no be collected daily). Mostly used for suspend particles collected by
-pushing air through a filter which is later sent to a lab to be weighted}
+pushing air through a filter which is later sent to a lab to be weighted
 }}
 
 \item{remove_extremes}{whether to remove extreme values. For O3 all values above .2 are set to NA,

@@ -1,7 +1,7 @@
 Package: rsinaica
 Type: Package
 Title: Download Data from Mexico's Air Quality Information System
-Version: 0.6.1.9000
+Version: 1.0.0
 Authors@R: c(person("Diego", "Valle-Jones", email = "diego@diegovalle.net", role = c("aut", "cre")))
 Description: Easy-to-use functions for downloading air quality data from the 
     Mexican National Air Quality Information System (SINAICA).  Allows you to 
@@ -35,4 +35,4 @@ Imports:
     dplyr,
     lubridate
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.1
+RoxygenNote: 7.3.1

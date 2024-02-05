@@ -1,5 +1,3 @@
-#' \code{rsinaica} package
-#'
 #' Ready-made functions for downloading data from the Mexican
 #' National Air Quality Information System (SINAICA). See
 #' <https://sinaica.inecc.gob.mx> for more information.
@@ -8,9 +6,12 @@
 #' \href{https://github.com/diegovalle/rsinaica#readme}{GitHub}
 #'
 #' @docType package
-#' @name rsinaica
-NULL
+#' @keywords internal
+"_PACKAGE"
 
+## usethis namespace: start
+## usethis namespace: end
+NULL
 
 ## Avoid notes of the type:
 ## `no visible binding for global variable [variable name]`
