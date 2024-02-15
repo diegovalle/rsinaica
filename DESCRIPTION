@@ -1,7 +1,7 @@
 Type: Package
 Package: rsinaica
 Title: Download Data from Mexico's Air Quality Information System
-Version: 1.0.0
+Version: 1.0.0.9000
 Authors@R: 
     person("Diego", "Valle-Jones", , "diego@diegovalle.net", role = c("aut", "cre"))
 Description: Easy-to-use functions for downloading air quality data from

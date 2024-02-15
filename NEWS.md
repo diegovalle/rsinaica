@@ -1,3 +1,5 @@
+# rsinaica (development version)
+
 # rsinaica 1.0.0
 
 * Use latetest version of roxygen to generate documentation
