@@ -54,7 +54,7 @@
 #' @return data.frame with air quality data. Care should be taken when working with hourly data since
 #' each station has their own timezone (available in the \code{\link{stations_sinaica}} data.frame)
 #' and some stations reported the timezome in which they are located erroneously.
-#' @importFrom dplyr filter
+#' @importFrom dplyr filter left_join
 #' @importFrom httr POST http_error http_type content status_code add_headers with_config config
 #' @importFrom jsonlite fromJSON
 #' @importFrom stringr str_replace_all str_extract

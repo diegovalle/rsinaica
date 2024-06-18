@@ -1,5 +1,10 @@
 # rsinaica (development version)
 
+# rsinaica 1.1.0
+
+* Deprecate `sinaica_param_data` since the SINAICA website no longer supports 
+downloading data from all stations at once.
+
 # rsinaica 1.0.0
 
 * Use latetest version of roxygen to generate documentation
