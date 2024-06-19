@@ -135,8 +135,6 @@ df <-  sinaica_station_data(102, # station_id
                          "2018-01-31", # Maximum of one month
                          "Crude" # Crude, Manual or Validated
                          )
-#> An error occurred downloading data from SINAICA:
-#> Error in left_join(df, stations_sinaica[, c("station_id", "station_name")], : could not find function "left_join"
 
 ggplot(df, aes(hour, value, group = date)) +
   geom_line(alpha=.9) +
@@ -145,10 +143,9 @@ ggplot(df, aes(hour, value, group = date)) +
   xlab("hour") +
   ylab(expression(paste(mu,"g/", m^3))) +
   theme_bw()
-#> Error in `ggplot()`:
-#> ! `data` cannot be a function.
-#> ℹ Have you misspelled the `data` argument in `ggplot()`
 ```
+
+<img src="man/figures/README-unnamed-chunk-6-1.png" title="plot of chunk unnamed-chunk-6" alt="plot of chunk unnamed-chunk-6" width="100%" />
 
 
 the hours are in the local Guadalajara time zone of UTC-6 since we plotted January data.
