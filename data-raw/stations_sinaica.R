@@ -6,23 +6,23 @@ library("dplyr")
 library("rvest")
 library("rsinaica")
 
-get_stations_sinaica <- function()
-{
-  url <- 'https://api.datos.gob.mx/v2/sinaica-estaciones?pageSize=5000'
-  result = GET(url)
-  json_text <- content(result, "text", encoding = "UTF-8")
-  o <- fromJSON(json_text)
-  df <- data.frame(o$result)
-  df <- df %>% rename(
-    station_id = id,
-    station_name = nombre,
-    station_code = codigo,
-    lat = lat,
-    lon = long) %>%
-    select(station_id, station_name, station_code, lat, lon)
-  df
+# Download a station list from the SINAICA website
+get_latest_estaciones <- function() {
+
+  url <- "https://sinaica.inecc.gob.mx/lib/libd/cnxn.php"
+
+  response <- POST(
+    url,
+    body = list(metodo = "getUltimosEnvios"),
+    encode = "form"
+  )
+
+  stop_for_status(response)
+
+  fromJSON(content(response, as = "text", encoding = "UTF-8"))
 }
-df <- get_stations_sinaica()
+
+latest_ids <- get_latest_estaciones()
 
 
 get_estaciones_sinaica <- function(type) {
@@ -74,10 +74,13 @@ names(stations_sinaica) <- c("station_id",
                              "street_view",
                              "video_interior")
 
-diffs <- setdiff(df[, c("station_id", "lat", "lon")],
-        stations_sinaica[, c("station_id", "lat", "lon")])
-stations_sinaica[which(stations_sinaica$station_id == diffs$station_id),
-                 c("station_id", "lat", "lon")]
+# Comapre the stations we downloaded with those from the
+# SINAICA website
+diffs <- setdiff(latest_ids[, c("idEstacion")],
+        stations_sinaica[, c("station_id")])
+stopifnot(length(diffs) == 0)
+# stations_sinaica[which(stations_sinaica$station_id == diffs$station_id),
+#                  c("station_id", "lat", "lon")]
 
 stations_sinaica$station_id <- as.integer(stations_sinaica$station_id)
 stations_sinaica$network_id <- as.integer(stations_sinaica$network_id)
