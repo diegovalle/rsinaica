@@ -1,4 +1,6 @@
-# rsinaica (development version)
+# rsinaica 1.1.1
+
+* Updated the `stations_sinaica` data.frame to include all the latest stations
 
 # rsinaica 1.1.0
 
@@ -7,7 +9,7 @@ downloading data from all stations at once.
 
 # rsinaica 1.0.0
 
-* Use latetest version of roxygen to generate documentation
+* Use latest version of roxygen to generate documentation
 
 # rsinaica 0.6.1
 
