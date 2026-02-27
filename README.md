@@ -4,8 +4,6 @@
 # rsinaica
 
 [![R-CMD-check.yaml](https://github.com/diegovalle/rsinaica/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/diegovalle/rsinaica/actions/workflows/R-CMD-check.yaml)
-[![AppVeyor build
-status](https://ci.appveyor.com/api/projects/status/p281myk561l2kxgt?svg=true)](https://ci.appveyor.com/project/diegovalle/rsinaica/branch/master)
 [![Coverage
 Status](https://img.shields.io/codecov/c/github/diegovalle/rsinaica/master.svg)](https://app.codecov.io/github/diegovalle/rsinaica?branch=master)
 [![lifecycle](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://lifecycle.r-lib.org/articles/stages.html)  
