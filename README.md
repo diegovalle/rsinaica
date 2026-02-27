@@ -3,8 +3,7 @@
 
 # rsinaica
 
-[![R build
-status](https://github.com/diegovalle/rsinaica/workflows/R-CMD-check/badge.svg)](https://github.com/diegovalle/rsinaica/actions)
+[![R-CMD-check.yaml](https://github.com/diegovalle/rsinaica/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/diegovalle/rsinaica/actions/workflows/R-CMD-check.yaml)
 [![AppVeyor build
 status](https://ci.appveyor.com/api/projects/status/p281myk561l2kxgt?svg=true)](https://ci.appveyor.com/project/diegovalle/rsinaica/branch/master)
 [![Coverage
@@ -94,10 +93,10 @@ data from the station:
 
 ``` r
 sinaica_station_dates(102)
-#> [1] "1997-01-01" "2026-02-26"
+#> [1] "1997-01-01" "2026-02-27"
 ```
 
-It’s currently reporting data (this document was built on 2026-02-26),
+It’s currently reporting data (this document was built on 2026-02-27),
 and has been doing so since 1997. We can also query which type of
 parameters (pollution, wind, solar radiation, etc) the station has
 sensors for. Note that the package also includes a `parameters`
