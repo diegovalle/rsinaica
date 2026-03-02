@@ -21,10 +21,14 @@ We can compare the data available from `rsinaica` to that of `aire.zmvm` by down
 ```{r warning=FALSE,message=FALSE}
 ## Auto-install required R packages
 packs <- c("dplyr", "ggplot2", "lubridate", "aire.zmvm", "rsinaica")
-success <- suppressWarnings(sapply(packs, require, character.only = TRUE))
-if (length(names(success)[!success])) {
-  install.packages(names(success)[!success])
-  sapply(names(success)[!success], require, character.only = TRUE)
+load_pkg <- function(pkg) {
+  suppressWarnings(require(pkg, character.only = TRUE))
+}
+success <- vapply(packs, load_pkg, logical(1))
+missing <- packs[!success]
+if (length(missing)) {
+  install.packages(missing)
+  vapply(missing, load_pkg, logical(1))
 }
 ```
 
@@ -90,6 +94,8 @@ ggplot(df_aire, aes(datetime, value_aire.zmvm, color = "aire.zmvm")) +
   xlab("datetime") +
   ylab("ppb") +
   scale_color_discrete("package") +
-  ggtitle(expression(paste("Hourly ", O[3], " pollution values during March"))) +
+  ggtitle(expression(paste("Hourly ", 
+                           O[3], 
+                           " pollution values during March"))) +
   theme_bw()
 ```

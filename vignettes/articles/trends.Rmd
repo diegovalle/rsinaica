@@ -12,10 +12,14 @@ With `rsinaica` we can plot the long term trends in pollution for different citi
 ```{r packages, warning=FALSE,message=FALSE}
 ## Auto-install required R packages
 packs <- c("dplyr", "ggplot2", "lubridate", "scales", "rsinaica")
-success <- suppressWarnings(sapply(packs, require, character.only = TRUE))
-if (length(names(success)[!success])) {
-  install.packages(names(success)[!success])
-  sapply(names(success)[!success], require, character.only = TRUE)
+load_pkg <- function(pkg) {
+  suppressWarnings(require(pkg, character.only = TRUE))
+}
+success <- vapply(packs, load_pkg, logical(1))
+missing <- packs[!success]
+if (length(missing)) {
+  install.packages(missing)
+  vapply(missing, load_pkg, logical(1))
 }
 ```
 
@@ -26,16 +30,17 @@ get_network_data <- function(network_name, pollutant, remove_extremes = TRUE) {
   ## Download data for all Aguascalientes stations for a single month
   get_month <- function(start_date, end_date, net){
     bind_rows(
-      lapply(stations_sinaica$station_id[stations_sinaica$network_name %in% net],
-             sinaica_station_data, pollutant, start_date, end_date, "Crude",
-             remove_extremes = remove_extremes)
+      lapply(
+        stations_sinaica$station_id[stations_sinaica$network_name %in% net],
+        sinaica_station_data, pollutant, start_date, end_date, "Crude",
+        remove_extremes = remove_extremes)
     )
   }
   ## Download data for 2017, by month
   df <- bind_rows(
     mapply(get_month,
-           seq(as.Date("1997-01-01"), as.Date("2017-12-01"), by = "month"),
-           seq(as.Date("1997-02-01"), as.Date("2018-01-01"), by = "month") - 1,
+           seq(as.Date("1997-01-01"), as.Date("2017-12-01"), by = "year"),
+           seq(as.Date("1998-01-01"), as.Date("2018-01-01"), by = "year") - 1,
            network_name, 
            SIMPLIFY = FALSE)
   )

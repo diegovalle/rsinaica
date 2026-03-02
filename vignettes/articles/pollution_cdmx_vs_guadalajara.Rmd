@@ -24,10 +24,14 @@ First, we load the packages needed for the analysis:
 ## Auto-install required R packages
 packs <- c("dplyr", "ggplot2", "lubridate", "sp", "ggmap", "gstat", "zoo", 
            "tidyr", "rsinaica")
-success <- suppressWarnings(sapply(packs, require, character.only = TRUE))
-if (length(names(success)[!success])) {
-  install.packages(names(success)[!success])
-  sapply(names(success)[!success], require, character.only = TRUE)
+load_pkg <- function(pkg) {
+  suppressWarnings(require(pkg, character.only = TRUE))
+}
+success <- vapply(packs, load_pkg, logical(1))
+missing <- packs[!success]
+if (length(missing)) {
+  install.packages(missing)
+  vapply(missing, load_pkg, logical(1))
 }
 ```
 
@@ -85,6 +89,7 @@ ggplot(rbind(cdmx, guad), aes(as.Date(date), max, group = city, color = city)) +
   geom_smooth(method = 'loess') +
   xlab("date") +
   ylab(expression(paste(O[3], " concentration in ppm"))) +
-  ggtitle(expression(paste(O[3], " maximum daily value in Guadalajara and CDMX"))) + 
+  ggtitle(expression(paste(O[3], 
+                           " maximum daily value in Guadalajara and CDMX"))) + 
   theme_bw()
 ```

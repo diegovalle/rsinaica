@@ -28,10 +28,14 @@ First, load the packages necessary for running the analysis
 ## Auto-install required R packages
 packs <- c("dplyr", "ggplot2", "lubridate", "sp", "ggmap", "gstat", "zoo", 
            "tidyr", "rsinaica")
-success <- suppressWarnings(sapply(packs, require, character.only = TRUE))
-if (length(names(success)[!success])) {
-  install.packages(names(success)[!success])
-  sapply(names(success)[!success], require, character.only = TRUE)
+load_pkg <- function(pkg) {
+  suppressWarnings(require(pkg, character.only = TRUE))
+}
+success <- vapply(packs, load_pkg, logical(1))
+missing <- packs[!success]
+if (length(missing)) {
+  install.packages(missing)
+  vapply(missing, load_pkg, logical(1))
 }
 ```
 
@@ -56,18 +60,24 @@ parameter <- "PM10"
 network <- "Guadalajara"
 midpoint <- 76 # midpoint of regular air quality converted to IMECAs
 
-## Download a single month of data for all Guadalajara stations
-get_month <- function(start_date, end_date, net, parameter){
+## Download a single year of data for all Guadalajara stations
+get_year <- function(start_date, end_date, net, parameter){
   bind_rows(
-    lapply(stations_sinaica$station_id[stations_sinaica$network_name %in% net],
-           sinaica_station_data, parameter, start_date, end_date, "Crude")
+    lapply(
+      stations_sinaica$station_id[stations_sinaica$network_name %in% net],
+      sinaica_station_data, 
+      parameter, 
+      start_date, 
+      end_date, 
+      "Validated"
+      )
   )
 }
-## Download 2017 data, one month at a time
+## Download 2017 data
 df <- bind_rows(
-  mapply(get_month,
-         seq(as.Date("2017-01-01"), as.Date("2017-12-01"), by = "month"),
-         seq(as.Date("2017-02-01"), as.Date("2018-01-01"), by = "month") - 1,
+  mapply(get_year,
+         "2023-01-01",
+         "2023-12-31",
          network, 
          parameter,
          SIMPLIFY = FALSE)
@@ -88,21 +98,26 @@ df <- df  %>%
   ungroup() %>%
   complete(station_id,
            hour = 0:23,
-           date = as.character(seq(as.Date("2017-01-01"), as.Date("2017-12-31"), by = "day"))) %>%
+           date = as.character(seq(as.Date("2023-01-01"), 
+                                   as.Date("2023-12-31"), 
+                                   by = "day"))) %>%
   arrange(station_id, date, hour) %>%
   ungroup() %>%
   group_by(station_id) %>%
   mutate(roll24 = rollapply(value, 24, mean, na.rm = TRUE, partial = 12, 
                             fill = NA, align = "right")) %>%
   select(-station_name) %>%
-  left_join(stations_sinaica[,c("station_id", "station_name")], by = "station_id") %>%
+  left_join(stations_sinaica[,c("station_id", "station_name")], 
+            by = "station_id") %>%
   mutate(datetime = with_tz(as.POSIXct(paste0(date, " ", hour, ":00"), 
                                   tz = "Etc/GMT+6"),
                        tz = "America/Mexico_City"))
 
 ggplot(df, aes(datetime, roll24, group = station_name)) +
   geom_line(alpha = .8, size = .3) +
-  ggtitle(expression(paste("24 hour average of ", PM[10], " data reported by Guadalajara stations"))) +
+  ggtitle(expression(paste("24 hour average of ", 
+                           PM[10], 
+                           " data reported by Guadalajara stations"))) +
   xlab("date") +
   ylab(expression(paste("24 hr. average ", PM[10]," concentration in ppm"))) +
   facet_wrap(~ station_name) +
@@ -119,7 +134,8 @@ create_grid <- function(station_vec, pixels = 1000) {
   df <- stations_sinaica[stations_sinaica$station_id %in% station_vec,]
   geog <- df[,c("lat", "lon")]
   coordinates(geog) <- ~lon+lat
-  proj4string(geog) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
+  proj4string(geog) <- 
+    "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
   ## Add a margin surrounding the stations
   geog@bbox <- bbox(geog) + c(-0.05, -0.05, 0.05, 0.05)
   geog.grd <- makegrid(geog, n = pixels)
@@ -132,7 +148,9 @@ reporting_stations <- unique(df$station_id)
 # 50x50 grid covering Mexico City
 grid <- create_grid(reporting_stations, 15000)
 
-plot(grid, main = "Grid covering Guadalajara and Locations of\nPollution Measuring Stations (red)",
+plot(grid, 
+     main = paste0("Grid covering Guadalajara and Locations of",
+                   "\nPollution Measuring Stations (red)"),
      col = "#666666", lwd = .2)
 # Plot the locations of the stations
 geog <- stations_sinaica[stations_sinaica$station_id %in% reporting_stations, 
@@ -157,7 +175,7 @@ heatmap <- function(df, grid){
   # See http://www.sciencedirect.com/science/article/pii/S009830041200372X
   df.idw <- idw(value ~ 1, df, grid, idp = 2, debug.level = 0)
   
-  idw = as.data.frame(df.idw)
+  idw <- as.data.frame(df.idw)
   names(idw) <- c("var1.pred", "var1.var", "lon", "lat")
 
   idw
@@ -180,8 +198,9 @@ idw_tiles <- heatmap(df, grid)
 Now we will use the package `ggmap` to plot the locations of the stations and the pollution grid on top of a map.
 
 ```{r plot, warning=FALSE, message=FALSE, fig.dim = c(6,8)}
+register_stadiamaps(Sys.getenv("STADIA_KEY"), write = FALSE)
 qmplot(x1, x2, data = data.frame(grid), geom = "blank", 
-       maptype = "toner-lite", source = "stamen", zoom = 10)  +
+       maptype = "alidade_smooth", source = "stadia", zoom = 10)  +
   geom_tile(data = idw_tiles, aes(x = lon, y = lat, fill = var1.pred), 
             alpha = .8) + 
   ## set midpoint at 76 cause that's bad air quality according to
@@ -190,8 +209,10 @@ qmplot(x1, x2, data = data.frame(grid), geom = "blank",
                        low = "#abd9e9",
                        mid = "#ffffbf",
                        high = "#f46d43",
-                       midpoint = midpoint) + # midpoint of regular air quality converted from IMECAs
-  geom_point(data = stations_sinaica[stations_sinaica$station_id %in% reporting_stations, ],
+                       midpoint = midpoint) + # midpoint of regular air 
+                                              # quality converted from IMECAs
+  geom_point(data = stations_sinaica[stations_sinaica$station_id %in% 
+                                       reporting_stations, ],
              aes(lon, lat), shape = 22, size = 2.6) +
   ggtitle(expression(paste("Average of ", PM[10], 
                            " daily maximums in Guadalajara during 2017")))

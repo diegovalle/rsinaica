@@ -15,10 +15,14 @@ First, let's load the packages necessary for the analysis.
 ```{r packages, warning=FALSE,message=FALSE}
 ## Auto-install required R packages
 packs <- c("dplyr", "ggplot2", "lubridate", "rsinaica")
-success <- suppressWarnings(sapply(packs, require, character.only = TRUE))
-if (length(names(success)[!success])) {
-  install.packages(names(success)[!success])
-  sapply(names(success)[!success], require, character.only = TRUE)
+load_pkg <- function(pkg) {
+  suppressWarnings(require(pkg, character.only = TRUE))
+}
+success <- vapply(packs, load_pkg, logical(1))
+missing <- packs[!success]
+if (length(missing)) {
+  install.packages(missing)
+  vapply(missing, load_pkg, logical(1))
 }
 ```
 ## Incomplete data
@@ -29,7 +33,9 @@ the Mexicali stations, none support downloading *recent* PM<sub>10</sub> data.
 ```{r}
 mexicali <- stations_sinaica[stations_sinaica$network_name %in% "Mexicali", 1:5]
 ## All PM10 station in Mexicali are manual
-ll <- lapply(mexicali$station_id, function(x) {sinaica_station_dates(x, "Manual")})
+ll <- lapply(mexicali$station_id, function(x) {
+  sinaica_station_dates(x, "Manual")
+  })
 names(ll) <- mexicali$station_id
 ll
 ```
