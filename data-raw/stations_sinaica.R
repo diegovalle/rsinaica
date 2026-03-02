@@ -26,14 +26,17 @@ latest_ids <- get_latest_estaciones()
 
 
 get_estaciones_sinaica <- function(type) {
-  url = "https://sinaica.inecc.gob.mx/lib/j/php/getData.php"
+  url <- "https://sinaica.inecc.gob.mx/lib/j/php/getData.php"
   fd <- list(
     tabla  = "Estaciones e INNER JOIN Redes r ON e.redesid = r.id",
-    fields = paste0("e.id, e.nombre, e.codigo, e.redesId, r.nombre as nombre_red,",
+    fields = paste0("e.id, e.nombre, e.codigo, ",
+                    "e.redesId, r.nombre as nombre_red,",
                     "r.codigo as codigo_red, e.calle, e.ext, e.interior, ",
-                    "e.colonia, e.cp, e.estadoId, e.municipioId, e.adquisicion, ",
+                    "e.colonia, e.cp, e.estadoId, ",
+                    "e.municipioId, e.adquisicion, ",
                     "e.elevacion, e.direccion, e.fechaValid, e.fechaValidAnt,",
-                    "e.pasoVal, e.video, e.lat, e.long, e.fechaIniDatos, e.zonaHoraria,",
+                    "e.pasoVal, e.video, e.lat, e.long, ",
+                    "e.fechaIniDatos, e.zonaHoraria,",
                     "e.streetView, e.videoInt"),
     where  = "1=1 ORDER BY r.nombre, e.codigo"
   )
@@ -74,27 +77,34 @@ names(stations_sinaica) <- c("station_id",
                              "street_view",
                              "video_interior")
 
-# Comapre the stations we downloaded with those from the
+# Compare the stations we downloaded with those from the
 # SINAICA website
-diffs <- setdiff(latest_ids[, c("idEstacion")],
-        stations_sinaica[, c("station_id")])
+diffs <- setdiff(latest_ids$idEstacion,
+                 stations_sinaica$station_id)
 stopifnot(length(diffs) == 0)
-# stations_sinaica[which(stations_sinaica$station_id == diffs$station_id),
-#                  c("station_id", "lat", "lon")]
+
+# filter an R data frame such that the values in one of its columns match the
+# values in a column of another data frame using the base R %in% operator
+stations_sinaica <- stations_sinaica[which(c(stations_sinaica$station_id  %in%
+                                latest_ids$idEstacion)), ]
+
 
 stations_sinaica$station_id <- as.integer(stations_sinaica$station_id)
 stations_sinaica$network_id <- as.integer(stations_sinaica$network_id)
 stations_sinaica$lat <- as.numeric(stations_sinaica$lat)
 stations_sinaica$lon <- as.numeric(stations_sinaica$lon)
-stations_sinaica$lon[stations_sinaica$lon > 90] <- -stations_sinaica$lon[stations_sinaica$lon > 90]
+stations_sinaica$lon[stations_sinaica$lon > 90] <-
+  -stations_sinaica$lon[stations_sinaica$lon > 90]
 stations_sinaica$lat[stations_sinaica$station_code == "NTS"] <- 19.38889
 stations_sinaica$lon[stations_sinaica$station_code == "NTS"] <- -99.01944
 
 stations_sinaica$lat[stations_sinaica$lat == 0] <- NA_real_
 stations_sinaica$lon[stations_sinaica$lon == 0] <- NA_real_
 
-stations_sinaica$network_name[stations_sinaica$network_code == "CHIH1"] <- "Chihuahua"
-stations_sinaica$network_name[stations_sinaica$network_code == "CHIH2"] <- "Chihuahua - Municipal"
+stations_sinaica$network_name[stations_sinaica$network_code == "CHIH1"] <-
+  "Chihuahua"
+stations_sinaica$network_name[stations_sinaica$network_code == "CHIH2"] <-
+  "Chihuahua - Municipal"
 
 #Trim whitespace
 stations_sinaica <- stations_sinaica %>%
@@ -117,7 +127,8 @@ for (i in stations_sinaica$station_id) {
     html_text()
   ## Make sure the station_id is in the database
   if (station_name == " Estación:  ()") {
-    stations_sinaica$timezone[which(stations_sinaica$station_id == i)] <- NA_character_
+    stations_sinaica$timezone[which(stations_sinaica$station_id == i)] <-
+      NA_character_
     next()
   }
   timezone <- url %>%
@@ -131,5 +142,8 @@ for (i in stations_sinaica$station_id) {
 }
 
 Encoding(stations_sinaica$timezone) <- "UTF-8"
+stations_sinaica <- stations_sinaica[order(stations_sinaica$station_name), ]
+row.names(stations_sinaica) <- NULL
+
 write.csv(stations_sinaica, "data-raw/stations_sinaica.csv", row.names = FALSE)
 usethis::use_data(stations_sinaica, overwrite = TRUE, compress = "xz")

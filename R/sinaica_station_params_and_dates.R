@@ -1,6 +1,7 @@
 #' Parameters supported by a station
 #'
-#' List of air quality parameters of a measuring station for which SINAICA has data
+#' List of air quality parameters of a measuring station for which SINAICA has
+#' data
 #'
 #' @param station_id the numeric code corresponding to each station. See
 #' \code{\link{stations_sinaica}} for a list of stations and their ids.
@@ -83,7 +84,8 @@ sinaica_station_params <- function(station_id,
 
 #' Dates supported by a station
 #'
-#' Start date and end date of the range for which SINAICA has data for an air quality station
+#' Start date and end date of the range for which SINAICA has data for an air
+#' quality station
 #'
 #' @param station_id the numeric code corresponding to each station. See
 #' \code{\link{stations_sinaica}} for a list of stations and their ids.
@@ -96,7 +98,8 @@ sinaica_station_params <- function(station_id,
 #'
 #' @return a vector containing the date the station started reporting
 #' and end reporting date
-#' @importFrom httr POST http_error http_type content status_code with_config config
+#' @importFrom httr POST http_error http_type content status_code with_config
+#' config
 #' @importFrom jsonlite fromJSON
 #' @export
 #'

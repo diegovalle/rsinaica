@@ -1,6 +1,7 @@
 #' Get air quality data from a single measuring station
 #'
-#' Download data from a single station by specifying a parameter and a date range
+#' Download data from a single station by specifying a parameter and a date
+#' range
 #'
 #' @param station_id the numeric code corresponding to each station. See
 #' \code{\link{stations_sinaica}} for a list of stations and their ids.
@@ -41,21 +42,30 @@
 #'  \item Validated - data which has undergone a validation process during which
 #'  it was cleaned, verified, and validated
 #'  \item Manual - Manually collected data that is sent to an external
-#'  lab for analysis (may no be collected daily). Mostly used for suspend particles collected by
+#'  lab for analysis (may no be collected daily). Mostly used for suspend
+#'  particles collected by
 #'  pushing air through a filter which is later sent to a lab to be weighted
 #' }
 #' @param start_date start of range in YYYY-MM-DD format
 #' @param end_date end of range from which to download data in YYYY-MM-DD format
-#' @param remove_extremes whether to remove extreme values. For O3 all values above .2 are set to NA,
-#' for PM10 those above 600, for PM2.5 above 175, for NO2 above .21, for SO2 above .2, and for CO
-#' above 15. This is done so that the values match exactly those of the SINAICA website, but it is
-#' recommended that you use a more complicated statistical procedure to remove outliers.
+#' @param remove_extremes whether to remove extreme values. For O3 all values
+#' above .2 are set to NA,
+#' for PM10 those above 600, for PM2.5 above 175, for NO2 above .21, for SO2
+#' above .2, and for CO
+#' above 15. This is done so that the values match exactly those of the SINAICA
+#'  website, but it is
+#' recommended that you use a more complicated statistical procedure to
+#' remove outliers.
 #'
-#' @return data.frame with air quality data. Care should be taken when working with hourly data since
-#' each station has their own timezone (available in the \code{\link{stations_sinaica}} data.frame)
-#' and some stations reported the timezome in which they are located erroneously.
+#' @return data.frame with air quality data. Care should be taken when working
+#'  with hourly data since
+#' each station has their own timezone (available in the
+#' \code{\link{stations_sinaica}} data.frame)
+#' and some stations reported the timezome in which they are located
+#' erroneously.
 #' @importFrom dplyr filter left_join
-#' @importFrom httr POST http_error http_type content status_code add_headers with_config config
+#' @importFrom httr POST http_error http_type content status_code add_headers
+#' with_config config
 #' @importFrom jsonlite fromJSON
 #' @importFrom stringr str_replace_all str_extract
 #' @importFrom utils data
@@ -116,8 +126,8 @@ sinaica_station_data <- function(station_id,
                   "type")
 
 
-  if (as.Date(end_date) > .increase_month(start_date))
-    stop("The maximum amount of data you can download is 1 month",
+  if (as.Date(end_date) > .increase_year(start_date, 2))
+    stop("The maximum amount of data you can download is 2 years",
          call. = FALSE)
 
   if (start_date > end_date)
@@ -137,7 +147,7 @@ sinaica_station_data <- function(station_id,
     estacionId  = station_id,
     param       = parameter,
     fechaIni    = start_date,
-    rango       = ndays_to_range(start_date, end_date),
+    rango       = 5,#ndays_to_range(start_date, end_date),
     tipoDatos   = type
   )
 
@@ -158,10 +168,12 @@ sinaica_station_data <- function(station_id,
       if (http_type(result) != "text/html")
         stop(paste0(url, " did not return text/html", call. = FALSE))
       json_text <- content(result, "text", encoding = "UTF-8")
-      df <- fromJSON(str_replace_all(str_extract(json_text,
-                                                 "var dat = \\[(.|\n)*?\\];"),
-                                     "var dat = |;",
-                                     ""))
+      pattern <- "var\\s+dat\\s*=\\s*(\\[[\\s\\S]*?\\]);"
+      df <- fromJSON(str_replace_all(
+        str_extract(json_text,
+                    pattern),
+        "var dat = |;",
+        ""))
       if (!length(df))
         return(data.frame(station_id =  integer(),
                           station_name =  character(),

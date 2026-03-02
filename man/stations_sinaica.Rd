@@ -30,13 +30,15 @@ A data frame with 341 rows and 26 variables:
 \item{lat}{latitude}
 \item{lon}{longitude}
 \item{date_started}{date the station started operations}
-\item{timezone}{time zone in which the station is located (may contain errors)}
+\item{timezone}{time zone in which the station is located
+(may contain errors)}
 \item{street_view}{link to Google Street View}
 \item{video_interior}{link to video of the interior of the station}
 }
 }
 \source{
-\href{https://sinaica.inecc.gob.mx/}{SINAICA} ans Solicitud de Información 1612100005118
+\href{https://sinaica.inecc.gob.mx/}{SINAICA} ans Solicitud de
+Información 1612100005118
 }
 \usage{
 data(stations_sinaica)

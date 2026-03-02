@@ -30,12 +30,14 @@
 #'   \item{lat}{latitude}
 #'   \item{lon}{longitude}
 #'   \item{date_started}{date the station started operations}
-#'   \item{timezone}{time zone in which the station is located (may contain errors)}
+#'   \item{timezone}{time zone in which the station is located
+#'   (may contain errors)}
 #'   \item{street_view}{link to Google Street View}
 #'   \item{video_interior}{link to video of the interior of the station}
 #' }
 #' @docType data
-#' @source \href{https://sinaica.inecc.gob.mx/}{SINAICA} ans Solicitud de Información 1612100005118
+#' @source \href{https://sinaica.inecc.gob.mx/}{SINAICA} ans Solicitud de
+#' Información 1612100005118
 #' @name stations_sinaica
 #' @usage data(stations_sinaica)
 #' @examples

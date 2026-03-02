@@ -42,10 +42,26 @@ test_that(".increase_month", {
 })
 
 test_that("ndays_to_range", {
+  ## 1 = 1 day, 2 = 1 week, 3 = 2 weeks, 4 = 1 month
+  ## 5 = 1 año, 6 = 2 años
   expect_equal(ndays_to_range("2005-01-01", "2005-01-01"), 1)
+  # Tue to Mon
   expect_equal(ndays_to_range("2018-04-03", "2018-04-09"), 2)
   expect_equal(ndays_to_range("2018-04-03", "2018-04-10"), 3)
-  expect_equal(ndays_to_range("2005-01-01", "2005-02-10"), 4)
+  expect_equal(ndays_to_range("2005-01-01", "2005-02-10"), 5)
   expect_equal(ndays_to_range("2018-03-03", "2018-03-16"), 3)
   expect_equal(ndays_to_range("2018-03-03", "2018-03-17"), 4)
+  expect_equal(ndays_to_range("2026-03-03", "2027-03-17"), 6)
+  expect_equal(ndays_to_range("2025-02-28", "2026-02-28"), 6)
+  expect_equal(ndays_to_range("2025-02-28", "2025-03-28"), 5)
+  expect_equal(ndays_to_range("2025-02-28", "2025-03-27"), 4)
+})
+
+test_that("missing arguments", {
+  expect_error(check_arguments(arg_val = null))
+})
+
+test_that("increase dates", {
+  expect_equal(.increase_year("2025-01-01", 2), as.Date("2027-01-01"))
+  expect_equal(.increase_month("2025-01-01"), as.Date("2025-02-01"))
 })

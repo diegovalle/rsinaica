@@ -103,7 +103,8 @@ Finally, we can download and plot hourly concentrations of particulate matter wi
 df <-  sinaica_station_data(102, # station_id
                          "PM10", # can be one of parameters$parameter_code
                          "2018-01-01", 
-                         "2018-01-31", # Maximum of one month
+                         "2018-01-31", # Maximum delta between start_date and  
+                                       # end_Date of 2 years
                          "Crude" # Crude, Manual or Validated
                          )
 

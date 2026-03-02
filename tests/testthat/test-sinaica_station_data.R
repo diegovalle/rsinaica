@@ -5,7 +5,9 @@ test_that("sinaica_station_data returns correct data", {
   skip_on_cran()
 
   # Test errors in parameters
-  expect_error(sinaica_station_data("ERROR"),
+  expect_error(sinaica_station_data())
+  expect_error(sinaica_station_data(station_id = null))
+  expect_error(sinaica_station_data(station_id = "ERROR"),
                "argument station_id must be an integer")
   expect_error(sinaica_station_data(271))
   expect_error(sinaica_station_data(271, "PM10", c("2015-01-01", "2016-01-10")))
@@ -33,8 +35,8 @@ test_that("sinaica_station_data returns correct data", {
                                  end_date = "2000-01-01"),
                "argument parameter should not be missing")
   expect_error(sinaica_station_data(271, "PM10", start_date = "2000-01-01",
-                    end_date = "2000-02-02"),
-               "The maximum amount of data you can download is 1 month")
+                    end_date = "2002-02-02"),
+               "The maximum amount of data you can download is 2 years")
   expect_error(sinaica_station_data(271, "PM10", start_date = "2000-01-01",
                                  end_date = "199-12-02"),
                "start_date should be less than or equal to end_date")
