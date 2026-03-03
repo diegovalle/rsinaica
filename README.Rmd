@@ -98,24 +98,25 @@ Finally, download and plot hourly concentrations of particulate matter with a di
 ```{r}
 # Download all PM10 data for January 2018
 df <-  sinaica_station_data(102, # station_id
-                         "PM10", # can be one of parameters$parameter_code
-                         "2018-01-01", 
-                         "2018-01-31", # Maximum delta between start_date and  
-                                       # end_Date of 2 years
+                         "PM10", # parameter
+                         "2018-01-01", # start_date
+                         "2018-01-31", # end_date
                          "Crude" # Crude, Manual or Validated
                          )
 
 ggplot(df, aes(hour, value, group = date)) +
   geom_line(alpha=.9) +
   ggtitle(expression(paste(PM[10],
-                           " pollution during January 2018 in Centro, Guadalajara, by hour"))) +
+                           " pollution during January 2018 at the",
+                           " Centro station in Guadalajara"))) +
+  labs(subtitle="Each line corresponds to a day") +
   xlab("hour") +
   ylab(expression(paste(mu,"g/", m^3))) +
   theme_bw()
 ```
 
 
-The hours are shown in the local Guadalajara time zone (UTC−6), since we plotted January data.
+The hours are shown in the local Guadalajara time zone (UTC−6), since we plotted January 2018 data.
 
 ```{r}
 stations_sinaica$timezone[which(stations_sinaica$station_id == 102)]
