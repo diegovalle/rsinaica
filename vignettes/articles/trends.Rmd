@@ -7,7 +7,7 @@ output: github_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-With `rsinaica` we can plot the long term trends in pollution for different cities. First, we load the packages
+With `rsinaica`, we can plot long-term pollution trends for different cities. First, we load the required packages.
 
 ```{r packages, warning=FALSE,message=FALSE}
 ## Auto-install required R packages
@@ -23,7 +23,7 @@ if (length(missing)) {
 }
 ```
 
-We create a function for downloading single pollutant data for all the stations that form a network
+We create a function to download data for a single pollutant from all stations within a network.
 
 ```{r function, warning=FALSE}
 get_network_data <- function(network_name, pollutant, remove_extremes = TRUE) {
@@ -52,11 +52,11 @@ get_network_data <- function(network_name, pollutant, remove_extremes = TRUE) {
 }
 ```
 
-Now we are ready to plot different cities. When requesting ozone values with the `sinaica_station_data` function, there is an option to automatically clean the data and set values above .2 ppm to NA, since Guadalajara tends to have quite high ozone levels it is probably a good idea to disable this functionality.
+Now we are ready to plot data for different cities. When requesting ozone values with the `sinaica_station_data` function, there is an option to automatically clean the data and set values above 0.2 ppm to `NA`. Since Guadalajara tends to have high ozone levels, it is advisable to disable this functionality.
 
 ```{r guadalajara, cache=TRUE, warning=FALSE}
 get_network_data("Guadalajara", "O3", remove_extremes = FALSE) %>%
-  ## remove ozone values above .3 cause Guadalajara air is extremely dirty
+  ## remove ozone values above 0.3 as Guadalajara often reports elevated levels
   filter(value < .3 & value >= 0) %>%
   ggplot(aes(as.Date(date), value)) +
   geom_point(alpha = .01, size = .3) +

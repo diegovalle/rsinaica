@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-We can compare ozone pollution trends in two most ozone-polluted cities in Mexico: CDMX and Guadalajara
+We can compare ozone pollution trends in the two most ozone-polluted cities in Mexico: CDMX and Guadalajara.
 
 First, we load the packages needed for the analysis:
 
@@ -65,7 +65,7 @@ guad <- bind_rows(
   )
 ```
 
-We'll be comparing the maximum daily ozone values among all stations
+We'll be comparing the maximum daily ozone values among all stations.
 
 ```{r}
 cdmx <- cdmx %>%
@@ -81,7 +81,7 @@ guad <- guad %>%
 
 ## Plot
 
-and finally we plot the data
+And finally, we plot the data.
 
 ```{r}
 ggplot(rbind(cdmx, guad), aes(as.Date(date), max, group = city, color = city)) +

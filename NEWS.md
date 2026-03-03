@@ -1,6 +1,11 @@
+# rsinaica 1.2.0
+
+* `sinaica_station_data` now supports downloading two years of data
+* Remove duplicate stations from the `stations_sinaica` data.frame
+
 # rsinaica 1.1.1
 
-* Updated the `stations_sinaica` data.frame to include all the latest stations
+* Update the `stations_sinaica` data.frame to include all the latest stations
 
 # rsinaica 1.1.0
 

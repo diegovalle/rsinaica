@@ -56,10 +56,10 @@ knitr::kable(stations_sinaica[which(stations_sinaica$station_name == "Centro"), 
 
 |  | station_id | station_name | station_code | network_id | network_name | network_code |
 |:---|---:|:---|:---|---:|:---|:---|
-| 4 | 33 | Centro | CEN | 30 | Aguascalientes | AGS |
-| 19 | 54 | Centro | CEN | 38 | Chihuahua | CHIH1 |
-| 66 | 102 | Centro | CEN | 63 | Guadalajara | GDL |
-| 121 | 170 | Centro | CEN | 78 | Zona Metropolitana de Querétaro | ZMQ |
+| 28 | 33 | Centro | CEN | 30 | Aguascalientes | AGS |
+| 29 | 54 | Centro | CEN | 38 | Chihuahua | CHIH1 |
+| 30 | 102 | Centro | CEN | 63 | Guadalajara | GDL |
+| 31 | 170 | Centro | CEN | 78 | Zona Metropolitana de Querétaro | ZMQ |
 
 It looks like there are three stations named Centro, the one we are
 looking for is the one in Guadalajara with a numeric code (station_id)
@@ -91,10 +91,10 @@ data from the station:
 
 ``` r
 sinaica_station_dates(102)
-#> [1] "1997-01-01" "2026-02-27"
+#> [1] "1997-01-01" "2026-03-02"
 ```
 
-It’s currently reporting data (this document was built on 2026-02-27),
+It’s currently reporting data (this document was built on 2026-03-02),
 and has been doing so since 1997. We can also query which type of
 parameters (pollution, wind, solar radiation, etc) the station has
 sensors for. Note that the package also includes a `parameters`
@@ -136,7 +136,8 @@ matter with a diameter smaller than 10 micrometers (μm)
 df <-  sinaica_station_data(102, # station_id
                          "PM10", # can be one of parameters$parameter_code
                          "2018-01-01", 
-                         "2018-01-31", # Maximum of one month
+                         "2018-01-31", # Maximum delta between start_date and  
+                                       # end_Date of 2 years
                          "Crude" # Crude, Manual or Validated
                          )
 

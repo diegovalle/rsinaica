@@ -16,7 +16,11 @@ knitr::opts_chunk$set(
 )
 ```
 
-We can compare the data available from `rsinaica` to that of `aire.zmvm` by downloading data from the same station. In this example we'll download data from the Xalostoc station in Mexico City. First, we load the necessary packages:
+This vignette compares air quality data retrieved via the `rsinaica` package against data from the `aire.zmvm` package. To ensure a fair comparison, we will analyze Ozone (O<sub>3</sub>) levels from the Xalostoc station in Mexico City for the same time period.
+
+## Load Required Packages
+
+First, we load the necessary libraries for data manipulation, visualization, and API access:
 
 ```{r warning=FALSE,message=FALSE}
 ## Auto-install required R packages
@@ -32,15 +36,14 @@ if (length(missing)) {
 }
 ```
 
-The hourly data from the `aire.zmvm` package in most cases corresponds to the GMT+6 time zone (with no Daylight Saving Time), while according to the `stations_sinaica` data.frame the data for the Xalostoc station comes in the local Mexico City time that includes Daylight Saving Time during the summer. Be warned that each station submits its data to SINAICA according to their chosen time zone, and sometimes the reported time zone may be incorrect.
+The hourly data from the `aire.zmvm` package generally use the GMT+6 time zone (with no Daylight Saving Time). In contrast, according to the `stations_sinaica` data.frame, data for the Xalostoc station is recorded in local Mexico City time, which included Daylight Saving Time in the summer it was collected. Please note that each station submits its data to SINAICA using its preferred time zone, and the reported time zone may occasionally be incorrect.
 
 ```{r}
 ## 271 is the station_id of Xalostoc
 stations_sinaica$timezone[stations_sinaica$station_id == 271]
 ```
 
-Then we download the data and make sure that both the values from aire.zmvm and rsinaica are in ppb
-(parts per billion), since rsinaica returns values in ppm (parts per million) we multiply by 1,000.
+Next, we download the data and ensure that values from both `aire.zmvm` and `rsinaica` are in parts per billion (ppb). Since `rsinaica` returns values in parts per million (ppm), we multiply them by 1,000.
 
 ```{r}
 df_aire <- get_station_month_data("HORARIOS", "O3", 2017, 5) %>%
@@ -54,7 +57,7 @@ df_aire$datetime <-  as.POSIXct(
 df_aire <- df_aire[, c("datetime", "value_aire.zmvm")]
 
 
-## values from sinaica are in ppb and those from aire.cdmx in ppm
+## values from sinaica are in ppb and those from aire.zmvm in ppm
 ## Xalostoc station has an rsinaica station_id of 271
 df_sinaica <- sinaica_station_data(271, "O3", "2017-05-01", "2017-05-31") %>%
   mutate(value = value * 1000) %>%
@@ -70,13 +73,13 @@ df_sinaica <- df_sinaica[, c("datetime", "value_sinaica")]
 df <- full_join(df_aire, df_sinaica, by = c("datetime" = "datetime"))
 ```
 
-This is what the merged data looks like:
+The merged data is shown below:
 
 ```{r echo=FALSE}
 knitr::kable(df[5:10, ])
 ```
 
-and the mean squared error:
+The mean squared error is as follows:
 
 ```{r}
 mean((df$value_aire.zmvm - df$value_sinaica)^2, na.rm = TRUE)
@@ -84,7 +87,7 @@ mean((df$value_aire.zmvm - df$value_sinaica)^2, na.rm = TRUE)
 
 
 
-We can visually compare them with a plot. The values are extremely similar, but the aire.zmvm data is a little bit more accurate since it comes directly from the source.
+We can visually compare them with a plot. The values are extremely similar, but the `aire.zmvm` data is slightly more accurate since it comes directly from the source.
 
 ```{r}
 ggplot(df_aire, aes(datetime, value_aire.zmvm, color = "aire.zmvm")) +
@@ -96,6 +99,6 @@ ggplot(df_aire, aes(datetime, value_aire.zmvm, color = "aire.zmvm")) +
   scale_color_discrete("package") +
   ggtitle(expression(paste("Hourly ", 
                            O[3], 
-                           " pollution values during March"))) +
+                           " pollution values during May"))) +
   theme_bw()
 ```
