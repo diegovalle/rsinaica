@@ -191,9 +191,11 @@ idw_tiles <- heatmap(df, grid)
 ```
 ## Plot
 
-Now we will use the package `ggmap` to plot the locations of the stations and the pollution grid on top of a map.
+Now we will use the package `ggmap` to plot the locations of the stations and the pollution grid on top of a map. Note that you'll need to set an environmental variable named
+STADIA_KEY with your Stadia Maps [api key](https://client.stadiamaps.com/signup) (free for non-commercial use)
 
 ```{r plot, warning=FALSE, message=FALSE, fig.dim = c(6,8)}
+# Signup for a free api key at: https://client.stadiamaps.com/signup
 register_stadiamaps(Sys.getenv("STADIA_KEY"), write = FALSE)
 qmplot(x1, x2, data = data.frame(grid), geom = "blank", 
        maptype = "alidade_smooth", source = "stadia", zoom = 10)  +
