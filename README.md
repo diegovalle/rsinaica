@@ -16,7 +16,7 @@ Status](https://img.shields.io/codecov/c/github/diegovalle/rsinaica/master.svg)]
 | **Author:**  | Diego Valle-Jones                                    |
 | **License:** | MIT + file LICENSE                                   |
 | **Website:** | <https://hoyodesmog.diegovalle.net/rsinaica/>        |
-| **Help**     | <https://github.com/diegovalle/rsinaica/discussions> |
+| **Help:**    | <https://github.com/diegovalle/rsinaica/discussions> |
 
 Easy-to-use functions for downloading air quality data from the Mexican
 National Air Quality Information System (SINAICA). This R package allows

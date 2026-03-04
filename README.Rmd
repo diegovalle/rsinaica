@@ -29,7 +29,7 @@ knitr::include_graphics('vignettes/header.png')
 | __Author:__           | Diego Valle-Jones                                     |
 | __License:__          | MIT + file LICENSE |
 | __Website:__          | [https://hoyodesmog.diegovalle.net/rsinaica/](https://hoyodesmog.diegovalle.net/rsinaica/) |
-| __Help__             | https://github.com/diegovalle/rsinaica/discussions   |
+| __Help:__             | https://github.com/diegovalle/rsinaica/discussions   |
 
 Easy-to-use functions for downloading air quality data from the Mexican National Air Quality Information System (SINAICA). This R package allows you to download pollution and meteorological data from more than one hundred monitoring stations across Mexico. You can query crude real-time data, validated data, or manually collected data.
 
