@@ -11,6 +11,13 @@ Status](https://img.shields.io/codecov/c/github/diegovalle/rsinaica/master.svg)]
 
 <img src="vignettes/header.png" alt="" width="100%" />
 
+|              |                                                      |
+|--------------|------------------------------------------------------|
+| **Author:**  | Diego Valle-Jones                                    |
+| **License:** | MIT + file LICENSE                                   |
+| **Website:** | <https://hoyodesmog.diegovalle.net/rsinaica/>        |
+| **Help**     | <https://github.com/diegovalle/rsinaica/discussions> |
+
 Easy-to-use functions for downloading air quality data from the Mexican
 National Air Quality Information System (SINAICA). This R package allows
 you to download pollution and meteorological data from more than one
@@ -90,11 +97,11 @@ from this station:
 
 ``` r
 sinaica_station_dates(102)
-#> [1] "1997-01-01" "2026-03-02"
+#> [1] "1997-01-01" "2026-03-04"
 ```
 
 The station is currently reporting data (this document was built on
-2026-03-02), and it has been active since 1997. You can also query which
+2026-03-04), and it has been active since 1997. You can also query which
 parameters (pollution, wind, solar radiation, etc.) the station
 measures. the station has sensors for. The package also includes a
 `parameters` data.frame containing the complete set of supported
@@ -133,9 +140,9 @@ the month of January.
 ``` r
 # Download all PM10 data for January 2018
 df <-  sinaica_station_data(102, # station_id
-                         "PM10", # can be one of parameters$parameter_code
-                         "2018-01-01", 
-                         "2018-01-31",
+                         "PM10", # parameter
+                         "2018-01-01", # start_date
+                         "2018-01-31", # end_date
                          "Crude" # Crude, Manual or Validated
                          )
 
