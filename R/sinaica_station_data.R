@@ -148,7 +148,8 @@ sinaica_station_data <- function(station_id,
     param       = parameter,
     fechaIni    = start_date,
     rango       = 5,#ndays_to_range(start_date, end_date),
-    tipoDatos   = type
+    tipoDatos   = type,
+    datoBase    = 1
   )
 
   tryCatch(

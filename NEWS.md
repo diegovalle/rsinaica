@@ -2,6 +2,9 @@
 
 * `sinaica_station_data` now supports downloading two years of data
 * Remove duplicate stations from the `stations_sinaica` data.frame
+* `sinaica_station_dates()` lists the dates for which a station has data available.
+* `sinaica_station_params()` lists the air quality parameters measured at 
+a station for which SINAICA provides data.
 
 # rsinaica 1.1.1
 

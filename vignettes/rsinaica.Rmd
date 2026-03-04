@@ -41,9 +41,15 @@ if (length(missing)) {
 
 The basic function provided by the package:
 
-* `sinaica_station_data`: Download data from a single station by specifying a parameter and a date range
+* `sinaica_station_data()`: Download data from a single station by specifying a parameter and a date range
 
 This function can download the *crude* real-time data as it comes in, the older and not as complete *validated* data, or pollution data which is collected *manually* and sent to an external for lab analysis.
+
+There are also two helper functions:
+
+* `sinaica_station_dates()`, which lists the dates for which a station has data available.
+* `sinaica_station_params()`, which lists the air quality parameters measured at a station for which SINAICA provides data.
+
 
 ## Downloading the data
 

@@ -18,9 +18,11 @@
 #' @export
 #'
 #' @examples
+#' \dontrun{
 #' ## id 271 is Xalostoc. See `stations_sinaica`
 #' df <- sinaica_station_params(271, "Crude")
 #' head(df)
+#' }
 sinaica_station_params <- function(station_id,
                                    type = "Crude") {
   if (missing(station_id))
@@ -104,9 +106,11 @@ sinaica_station_params <- function(station_id,
 #' @export
 #'
 #' @examples
+#' \dontrun{
 #' ## id 271 is Xalostoc. See `stations_sinaica`
 #' df <- sinaica_station_dates(271, "Manual")
 #' head(df)
+#'}
 sinaica_station_dates <- function(station_id,
                               type = "Crude") {
   if (missing(station_id))
@@ -128,8 +132,8 @@ sinaica_station_dates <- function(station_id,
                  "Validated" = "V",
                  "Manual"    = "M"
   )
-  #curl 'https://sinaica.inecc.gob.mx/lib/libd/cnxn.php'
-  # id=31&metodo=getFechasLimiteEstacionAjax&tipoDatos=
+  # curl 'https://sinaica.inecc.gob.mx/lib/libd/cnxn.php'
+  # --data-raw "id=31&metodo=getFechasLimiteEstacionAjax&tipoDatos="
   url <- "https://sinaica.inecc.gob.mx/lib/libd/cnxn.php"
   fd <- list(
     id        = station_id,
