@@ -25,7 +25,9 @@ List of air quality parameters of a measuring station for which SINAICA has
 data
 }
 \examples{
+\dontrun{
 ## id 271 is Xalostoc. See `stations_sinaica`
 df <- sinaica_station_params(271, "Crude")
 head(df)
+}
 }

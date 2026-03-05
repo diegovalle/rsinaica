@@ -26,7 +26,9 @@ Start date and end date of the range for which SINAICA has data for an air
 quality station
 }
 \examples{
+\dontrun{
 ## id 271 is Xalostoc. See `stations_sinaica`
 df <- sinaica_station_dates(271, "Manual")
 head(df)
+}
 }
