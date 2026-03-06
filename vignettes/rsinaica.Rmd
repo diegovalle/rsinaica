@@ -48,7 +48,7 @@ This function can download the *crude* real-time data as it comes in, the older 
 There are also two helper functions:
 
 * `sinaica_station_dates()`, which lists the dates for which a station has data available.
-* `sinaica_station_params()`, which lists the air quality parameters measured at a station for which SINAICA provides data.
+* `sinaica_station_params()`, which lists the air quality parameters measured at a station.
 
 
 ## Downloading the data

@@ -1,4 +1,4 @@
-# rsinaica 1.2.0
+# rsinaica (development version)
 
 * `sinaica_station_data` now supports downloading two years of data
 * Remove duplicate stations from the `stations_sinaica` data.frame
