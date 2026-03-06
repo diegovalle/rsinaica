@@ -57,7 +57,9 @@ if (length(names(success)[!success])) {
   sapply(names(success)[!success], require, character.only = TRUE)
 }
 
-knitr::kable(stations_sinaica[which(stations_sinaica$station_name == "Centro"), 1:6])
+knitr::kable(stations_sinaica[
+  which(stations_sinaica$station_name == "Centro"),  1:6
+  ])
 ```
 
 |  | station_id | station_name | station_code | network_id | network_name | network_code |
@@ -81,7 +83,8 @@ stations_sinaica$color[stations_sinaica$station_id == 102] <- "Centro (102)"
 ## having been assigned positive values (longitudes to the west of the
 ## prime meridian are supposed to be negative)
 stations_sinaica <- subset(stations_sinaica, lon < 0)
-ggplot(stations_sinaica[order(stations_sinaica$color, decreasing = TRUE),], aes(lon, lat)) + 
+ggplot(stations_sinaica[order(stations_sinaica$color, decreasing = TRUE),], 
+       aes(lon, lat)) + 
   geom_polygon(data = mx, aes(x= long, y = lat, group = group)) +
   geom_point(alpha = .9, size = 3, aes(fill = color), shape = 21) + 
   scale_fill_discrete("station") +
@@ -97,11 +100,11 @@ from this station:
 
 ``` r
 sinaica_station_dates(102)
-#> [1] "1997-01-01" "2026-03-04"
+#> [1] "1997-01-01" "2026-03-06"
 ```
 
 The station is currently reporting data (this document was built on
-2026-03-04), and it has been active since 1997. You can also query which
+2026-03-06), and it has been active since 1997. You can also query which
 parameters (pollution, wind, solar radiation, etc.) the station
 measures. the station has sensors for. The package also includes a
 `parameters` data.frame containing the complete set of supported
