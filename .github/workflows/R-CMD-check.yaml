@@ -1,21 +1,49 @@
 # Workflow derived from https://github.com/r-lib/actions/tree/v2/examples
 # Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
 on:
-#  schedule:
-#    - cron: '11 4 * * 6'
-  push:
+  schedule:
+    - cron: '7 21 * * 5'
+push:
     branches:
       - main
       - master
       - develop
+      - windows
+      - macos
   pull_request:
+    branches:
+      - main
+      - master
+      - develop
+      - windows
+      - macos
 
 name: R-CMD-check.yaml
 
 permissions: read-all
 
+# Trigger / Branch	    ubuntu (all versions)	windows-latest	macos-latest
+# Push to main/master	✅ Runs					✅ Runs			✅ Runs
+# Push to windows	    ✅ Runs					✅ Runs			❌ Skipped
+# Push to macos	        ✅ Runs					❌ Skipped		✅ Runs
+# Push to develop	    ✅ Runs					❌ Skipped		❌ Skipped
+# Weekly Schedule	    ✅ (Release only)		❌ Skipped		❌ Skipped
+
 jobs:
   R-CMD-check:
+    # Logic:
+    # 1. If Branch is 'main' or 'master': Run EVERYTHING.
+    # 2. If Event is 'schedule': Only run ubuntu-latest + release.
+    # 3. Windows: Only run if branch is 'windows' (and not main/master).
+    # 4. macOS: Only run if branch is 'macos' (and not main/master).
+    # 5. Ubuntu: Always runs on push/PR to any branch listed in 'on:'.
+    if: |
+      contains(fromJSON('["main", "master"]'), github.ref_name) ||
+      (github.event_name == 'schedule' && matrix.config.os == 'ubuntu-latest' && matrix.config.r == 'release') ||
+      (matrix.config.os == 'windows-latest' && github.ref_name == 'windows') ||
+      (matrix.config.os == 'macos-latest' && github.ref_name == 'macos') ||
+      (startsWith(matrix.config.os, 'ubuntu') && github.event_name != 'schedule')
+
     runs-on: ${{ matrix.config.os }}
 
     name: ${{ matrix.config.os }} (${{ matrix.config.r }})
