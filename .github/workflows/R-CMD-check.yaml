@@ -2,48 +2,33 @@
 # Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
 on:
   schedule:
-    - cron: '7 21 * * 5'
-push:
+    - cron: '7 20 * * 5'
+  push:
     branches:
       - main
       - master
       - develop
-      - windows
-      - macos
+      - test
   pull_request:
     branches:
       - main
       - master
       - develop
-      - windows
-      - macos
+      - test
 
 name: R-CMD-check.yaml
 
 permissions: read-all
 
-# Trigger / Branch	    ubuntu (all versions)	windows-latest	macos-latest
-# Push to main/master	✅ Runs					✅ Runs			✅ Runs
-# Push to windows	    ✅ Runs					✅ Runs			❌ Skipped
-# Push to macos	        ✅ Runs					❌ Skipped		✅ Runs
-# Push to develop	    ✅ Runs					❌ Skipped		❌ Skipped
-# Weekly Schedule	    ✅ (Release only)		❌ Skipped		❌ Skipped
+# Trigger / Branch    ubuntu (all versions)	windows-latest	macos-latest
+# Push to main/master	✅ Runs               ✅ Runs         ✅ Runs
+# Push to test  	    ✅ Runs               ✅ Runs         ✅ Runs
+# Push to develop	    ✅ Runs               ❌ Skipped      ❌ Skipped
+# Weekly Schedule	    ✅ Rusn               ❌ Skipped      ❌ Skipped
 
 jobs:
   R-CMD-check:
-    # Logic:
-    # 1. If Branch is 'main' or 'master': Run EVERYTHING.
-    # 2. If Event is 'schedule': Only run ubuntu-latest + release.
-    # 3. Windows: Only run if branch is 'windows' (and not main/master).
-    # 4. macOS: Only run if branch is 'macos' (and not main/master).
-    # 5. Ubuntu: Always runs on push/PR to any branch listed in 'on:'.
-    if: |
-      contains(fromJSON('["main", "master"]'), github.ref_name) ||
-      (github.event_name == 'schedule' && matrix.config.os == 'ubuntu-latest' && matrix.config.r == 'release') ||
-      (matrix.config.os == 'windows-latest' && github.ref_name == 'windows') ||
-      (matrix.config.os == 'macos-latest' && github.ref_name == 'macos') ||
-      (startsWith(matrix.config.os, 'ubuntu') && github.event_name != 'schedule')
-
+    
     runs-on: ${{ matrix.config.os }}
 
     name: ${{ matrix.config.os }} (${{ matrix.config.r }})
@@ -51,18 +36,38 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        config:
-          - {os: macos-latest,   r: 'release'}
-          - {os: windows-latest, r: 'release'}
-          - {os: ubuntu-latest,   r: 'devel', http-user-agent: 'release'}
-          - {os: ubuntu-latest,   r: 'release'}
-          - {os: ubuntu-latest,   r: 'oldrel-1'}
+        config: |
+          ${{ fromJSON(
+          (github.event_name == 'schedule')
+          && '[
+            {"os":"ubuntu-latest","r":"release"}
+          ]'
+          || ((github.ref_name == 'main' || github.ref_name == 'master' || github.ref_name == 'test')
+          && '[
+            {"os":"ubuntu-latest","r":"devel","http-user-agent":"release"},
+            {"os":"ubuntu-latest","r":"release"},
+            {"os":"ubuntu-latest","r":"oldrel-1"},
+            {"os":"windows-latest","r":"release"},
+            {"os":"macos-latest","r":"release"}
+          ]'
+          || '[
+            {"os":"ubuntu-latest","r":"devel","http-user-agent":"release"},
+            {"os":"ubuntu-latest","r":"release"},
+            {"os":"ubuntu-latest","r":"oldrel-1"}
+          ]')
+          ) }}
+      
+
 
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       R_KEEP_PKG_SOURCE: yes
+      BRANCH_NAME: ${{ github.ref_name }}
+      EVENT_NAME: ${{ github.event_name }}
 
     steps:
+      - name: Greet the user
+        run: echo branch "$BRANCH_NAME" event "$EVENT_NAME"
       - uses: actions/checkout@v4
 
       - uses: r-lib/actions/setup-pandoc@v2
