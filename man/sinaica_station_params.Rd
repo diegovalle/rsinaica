@@ -25,9 +25,14 @@ List of air quality parameters of a measuring station for which SINAICA has
 data
 }
 \examples{
-\dontrun{
-## id 271 is Xalostoc. See `stations_sinaica`
-df <- sinaica_station_params(271, "Crude")
-head(df)
+## station id 271 is Xalostoc. See `stations_sinaica`
+response <- try(sinaica_station_params(271, "Crude"), silent = TRUE)
+
+if (inherits(response, "try-error")) {
+  message("An error occurred during the SINAICA API call.")
+  param_data <- NULL
+} else {
+  param_data <- response
 }
+head(param_data)
 }

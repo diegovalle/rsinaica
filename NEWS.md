@@ -1,10 +1,26 @@
-# rsinaica (development version)
+# rsinaica 1.2.0
 
 * `sinaica_station_data` now supports downloading two years of data
+
+  ```R
+  df <- sinaica_station_data(271, "O3", "2015-09-11", "2017-09-11", "Crude")
+  ```
 * Remove duplicate stations from the `stations_sinaica` data.frame
-* `sinaica_station_dates()` lists the dates for which a station has data available.
-* `sinaica_station_params()` lists the air quality parameters measured at 
-a station for which SINAICA provides data.
+* Added function `sinaica_station_dates()`, which lists the dates for which a 
+  station has data available.
+  
+  ```R
+  sinaica_station_dates(271, "Crude")
+  ```  
+* Added function `sinaica_station_params()`, which lists the air quality 
+  parameters measured at a station for which SINAICA provides data.
+  
+  ```R
+  sinaica_station_params(271, "Crude")
+  ```  
+* Added two new air quaility stations in Ensenada and Tecate to 
+  `stations_sinaica`
+* Use `try()` in function examples instead of `\dontrun{}`
 
 # rsinaica 1.1.1
 

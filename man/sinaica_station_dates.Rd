@@ -26,9 +26,14 @@ Start date and end date of the range for which SINAICA has data for an air
 quality station
 }
 \examples{
-\dontrun{
-## id 271 is Xalostoc. See `stations_sinaica`
-df <- sinaica_station_dates(271, "Manual")
-head(df)
+## station id 271 is Xalostoc. See `stations_sinaica`
+response <- try(sinaica_station_dates(271, "Manual"), silent = TRUE)
+
+if (inherits(response, "try-error")) {
+  message("An error occurred during the SINAICA API call.")
+  dates_data <- NULL
+} else {
+  dates_data <- response
 }
+print(dates_data)
 }

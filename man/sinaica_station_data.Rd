@@ -86,9 +86,16 @@ Download data from a single station by specifying a parameter and a date
 range
 }
 \examples{
+## station id 271 is Xalostoc. See `stations_sinaica`
 stations_sinaica[which(stations_sinaica$station_name == "Xalostoc"), 1:5]
-df <- sinaica_station_data(271, "O3", "2015-09-11", "2015-09-11", "Crude")
-head(df)
+response <- try(sinaica_station_data(271, "O3", "2015-09-11", "2015-09-11",
+                                     "Crude"), silent = TRUE)
+
+if (inherits(response, "try-error")) {
+  message("An error occurred during the SINAICA API call.")
+} else {
+  head(df)
+}
 
 }
 \seealso{
