@@ -92,11 +92,22 @@ test_that("sinaica_station_data returns correct data", {
   expect_equal(df$date[533], "2015-10-03")
   expect_equal(df$date[1], "2015-09-11")
 
-  ## dates are corretly filtered
-  days <- seq(as.Date("2018-02-01"), as.Date("2018-03-01"), by = "day")
+  ## dates are correctly filtered
+  days <- seq(as.Date("2018-02-01"), as.Date("2018-03-02"), by = "day")
   for (i in seq_along(days)) {
     df <- sinaica_station_data(271, "O3", "2018-02-01", days[i])
     expect_equal(unique(df$date), as.character(days[1:i]))
     Sys.sleep(1)
   }
+
+  # 2 years of data
+  df <- sinaica_station_data(271, "O3", "2015-09-11", "2017-09-11", "Crude")
+  expect_equal(min(df$date), "2015-09-11")
+  expect_equal(max(df$date), "2017-09-11")
+
+
+  # 3 months of data
+  df <- sinaica_station_data(271, "O3", "2015-09-11", "2015-12-11", "Crude")
+  expect_equal(min(df$date), "2015-09-11")
+  expect_equal(max(df$date), "2015-12-11")
 })
