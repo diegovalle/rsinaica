@@ -18,11 +18,16 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' ## id 271 is Xalostoc. See `stations_sinaica`
-#' df <- sinaica_station_params(271, "Crude")
-#' head(df)
+#' ## station id 271 is Xalostoc. See `stations_sinaica`
+#' response <- try(sinaica_station_params(271, "Crude"), silent = TRUE)
+#'
+#' if (inherits(response, "try-error")) {
+#'   message("An error occurred during the SINAICA API call.")
+#'   param_data <- NULL
+#' } else {
+#'   param_data <- response
 #' }
+#' head(param_data)
 sinaica_station_params <- function(station_id,
                                    type = "Crude") {
   if (missing(station_id))
@@ -100,17 +105,22 @@ sinaica_station_params <- function(station_id,
 #'
 #' @return a vector containing the date the station started reporting
 #' and end reporting date
-#' @importFrom httr POST http_error http_type content status_code with_config
-#' config
+#' @importFrom httr POST http_error http_type content status_code
+#' @importFrom httr with_config config
 #' @importFrom jsonlite fromJSON
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' ## id 271 is Xalostoc. See `stations_sinaica`
-#' df <- sinaica_station_dates(271, "Manual")
-#' head(df)
-#'}
+#' ## station id 271 is Xalostoc. See `stations_sinaica`
+#' response <- try(sinaica_station_dates(271, "Manual"), silent = TRUE)
+#'
+#' if (inherits(response, "try-error")) {
+#'   message("An error occurred during the SINAICA API call.")
+#'   dates_data <- NULL
+#' } else {
+#'   dates_data <- response
+#' }
+#' print(dates_data)
 sinaica_station_dates <- function(station_id,
                               type = "Crude") {
   if (missing(station_id))
