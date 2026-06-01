@@ -90,6 +90,30 @@ ndays_to_range <- function(start_date, end_date) {
   ranges[findInterval(num_days, cuts)]
 }
 
+ndays_to_range2  <- function(start_date, end_date) {
+  start_date <- as.Date(start_date)
+  end_date <- as.Date(end_date)
+
+  if (end_date <= start_date + 1) {
+    return(1)  # 1 day
+  }
+
+  if (end_date <= start_date + 7) {
+    return(2)  # 1 week
+  }
+
+  if (end_date <= start_date + 14) {
+    return(3)  # 2 weeks
+  }
+
+  one_month <- seq(start_date, by = "month", length.out = 2)[2]
+  if (end_date <= one_month) {
+    return(4)  # 1 month
+  }
+
+  ## Skip the 1-year logic and go straight to two years
+  return(6)    # 2 years
+}
 #' recode units from SINAICA
 #'
 #' @param pollutant type of pollutant to recode

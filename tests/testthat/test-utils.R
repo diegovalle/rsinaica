@@ -57,6 +57,102 @@ test_that("ndays_to_range", {
   expect_equal(ndays_to_range("2025-02-28", "2025-03-27"), 4)
 })
 
+test_that("1 day range", {
+  expect_equal(
+    ndays_to_range2("2026-06-01", "2026-06-02"),
+    1
+  )
+
+  expect_equal(
+    ndays_to_range2("2026-06-01", "2026-06-01"),
+    1
+  )
+})
+
+test_that("1 week range", {
+  expect_equal(
+    ndays_to_range2("2026-06-01", "2026-06-07"),
+    2
+  )
+
+  expect_equal(
+    ndays_to_range2("2026-06-01", "2026-06-08"),
+    2
+  )
+})
+
+test_that("2 week range", {
+  expect_equal(
+    ndays_to_range2("2026-06-01", "2026-06-09"),
+    3
+  )
+
+  expect_equal(
+    ndays_to_range2("2026-06-01", "2026-06-15"),
+    3
+  )
+})
+
+test_that("1 month range", {
+  expect_equal(
+    ndays_to_range2("2026-06-01", "2026-06-16"),
+    4
+  )
+
+  expect_equal(
+    ndays_to_range2("2026-06-01", "2026-07-01"),
+    4
+  )
+})
+
+test_that("1 year range", {
+  expect_equal(
+    ndays_to_range2("2026-07-02", "2027-07-01"),
+    6
+  )
+
+  expect_equal(
+    ndays_to_range2("2026-06-01", "2027-06-01"),
+    6
+  )
+})
+
+test_that("2 year range", {
+  expect_equal(
+    ndays_to_range2("2026-06-01", "2027-06-02"),
+    6
+  )
+
+  expect_equal(
+    ndays_to_range2("2026-06-01", "2028-06-01"),
+    6
+  )
+})
+
+test_that("month boundaries are calendar-aware", {
+  expect_equal(
+    ndays_to_range2("2026-01-31", "2026-02-28"),
+    4
+  )
+
+  expect_equal(
+    ndays_to_range2("2024-01-31", "2024-02-29"),
+    4
+  )
+})
+
+test_that("year boundaries are calendar-aware", {
+  expect_equal(
+    ndays_to_range2("2024-02-29", "2025-02-28"),
+    6
+  )
+
+  expect_equal(
+    ndays_to_range2("2024-02-29", "2025-03-01"),
+    6
+  )
+})
+
 test_that("missing arguments", {
   expect_error(check_arguments(arg_val = null))
 })

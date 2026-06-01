@@ -64,8 +64,8 @@
 #' and some stations reported the timezome in which they are located
 #' erroneously.
 #' @importFrom dplyr filter left_join
-#' @importFrom httr POST http_error http_type content status_code add_headers
-#' with_config config
+#' @importFrom httr POST http_error http_type content status_code
+#' @importFrom httr add_headers with_config config
 #' @importFrom jsonlite fromJSON
 #' @importFrom stringr str_replace_all str_extract
 #' @importFrom utils data
@@ -75,9 +75,16 @@
 #' manual data from \url{https://sinaica.inecc.gob.mx/data.php?tipo=M}
 #' @export
 #' @examples
+#' ## station id 271 is Xalostoc. See `stations_sinaica`
 #' stations_sinaica[which(stations_sinaica$station_name == "Xalostoc"), 1:5]
-#' df <- sinaica_station_data(271, "O3", "2015-09-11", "2015-09-11", "Crude")
-#' head(df)
+#' response <- try(sinaica_station_data(271, "O3", "2015-09-11", "2015-09-11",
+#'                                      "Crude"), silent = TRUE)
+#'
+#' if (inherits(response, "try-error")) {
+#'   message("An error occurred during the SINAICA API call.")
+#' } else {
+#'   head(df)
+#' }
 #'
 sinaica_station_data <- function(station_id,
                             parameter,
@@ -147,7 +154,8 @@ sinaica_station_data <- function(station_id,
     estacionId  = station_id,
     param       = parameter,
     fechaIni    = start_date,
-    rango       = 5,#ndays_to_range(start_date, end_date),
+    # 6 == "2 años", 5 == "1 año"
+    rango       = 6, # ndays_to_range(start_date, end_date),
     tipoDatos   = type,
     datoBase    = 1
   )
