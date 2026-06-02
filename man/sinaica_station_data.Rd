@@ -94,7 +94,7 @@ response <- try(sinaica_station_data(271, "O3", "2015-09-11", "2015-09-11",
 if (inherits(response, "try-error")) {
   message("An error occurred during the SINAICA API call.")
 } else {
-  head(df)
+  head(response)
 }
 
 }
