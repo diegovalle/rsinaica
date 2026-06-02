@@ -83,7 +83,7 @@
 #' if (inherits(response, "try-error")) {
 #'   message("An error occurred during the SINAICA API call.")
 #' } else {
-#'   head(df)
+#'   head(response)
 #' }
 #'
 sinaica_station_data <- function(station_id,
