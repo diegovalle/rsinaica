@@ -20,6 +20,10 @@ name: R-CMD-check.yaml
 
 permissions: read-all
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 # Trigger / Branch    ubuntu (all versions)	windows-latest	macos-latest
 # Push to main/master	✅ Runs               ✅ Runs         ✅ Runs
 # Push to test  	    ✅ Runs               ✅ Runs         ✅ Runs
@@ -68,7 +72,7 @@ jobs:
     steps:
       - name: Greet the user
         run: echo branch "$BRANCH_NAME" event "$EVENT_NAME"
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
       - uses: r-lib/actions/setup-pandoc@v2
 
