@@ -1,3 +1,5 @@
+# rsinaica (development version)
+
 # rsinaica 1.2.0
 
 * `sinaica_station_data` now supports downloading two years of data
