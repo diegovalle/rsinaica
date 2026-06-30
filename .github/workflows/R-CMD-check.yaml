@@ -2,13 +2,21 @@
 # Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
 on:
   schedule:
-    - cron: '7 20 * * 5'
+    - cron: "7 20 * * 5"
   push:
     branches:
       - main
       - master
       - develop
       - test
+    paths-ignore:
+      - "README.md"
+      - "README.Rmd"
+      - "index.md"
+      - "index.Rmd"
+      - "rsinaica.Rproj"
+      - "vignettes/**"
+      - "data-raw/**"
   pull_request:
     branches:
       - main
@@ -18,7 +26,7 @@ on:
 
 name: R-CMD-check.yaml
 
-permissions: read-all
+permissions: {}
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
@@ -32,7 +40,6 @@ concurrency:
 
 jobs:
   R-CMD-check:
-    
     runs-on: ${{ matrix.config.os }}
 
     name: ${{ matrix.config.os }} (${{ matrix.config.r }})
@@ -40,28 +47,27 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        config: |
-          ${{ fromJSON(
-          (github.event_name == 'schedule')
-          && '[
-            {"os":"ubuntu-latest","r":"release"}
-          ]'
-          || ((github.ref_name == 'main' || github.ref_name == 'master' || github.ref_name == 'test')
-          && '[
-            {"os":"ubuntu-latest","r":"devel","http-user-agent":"release"},
-            {"os":"ubuntu-latest","r":"release"},
-            {"os":"ubuntu-latest","r":"oldrel-1"},
-            {"os":"windows-latest","r":"release"},
-            {"os":"macos-latest","r":"release"}
-          ]'
-          || '[
-            {"os":"ubuntu-latest","r":"devel","http-user-agent":"release"},
-            {"os":"ubuntu-latest","r":"release"},
-            {"os":"ubuntu-latest","r":"oldrel-1"}
-          ]')
-          ) }}
-      
-
+        config:
+          - |-
+            ${{ fromJSON(
+            (github.event_name == 'schedule')
+            && '[
+              {"os":"ubuntu-latest","r":"release"}
+            ]'
+            || ((github.ref_name == 'main' || github.ref_name == 'master' || github.ref_name == 'test')
+            && '[
+              {"os":"ubuntu-latest","r":"devel","http-user-agent":"release"},
+              {"os":"ubuntu-latest","r":"release"},
+              {"os":"ubuntu-latest","r":"oldrel-1"},
+              {"os":"windows-latest","r":"release"},
+              {"os":"macos-latest","r":"release"}
+            ]'
+            || '[
+              {"os":"ubuntu-latest","r":"devel","http-user-agent":"release"},
+              {"os":"ubuntu-latest","r":"release"},
+              {"os":"ubuntu-latest","r":"oldrel-1"}
+            ]')
+            ) }}
 
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
@@ -73,21 +79,23 @@ jobs:
       - name: Greet the user
         run: echo branch "$BRANCH_NAME" event "$EVENT_NAME"
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
 
-      - uses: r-lib/actions/setup-pandoc@v2
+      - uses: r-lib/actions/setup-pandoc@d3c5be51b12e724e68f33216ca3c148b66d5f0b6 # v2
 
-      - uses: r-lib/actions/setup-r@v2
+      - uses: r-lib/actions/setup-r@d3c5be51b12e724e68f33216ca3c148b66d5f0b6 # v2
         with:
           r-version: ${{ matrix.config.r }}
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
 
-      - uses: r-lib/actions/setup-r-dependencies@v2
+      - uses: r-lib/actions/setup-r-dependencies@d3c5be51b12e724e68f33216ca3c148b66d5f0b6 # v2
         with:
           extra-packages: any::rcmdcheck
           needs: check
 
-      - uses: r-lib/actions/check-r-package@v2
+      - uses: r-lib/actions/check-r-package@d3c5be51b12e724e68f33216ca3c148b66d5f0b6 # v2
         with:
           upload-snapshots: true
           build_args: 'c("--no-manual","--compact-vignettes=gs+qpdf")'
