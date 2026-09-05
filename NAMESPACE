@@ -4,21 +4,29 @@ export(sinaica_param_data)
 export(sinaica_station_data)
 export(sinaica_station_dates)
 export(sinaica_station_params)
-importFrom(dplyr,filter)
-importFrom(dplyr,left_join)
-importFrom(dplyr,recode)
-importFrom(httr,POST)
-importFrom(httr,add_headers)
-importFrom(httr,config)
-importFrom(httr,content)
-importFrom(httr,http_error)
-importFrom(httr,http_type)
-importFrom(httr,status_code)
-importFrom(httr,with_config)
+importFrom(dplyr,
+  filter,
+  left_join,
+  recode
+)
+importFrom(httr,
+  POST,
+  add_headers,
+  config,
+  content,
+  http_error,
+  http_type,
+  status_code,
+  with_config
+)
 importFrom(jsonlite,fromJSON)
-importFrom(lubridate,"%m+%")
-importFrom(lubridate,period)
+importFrom(lubridate,
+  "%m+%",
+  period
+)
 importFrom(stats,runif)
-importFrom(stringr,str_extract)
-importFrom(stringr,str_replace_all)
+importFrom(stringr,
+  str_extract,
+  str_replace_all
+)
 importFrom(utils,data)
