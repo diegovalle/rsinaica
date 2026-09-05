@@ -1,4 +1,8 @@
-# rsinaica (development version)
+# rsinaica 1.2.1
+
+* Update the `stations_sinaica` data.frame to include new stations:
+
+* San Luis Río Colorado (station_id 190)
 
 # rsinaica 1.2.0
 

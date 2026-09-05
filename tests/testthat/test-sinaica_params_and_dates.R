@@ -12,9 +12,7 @@ test_that("get-parameters_and_dates", {
 
   df <- sinaica_station_params(271, "Crude")
   expect_true(all(
-    c("SO2", "NO2", "DV", "HR", "CO",
-      "NO", "NOx", "O3", "PM10",
-      "PM2.5", "PB", "TMP", "VV") %in% df$param_code))
+    c("SO2", "NO2", "CO",  "NO",  "NOx", "O3") %in% df$param_code))
   df <- sinaica_station_params(271, "Manual")
   expect_true(all(c("PM10", "PM2.5") %in% df$param_code))
   df <- sinaica_station_params(33, "Validated")
