@@ -1,8 +1,11 @@
 # rsinaica 1.2.1
 
-* Update the `stations_sinaica` data.frame to include new stations:
+* Update the `stations_sinaica` data.frame to include a new station:
+  * San Luis Río Colorado (station_id 190)
 
-* San Luis Río Colorado (station_id 190)
+* Functions `sinaica_station_params()` and `sinaica_station_dates()` no
+  longer error because the SINAICA website returns JSON data 
+  with the 'text/plain' MIME type
 
 # rsinaica 1.2.0
 
