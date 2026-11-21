@@ -69,8 +69,12 @@ sinaica_station_params <- function(station_id,
                      url,
                      status_code(result)
         ), call. = FALSE)
-      if (http_type(result) != "text/html")
-        stop(paste0(url, " did not return text/html", call. = FALSE))
+      if (!http_type(result) %in%  c("text/plain",
+                                     "text/html",
+                                     "application/json"))
+        stop(paste0(url,
+                    " did not return text/plain, text/html or application/json",
+                    call. = FALSE))
       json_text <- content(result, "text", encoding = "UTF-8")
       df <- fromJSON(json_text)
       if (!length(df))
@@ -163,8 +167,12 @@ sinaica_station_dates <- function(station_id,
                      url,
                      status_code(result)
         ), call. = FALSE)
-      if (http_type(result) != "text/html")
-        stop(paste0(url, " did not return text/html", call. = FALSE))
+      if (!http_type(result) %in%  c("text/plain",
+                                     "text/html",
+                                     "application/json"))
+        stop(paste0(url,
+                    " did not return text/plain, text/html or application/json",
+                    call. = FALSE))
       json_text <- content(result, "text", encoding = "UTF-8")
       df <- fromJSON(json_text)
       if (is.na(df[[1]]))
