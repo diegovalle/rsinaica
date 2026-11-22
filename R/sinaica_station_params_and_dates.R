@@ -61,8 +61,9 @@ sinaica_station_params <- function(station_id,
     {
       result <- httr::with_config(httr::config(ssl_verifypeer = 0L), {
         POST(url,
-                     body = fd,
-                     encode = "form")
+             body = fd,
+             encode = "form",
+             httr::timeout(60))
       })
       if (http_error(result))
         stop(sprintf("The request to <%s> failed [%s]",
@@ -88,7 +89,7 @@ sinaica_station_params <- function(station_id,
     error = function(cond) {
       message("An error occurred downloading data from SINAICA:")
       message(cond)
-      return(NULL)
+      return(invisible(NULL))
     }
   )
 }
@@ -160,7 +161,8 @@ sinaica_station_dates <- function(station_id,
       result <- httr::with_config(httr::config(ssl_verifypeer = 0L), {
         POST(url,
              body = fd,
-             encode = "form")
+             encode = "form",
+             httr::timeout(60))
       })
       if (http_error(result))
         stop(sprintf("The request to <%s> failed [%s]",
@@ -182,7 +184,7 @@ sinaica_station_dates <- function(station_id,
     error = function(cond) {
       message("An error occurred downloading data from SINAICA:")
       message(cond)
-      return(NULL)
+      return(invisible(NULL))
     }
   )
 

@@ -167,7 +167,8 @@ sinaica_station_data <- function(station_id,
              add_headers("user-agent" =
                            "https://github.com/diegovalle/rsinaica"),
              body = fd,
-             encode = "form")
+             encode = "form",
+             httr::timeout(10))
       })
       if (http_error(result))
         stop(sprintf("The request to <%s> failed [%s]",
@@ -227,8 +228,8 @@ sinaica_station_data <- function(station_id,
     },
     error = function(cond) {
       message("An error occurred downloading data from SINAICA:")
-      message(cond)
-      return(NULL)
+      conditionMessage(cond)
+      return(invisible(NULL))
     }
   )
 }
