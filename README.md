@@ -6,7 +6,7 @@
 [![R-CMD-check.yaml](https://github.com/diegovalle/rsinaica/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/diegovalle/rsinaica/actions/workflows/R-CMD-check.yaml)
 [![Coverage
 Status](https://img.shields.io/codecov/c/github/diegovalle/rsinaica/master.svg)](https://app.codecov.io/github/diegovalle/rsinaica?branch=master)
-[![lifecycle](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://lifecycle.r-lib.org/articles/stages.html)  
+[![lifecycle](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://lifecycle.r-lib.org/articles/stages.html)\
 [![CRAN_Status_Badge](https://www.r-pkg.org/badges/version-ago/rsinaica)](https://cran.r-project.org/package=rsinaica)
 
 <img src="vignettes/header.png" alt="" width="100%" />
@@ -100,11 +100,11 @@ from this station:
 
 ``` r
 sinaica_station_dates(102)
-#> [1] "1997-01-01" "2026-06-01"
+#> [1] "1997-01-01" "2026-11-21"
 ```
 
 The station is currently reporting data (this document was built on
-2026-06-01), and it has been active since 1997. You can also query which
+2026-11-21), and it has been active since 1997. You can also query which
 parameters (pollution, wind, solar radiation, etc.) the station
 measures. the station has sensors for. The package also includes a
 `parameters` data.frame containing the complete set of supported
