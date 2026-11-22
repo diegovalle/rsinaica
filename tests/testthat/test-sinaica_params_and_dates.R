@@ -2,6 +2,7 @@ context("test-sinaica_params_and_dates.R")
 
 test_that("get-parameters_and_dates", {
   skip_on_cran()
+  skip_if_offline()
 
   expect_error(sinaica_station_params("112"),
                "argument station_id must be an integer")

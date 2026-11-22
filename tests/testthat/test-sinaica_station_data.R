@@ -3,6 +3,7 @@ context("test-sinaica_station_data.R")
 # Visit https://sinaica.inecc.gob.mx/data.php to manually check the values
 test_that("sinaica_station_data returns correct data", {
   skip_on_cran()
+  skip_if_offline()
 
   # Test errors in parameters
   expect_error(sinaica_station_data())
