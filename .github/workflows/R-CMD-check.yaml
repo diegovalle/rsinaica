@@ -17,6 +17,7 @@ on:
       - "rsinaica.Rproj"
       - "vignettes/**"
       - "data-raw/**"
+      - "man/figures/**"
   pull_request:
     branches:
       - main
